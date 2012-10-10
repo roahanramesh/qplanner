@@ -14,9 +14,17 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    plan.cpp
+    plan.cpp \
+    tasksmodel.cpp \
+    resourcesmodel.cpp \
+    calendarsmodel.cpp \
+    daysmodel.cpp
 
 HEADERS  += mainwindow.h \
-    plan.h
+    plan.h \
+    tasksmodel.h \
+    resourcesmodel.h \
+    calendarsmodel.h \
+    daysmodel.h
 
 FORMS    += mainwindow.ui

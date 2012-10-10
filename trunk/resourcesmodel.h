@@ -18,33 +18,33 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
-#include "plan.h"
+#ifndef RESOURCESMODEL_H
+#define RESOURCESMODEL_H
 
-extern Plan*  plan;
+#include <QAbstractTableModel>
 
 /*************************************************************************************************/
-/********************* Main application window showing tabbed main screens ***********************/
+/**************************** Table model containing all resources *******************************/
 /*************************************************************************************************/
 
-/****************************************** constructor ******************************************/
-
-MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::MainWindow )
+class ResourcesModel : public QAbstractTableModel
 {
-  // setup ui for main window
-  ui->setupUi( this );
+public:
+  ResourcesModel();                       // constructor
 
-  // set models for table views
-  ui->tasksView->setModel( (QAbstractItemModel*)plan->tasks() );
-  ui->resourcesView->setModel( (QAbstractItemModel*)plan->resources() );
-  ui->calendarsView->setModel( (QAbstractItemModel*)plan->calendars() );
-  ui->daysView->setModel( (QAbstractItemModel*)plan->days() );
-}
+  /********************* methods to support QAbstractTableModel ************************/
 
-/****************************************** destructor *******************************************/
+  int            rowCount( const QModelIndex& parent
+                           = QModelIndex() ) const;        // implement virtual row count
+  int            columnCount( const QModelIndex& parent
+                              = QModelIndex() ) const;     // implement virtual column count
+  QVariant       data( const QModelIndex&, int ) const;    // implement virtual return data
+  bool           setData( const QModelIndex&,
+                          const QVariant&, int );          // implement virtual set data
+  QVariant       headerData( int, Qt::Orientation,
+                             int ) const;                  // implement virtual header data
+  Qt::ItemFlags  flags( const QModelIndex& ) const;        // implement virtual return flags
 
-MainWindow::~MainWindow()
-{
-  delete ui;
-}
+};
+
+#endif // RESOURCESMODEL_H

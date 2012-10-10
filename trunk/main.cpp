@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include "mainwindow.h"
+#include "plan.h"
 
 #include <QApplication>
 
@@ -32,10 +33,15 @@
 // Progress 2012-10-10 started again using Qt 4.8.0 using QtCreator 2.5.83
 /*************************************************************************************************/
 
+Plan*  plan;
+
 int main( int argc, char *argv[] )
 {
   // control and provides info to all Qt applications
   QApplication app( argc, argv );
+
+  // create complete data model for the plan
+  plan = new Plan();
 
   // create application main window & enter main event loop
   MainWindow window;
