@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2012 by Richard Crook                                   *
- *   http://code.google.com/p/qplanner                                     *
+ *   richard@dazzle.plus.com                                               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -18,29 +18,17 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
-
-#include <QMainWindow>
+#ifndef PLAN_H
+#define PLAN_H
 
 /*************************************************************************************************/
-/********************* Main application window showing tabbed main screens ***********************/
+/************************** Holds the complete data model for the plan ***************************/
 /*************************************************************************************************/
 
-namespace Ui {
-  class MainWindow;
-}
-
-class MainWindow : public QMainWindow
+class Plan
 {
-  Q_OBJECT
-  
 public:
-  explicit MainWindow( QWidget *parent = 0 );               // constructor
-  ~MainWindow();                                            // destructor
-  
-private:
-  Ui::MainWindow *ui;
+  Plan();
 };
 
-#endif // MAINWINDOW_H
+#endif // PLAN_H

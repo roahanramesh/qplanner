@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>496</width>
-    <height>337</height>
+    <width>471</width>
+    <height>311</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,11 +19,11 @@
      <number>0</number>
     </property>
     <item>
-     <widget class="QTabWidget" name="MainTabWidget">
+     <widget class="QTabWidget" name="mainTabWidget">
       <property name="currentIndex">
-       <number>5</number>
+       <number>0</number>
       </property>
-      <widget class="QWidget" name="tabTasksGantt">
+      <widget class="QWidget" name="tasksGanttTab">
        <attribute name="title">
         <string>Tasks &amp;&amp; Gantt</string>
        </attribute>
@@ -32,11 +32,11 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="QSplitter" name="splitterTasksGantt">
+         <widget class="QSplitter" name="tasksGanttSplitter">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <widget class="QTableView" name="viewTasks">
+          <widget class="QTableView" name="tasksView">
            <property name="frameShape">
             <enum>QFrame::NoFrame</enum>
            </property>
@@ -47,7 +47,7 @@
             <bool>true</bool>
            </property>
           </widget>
-          <widget class="QScrollArea" name="viewGantt">
+          <widget class="QScrollArea" name="ganttView">
            <property name="frameShape">
             <enum>QFrame::NoFrame</enum>
            </property>
@@ -59,8 +59,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>155</width>
-              <height>247</height>
+              <width>129</width>
+              <height>221</height>
              </rect>
             </property>
            </widget>
@@ -69,7 +69,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tabResources">
+      <widget class="QWidget" name="resourcesTab">
        <attribute name="title">
         <string>Resources</string>
        </attribute>
@@ -78,7 +78,7 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="QTableView" name="viewResources">
+         <widget class="QTableView" name="resourcesView">
           <property name="frameShape">
            <enum>QFrame::NoFrame</enum>
           </property>
@@ -92,7 +92,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tabCalendars">
+      <widget class="QWidget" name="calendarsTab">
        <attribute name="title">
         <string>Calendars</string>
        </attribute>
@@ -101,7 +101,7 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="QTableView" name="viewCalendars">
+         <widget class="QTableView" name="calendarsView">
           <property name="frameShape">
            <enum>QFrame::NoFrame</enum>
           </property>
@@ -115,7 +115,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tabDays">
+      <widget class="QWidget" name="daysTab">
        <attribute name="title">
         <string>Days</string>
        </attribute>
@@ -124,7 +124,7 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="QTableView" name="viewDays">
+         <widget class="QTableView" name="daysView">
           <property name="frameShape">
            <enum>QFrame::NoFrame</enum>
           </property>
@@ -138,117 +138,225 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tabReport">
-       <attribute name="title">
-        <string>Report</string>
-       </attribute>
-      </widget>
-      <widget class="QWidget" name="tabProperties">
+      <widget class="QWidget" name="propertiesTab">
        <attribute name="title">
         <string>Properties</string>
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <property name="margin">
+         <number>0</number>
+        </property>
         <item>
-         <widget class="QSplitter" name="splitter">
+         <widget class="QSplitter" name="propertiesSplitter">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <widget class="QWidget" name="formLayoutWidget">
-           <layout class="QFormLayout" name="formLayout">
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_2">
-              <property name="text">
-               <string>Title</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_3">
-              <property name="text">
-               <string>Plan Start</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="label_4">
-              <property name="text">
-               <string>Plan End</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="label_5">
-              <property name="text">
-               <string>Default Calendar</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="0">
-             <widget class="QLabel" name="label_6">
-              <property name="text">
-               <string>Date time format</string>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="0">
-             <widget class="QLabel" name="label_7">
-              <property name="text">
-               <string>File name</string>
-              </property>
-             </widget>
-            </item>
-            <item row="6" column="0">
-             <widget class="QLabel" name="label_8">
-              <property name="text">
-               <string>File location</string>
-              </property>
-             </widget>
-            </item>
-            <item row="7" column="0">
-             <widget class="QLabel" name="label_9">
-              <property name="text">
-               <string>Saved by</string>
-              </property>
-             </widget>
-            </item>
-            <item row="8" column="0">
-             <widget class="QLabel" name="label_10">
-              <property name="text">
-               <string>Saved when</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QLineEdit" name="lineEdit"/>
-            </item>
-            <item row="4" column="1">
-             <widget class="QLineEdit" name="lineEdit_2"/>
-            </item>
-            <item row="5" column="1">
-             <widget class="QLineEdit" name="lineEdit_3"/>
-            </item>
-            <item row="6" column="1">
-             <widget class="QLineEdit" name="lineEdit_4"/>
-            </item>
-            <item row="7" column="1">
-             <widget class="QLineEdit" name="lineEdit_5"/>
-            </item>
-            <item row="8" column="1">
-             <widget class="QLineEdit" name="lineEdit_6"/>
-            </item>
-           </layout>
+          <widget class="QScrollArea" name="scrollAreaProperties">
+           <property name="frameShape">
+            <enum>QFrame::NoFrame</enum>
+           </property>
+           <property name="widgetResizable">
+            <bool>true</bool>
+           </property>
+           <widget class="QWidget" name="widgetProperties">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>98</width>
+              <height>359</height>
+             </rect>
+            </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_2">
+             <item>
+              <layout class="QFormLayout" name="formProprties">
+               <property name="fieldGrowthPolicy">
+                <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+               </property>
+               <item row="0" column="0">
+                <widget class="QLabel" name="labelTitle">
+                 <property name="text">
+                  <string>Title</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QLineEdit" name="lineEditTitle"/>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="labelPlanStart">
+                 <property name="text">
+                  <string>Plan start</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QDateTimeEdit" name="dateTimeEdit"/>
+               </item>
+               <item row="2" column="0">
+                <widget class="QLabel" name="labelPlanEnd">
+                 <property name="text">
+                  <string>Plan end</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QLineEdit" name="lineEditPlanEnd"/>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLabel" name="labelDefaultCal">
+                 <property name="text">
+                  <string>Default Calendar</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="1">
+                <widget class="QComboBox" name="comboBox"/>
+               </item>
+               <item row="4" column="0">
+                <widget class="QLabel" name="labelDateTimeFormat">
+                 <property name="text">
+                  <string>Date time format</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="1">
+                <widget class="QLineEdit" name="lineEditDTFormat"/>
+               </item>
+               <item row="5" column="0">
+                <widget class="QLabel" name="labelFileName">
+                 <property name="text">
+                  <string>File name</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="1">
+                <widget class="QLineEdit" name="lineEditFileName"/>
+               </item>
+               <item row="6" column="0">
+                <widget class="QLabel" name="labelFileLocation">
+                 <property name="text">
+                  <string>File location</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="6" column="1">
+                <widget class="QLineEdit" name="lineEditFileLocation"/>
+               </item>
+               <item row="7" column="0">
+                <widget class="QLabel" name="labelSavedBy">
+                 <property name="text">
+                  <string>Saved by</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="7" column="1">
+                <widget class="QLineEdit" name="lineEditSavedBy"/>
+               </item>
+               <item row="8" column="0">
+                <widget class="QLabel" name="labelSavedWhen">
+                 <property name="text">
+                  <string>Saved when</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="8" column="1">
+                <widget class="QLineEdit" name="lineEditSavedWhen"/>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QGroupBox" name="groupBox">
+               <property name="title">
+                <string>Number of</string>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_3">
+                <item>
+                 <layout class="QFormLayout" name="formLayout_2">
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="labelTasks">
+                    <property name="text">
+                     <string>Tasks</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="labelCalendars">
+                    <property name="text">
+                     <string>Resources</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="label_13">
+                    <property name="text">
+                     <string>Calendars</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QLabel" name="label_14">
+                    <property name="text">
+                     <string>: 0</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QLabel" name="label_15">
+                    <property name="text">
+                     <string>: 0</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
+                   <widget class="QLabel" name="label_16">
+                    <property name="text">
+                     <string>: 0</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="label_2">
+                    <property name="text">
+                     <string>Days</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="1">
+                   <widget class="QLabel" name="label_3">
+                    <property name="text">
+                     <string>: 0</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
+           </widget>
           </widget>
           <widget class="QWidget" name="verticalLayoutWidget">
-           <layout class="QVBoxLayout" name="verticalLayout">
+           <layout class="QVBoxLayout" name="notesLayout">
+            <property name="margin">
+             <number>9</number>
+            </property>
             <item>
-             <widget class="QLabel" name="label">
+             <widget class="QLabel" name="notesLabel">
               <property name="text">
                <string>Notes</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QPlainTextEdit" name="plainTextEdit"/>
+             <widget class="QPlainTextEdit" name="notesEdit"/>
             </item>
            </layout>
           </widget>
@@ -265,7 +373,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>496</width>
+     <width>471</width>
      <height>21</height>
     </rect>
    </property>

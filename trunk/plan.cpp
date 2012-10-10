@@ -18,29 +18,14 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
-
-#include <QMainWindow>
+#include "plan.h"
 
 /*************************************************************************************************/
-/********************* Main application window showing tabbed main screens ***********************/
+/************************** Holds the complete data model for the plan ***************************/
 /*************************************************************************************************/
 
-namespace Ui {
-  class MainWindow;
-}
+/****************************************** constructor ******************************************/
 
-class MainWindow : public QMainWindow
+Plan::Plan()
 {
-  Q_OBJECT
-  
-public:
-  explicit MainWindow( QWidget *parent = 0 );               // constructor
-  ~MainWindow();                                            // destructor
-  
-private:
-  Ui::MainWindow *ui;
-};
-
-#endif // MAINWINDOW_H
+}
