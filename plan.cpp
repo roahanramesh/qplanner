@@ -19,6 +19,10 @@
  ***************************************************************************/
 
 #include "plan.h"
+#include "tasksmodel.h"
+#include "resourcesmodel.h"
+#include "calendarsmodel.h"
+#include "daysmodel.h"
 
 /*************************************************************************************************/
 /************************** Holds the complete data model for the plan ***************************/
@@ -28,4 +32,24 @@
 
 Plan::Plan()
 {
+  // initialise private variables
+  m_tasks     = new TasksModel();
+  m_resources = new ResourcesModel();
+  m_calendars = new CalendarsModel();
+  m_days      = new DaysModel();
+  m_undostack = new QUndoStack();
+  m_start     = QDateTime::currentDateTime();
+  m_datetime_format = "ddd dd/MM/yy";
+}
+
+/****************************************** destructor *******************************************/
+
+Plan::~Plan()
+{
+  // delete models and undostack
+  delete m_tasks;
+  delete m_resources;
+  delete m_calendars;
+  delete m_days;
+  delete m_undostack;
 }
