@@ -28,6 +28,9 @@
 
 TasksModel::TasksModel() : QAbstractTableModel()
 {
+  // create initial plan blank task
+  Task  blank;
+  m_tasks.append( blank );
 }
 
 /******************************************** rowCount *******************************************/
@@ -35,9 +38,7 @@ TasksModel::TasksModel() : QAbstractTableModel()
 int TasksModel::rowCount( const QModelIndex& parent ) const
 {
   Q_UNUSED(parent);
-
-  // TODO
-  return 3;
+  return m_tasks.size();
 }
 
 /****************************************** columnCount ******************************************/
@@ -45,27 +46,30 @@ int TasksModel::rowCount( const QModelIndex& parent ) const
 int TasksModel::columnCount( const QModelIndex& parent ) const
 {
   Q_UNUSED(parent);
-
-  // TODO
-  return 3;
+  return Task::SECTION_MAXIMUM + 1;
 }
 
 /********************************************** data *********************************************/
 
-QVariant TasksModel::data( const QModelIndex& ind, int role  = Qt::DisplayRole ) const
+QVariant TasksModel::data( const QModelIndex& index, int role  = Qt::DisplayRole ) const
 {
+  // if index is not valid, return an invalid QVariant
+  if ( !index.isValid() ) return QVariant();
 
-  // TODO
+  // if index row is out of bounds, return an invalid QVariant
+  int row = index.row();
+  if ( row<0 || row>=m_tasks.size() ) return QVariant();
+
+  qDebug("TasksModel::data row=%i col=%i role=%i",row,index.column(),role);
   return QVariant();
 }
 
 /******************************************** setData ********************************************/
 
-bool TasksModel::setData( const QModelIndex& ind, const QVariant& value,
-                               int role = Qt::EditRole )
+bool TasksModel::setData( const QModelIndex& index, const QVariant& value, int role = Qt::EditRole )
 {
   // if ind is not valid, return FALSE - can't set data
-  if ( !ind.isValid() ) return FALSE;
+  if ( !index.isValid() ) return FALSE;
 
   // if role is not Qt::EditRole, return FALSE - can't set data
   if ( role != Qt::EditRole ) return FALSE;
@@ -83,14 +87,9 @@ QVariant TasksModel::headerData( int section, Qt::Orientation orientation,
   // if role is not DisplayRole, return an invalid QVariant
   if ( role != Qt::DisplayRole ) return QVariant();
 
-  if ( orientation == Qt::Vertical )
-  {
-      // TODO
-      return "Vertical";
-  }
-
-  // TODO
-  return "Horizontal";
+  // if horizontal header, return task header, otherwise row section number
+  if ( orientation == Qt::Horizontal ) return Task::headerData( section );
+  return QString("%1").arg( section+1 );
 }
 
 /********************************************* flags *********************************************/

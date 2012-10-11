@@ -34,16 +34,12 @@ public:
 
   /********************* methods to support QAbstractTableModel ************************/
 
-  int            rowCount( const QModelIndex& parent
-                           = QModelIndex() ) const;        // implement virtual row count
-  int            columnCount( const QModelIndex& parent
-                              = QModelIndex() ) const;     // implement virtual column count
-  QVariant       data( const QModelIndex&, int ) const;    // implement virtual return data
-  bool           setData( const QModelIndex&,
-                          const QVariant&, int );          // implement virtual set data
-  QVariant       headerData( int, Qt::Orientation,
-                             int ) const;                  // implement virtual header data
-  Qt::ItemFlags  flags( const QModelIndex& ) const;        // implement virtual return flags
+  int            rowCount( const QModelIndex& parent = QModelIndex() ) const;     // implement virtual row count
+  int            columnCount( const QModelIndex& parent = QModelIndex() ) const;  // implement virtual column count
+  QVariant       data( const QModelIndex&, int ) const;                           // implement virtual return data
+  bool           setData( const QModelIndex&, const QVariant&, int );             // implement virtual set data
+  QVariant       headerData( int, Qt::Orientation, int ) const;                   // implement virtual header data
+  Qt::ItemFlags  flags( const QModelIndex& ) const;                               // implement virtual return flags
 
 };
 

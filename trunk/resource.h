@@ -18,29 +18,39 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RESOURCESMODEL_H
-#define RESOURCESMODEL_H
+#ifndef RESOURCE_H
+#define RESOURCE_H
 
-#include <QAbstractTableModel>
+#include <QString>
+#include <QDateTime>
 
 /*************************************************************************************************/
-/**************************** Table model containing all resources *******************************/
+/************************************* Single plan resource **************************************/
 /*************************************************************************************************/
 
-class ResourcesModel : public QAbstractTableModel
+class Resource
 {
 public:
-  ResourcesModel();                       // constructor
+  Resource();                                   // constructor
 
-  /********************* methods to support QAbstractTableModel ************************/
+  static QVariant   headerData( int );          // return column header data
 
-  int            rowCount( const QModelIndex& parent = QModelIndex() ) const;     // implement virtual row count
-  int            columnCount( const QModelIndex& parent = QModelIndex() ) const;  // implement virtual column count
-  QVariant       data( const QModelIndex&, int ) const;                           // implement virtual return data
-  bool           setData( const QModelIndex&, const QVariant&, int );             // implement virtual set data
-  QVariant       headerData( int, Qt::Orientation, int ) const;                   // implement virtual header data
-  Qt::ItemFlags  flags( const QModelIndex& ) const;                               // implement virtual return flags
+  enum sections                                 // sections to be displayed by view
+  {
+    SECTION_MINIMUM  = 0,
+    SECTION_INITIALS = 0,
+    SECTION_NAME     = 1,
+    SECTION_ORG      = 2,
+    SECTION_GROUP    = 3,
+    SECTION_START    = 4,
+    SECTION_END      = 5,
+    SECTION_AVAIL    = 6,
+    SECTION_COST     = 7,
+    SECTION_CALENDAR = 8,
+    SECTION_COMMENT  = 9,
+    SECTION_MAXIMUM  = 9
+  };
 
 };
 
-#endif // RESOURCESMODEL_H
+#endif // RESOURCE_H

@@ -18,29 +18,63 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RESOURCESMODEL_H
-#define RESOURCESMODEL_H
+#ifndef TASK_H
+#define TASK_H
 
-#include <QAbstractTableModel>
+#include <QString>
+#include <QDateTime>
 
 /*************************************************************************************************/
-/**************************** Table model containing all resources *******************************/
+/*************************************** Single plan task ****************************************/
 /*************************************************************************************************/
 
-class ResourcesModel : public QAbstractTableModel
+class Task
 {
 public:
-  ResourcesModel();                       // constructor
+  Task();                                       // constructor
 
-  /********************* methods to support QAbstractTableModel ************************/
+  static QVariant   headerData( int );          // return column header data
 
-  int            rowCount( const QModelIndex& parent = QModelIndex() ) const;     // implement virtual row count
-  int            columnCount( const QModelIndex& parent = QModelIndex() ) const;  // implement virtual column count
-  QVariant       data( const QModelIndex&, int ) const;                           // implement virtual return data
-  bool           setData( const QModelIndex&, const QVariant&, int );             // implement virtual set data
-  QVariant       headerData( int, Qt::Orientation, int ) const;                   // implement virtual header data
-  Qt::ItemFlags  flags( const QModelIndex& ) const;                               // implement virtual return flags
+  enum sections                                 // sections to be displayed by view
+  {
+    SECTION_MINIMUM  = 0,
+    SECTION_TITLE    = 0,
+    SECTION_DURATION = 1,
+    SECTION_START    = 2,
+    SECTION_END      = 3,
+    SECTION_WORK     = 4,
+    SECTION_RES      = 5,
+    SECTION_PRIORITY = 6,
+    SECTION_TYPE     = 7,
+    SECTION_COST     = 8,
+    SECTION_COMMENT  = 9,
+    SECTION_MAXIMUM  = 9
+  };
 
+  enum typeEnum
+  {
+    TYPE_ASAP_FWORK    = 0,     // Early as possible - fixed work
+    TYPE_ASAP_FDUR     = 1,     // Early as possible - fixed duration
+    TYPE_SON_FWORK     = 2,     // Start on - fixed work
+    TYPE_SON_FDUR      = 3,     // Start on - fixed duration
+    TYPE_FIXED_PERIOD  = 4,     // Fixed period
+    TYPE_DEFAULT       = 1
+  };
+
+private:
+  short      m_indent;
+  bool       m_summary;
+  bool       m_expanded;
+  QString    m_title;
+  float      m_duration;
+  float      m_work;
+  char       m_type;
+  QDateTime  m_start;
+  QDateTime  m_end;
+  QString    m_resources;
+  float      m_cost;
+  short      m_priority;
+  QString    m_comment;
 };
 
-#endif // RESOURCESMODEL_H
+#endif // TASK_H
