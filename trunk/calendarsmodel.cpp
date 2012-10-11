@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include "calendarsmodel.h"
+#include "calendar.h"
 
 /*************************************************************************************************/
 /************************** Table model containing all base calendars ****************************/
@@ -31,8 +32,7 @@ CalendarsModel::CalendarsModel() : QAbstractTableModel()
   // create initial default calendars
 
   // TODO
-  Calendar  temp;
-  m_calendars.append( temp );
+  m_calendars.append( new Calendar() );
 }
 
 /******************************************** rowCount *******************************************/

@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include "tasksmodel.h"
+#include "task.h"
 
 /*************************************************************************************************/
 /**************************** Table model containing all plan tasks ******************************/
@@ -29,8 +30,7 @@
 TasksModel::TasksModel() : QAbstractTableModel()
 {
   // create initial plan blank task
-  Task  blank;
-  m_tasks.append( blank );
+  m_tasks.append( new Task() );
 }
 
 /******************************************** rowCount *******************************************/

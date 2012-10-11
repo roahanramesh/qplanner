@@ -28,6 +28,8 @@
 
 Calendar::Calendar()
 {
+  // set calendar variables to default/null values
+  m_cycleLength = 0;
 }
 
 /****************************************** headerData *******************************************/

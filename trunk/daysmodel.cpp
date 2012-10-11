@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include "daysmodel.h"
+#include "day.h"
 
 /*************************************************************************************************/
 /************************ Table model containing all calendar day types **************************/
@@ -29,10 +30,11 @@
 DaysModel::DaysModel() : QAbstractTableModel()
 {
   // create initial default day types
-
-  // TODO
-  Day  temp;
-  m_days.append( temp );
+  for ( int day=0 ; day<=Day::DEFAULT_MAX ; day++ )
+  {
+    m_days.append( new Day(day) );
+    qDebug("DaysModel creating default %i", day);
+  }
 }
 
 /******************************************** rowCount *******************************************/
@@ -40,9 +42,7 @@ DaysModel::DaysModel() : QAbstractTableModel()
 int DaysModel::rowCount( const QModelIndex& parent ) const
 {
   Q_UNUSED(parent);
-
-  // TODO
-  return 3;
+  return m_days.size();
 }
 
 /****************************************** columnCount ******************************************/
@@ -51,8 +51,12 @@ int DaysModel::columnCount( const QModelIndex& parent ) const
 {
   Q_UNUSED(parent);
 
-  // TODO
-  return 3;
+  // table column count is max number of periods * 2 + SECTION_START
+  int max = 0;
+  foreach( Day* day, m_days )
+    if ( max < day->periods() ) max = day->periods();
+
+  return max*2 + Day::SECTION_START;
 }
 
 /********************************************** data *********************************************/
@@ -88,14 +92,9 @@ QVariant DaysModel::headerData( int section, Qt::Orientation orientation,
   // if role is not DisplayRole, return an invalid QVariant
   if ( role != Qt::DisplayRole ) return QVariant();
 
-  if ( orientation == Qt::Vertical )
-  {
-      // TODO
-      return "Vertical";
-  }
-
-  // TODO
-  return "Horizontal";
+  // if horizontal header, return resource header, otherwise row section number
+  if ( orientation == Qt::Horizontal ) return Day::headerData( section );
+  return QString("%1").arg( section+1 );
 }
 
 /********************************************* flags *********************************************/

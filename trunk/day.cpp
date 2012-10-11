@@ -37,7 +37,7 @@ Day::Day()
 Day::Day( int type )
 {
   // create template day
-  if ( type == STANDARDWORK )
+  if ( type == DEFAULT_STANDARDWORK )
   {
     // default working day
     m_name     = "Standard work day";
@@ -50,7 +50,7 @@ Day::Day( int type )
     m_end[0]   = QTime(13,0);
     m_end[1]   = QTime(18,0);
   }
-  else if ( type == TWENTYFOURHOURS )
+  else if ( type == DEFAULT_TWENTYFOURHOURS )
   {
     // default 24H day
     m_name     = "24H day";
@@ -61,7 +61,7 @@ Day::Day( int type )
     m_end.resize(1);
     m_end[0]   = QTime(23,59,59,999);
   }
-  else if ( type == SHORT )
+  else if ( type == DEFAULT_SHORT )
   {
     // default short day
     m_name     = "Morning only";
@@ -72,7 +72,7 @@ Day::Day( int type )
     m_end.resize(1);
     m_end[0]   = QTime(13,0);
   }
-  else if ( type == EVENING )
+  else if ( type == DEFAULT_EVENING )
   {
     // default evening shift
     m_name     = "Evening shift";
@@ -83,7 +83,7 @@ Day::Day( int type )
     m_end.resize(1);
     m_end[0]   = QTime(22,0);
   }
-  else  // NONWORK
+  else  // DEFAULT_NONWORK
   {
     // default non-working day
     m_name    = "Non working";
@@ -96,6 +96,13 @@ Day::Day( int type )
 
 QVariant  Day::headerData( int section )
 {
-  // TODO
-  return QVariant();
+  // return section horizontal header title text
+  if ( section == SECTION_NAME )  return "Name";
+  if ( section == SECTION_WORK )  return "Work";
+  if ( section == SECTION_PARTS ) return "Periods";
+
+  if ( (section-SECTION_START) % 2 == 0 )
+    return QString("Start %1").arg( (section-SECTION_START) / 2 + 1 );
+  else
+    return QString("End %1").arg( (section-SECTION_END) / 2 + 1 );
 }

@@ -35,21 +35,37 @@ public:
   Day();                                        // constructor
   Day( int );                                   // constructor
 
+  static QVariant   headerData( int );          // TODO
+
+  QString    name() { return m_name; }                 // return day name
+  qreal      work() { return m_work; }                 // return work days equivalent
+  quint8     periods() { return m_periods; }           // return number of work periods
+  QTime      start( int n ) { return m_start.at(n); }  // return work period start
+  QTime      end( int n ) { return m_end.at(n); }      // return work period end
+
   enum DefaultDayTypes
   {
-    NONWORK         = 0,
-    STANDARDWORK    = 1,
-    SHORT           = 2,
-    EVENING         = 3,
-    TWENTYFOURHOURS = 4
+    DEFAULT_NONWORK         = 0,
+    DEFAULT_STANDARDWORK    = 1,
+    DEFAULT_SHORT           = 2,
+    DEFAULT_EVENING         = 3,
+    DEFAULT_TWENTYFOURHOURS = 4,
+    DEFAULT_MAX             = 4
   };
 
-  static QVariant   headerData( int );          // TODO
+  enum Sections
+  {
+    SECTION_NAME  = 0,
+    SECTION_WORK  = 1,
+    SECTION_PARTS = 2,
+    SECTION_START = 3,
+    SECTION_END   = 4
+  };
 
 private:
   QString          m_name;              // name of day type
-  double           m_work;              // equivalent days worked (typically 1.0 or 0.0)
-  int              m_periods;           // number of work periods within the day
+  qreal            m_work;              // equivalent days worked (typically 1.0 or 0.0)
+  quint8           m_periods;           // number of work periods within the day
   QVector<QTime>   m_start;             // vector of work period start times
   QVector<QTime>   m_end;               // vector of work period end times
 };
