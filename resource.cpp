@@ -18,29 +18,35 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RESOURCESMODEL_H
-#define RESOURCESMODEL_H
+#include "resource.h"
 
-#include <QAbstractTableModel>
+#include <QVariant>
 
 /*************************************************************************************************/
-/**************************** Table model containing all resources *******************************/
+/************************************* Single plan resource **************************************/
 /*************************************************************************************************/
 
-class ResourcesModel : public QAbstractTableModel
+/****************************************** constructor ******************************************/
+
+Resource::Resource()
 {
-public:
-  ResourcesModel();                       // constructor
+  // set resource variables to default/null values
+}
 
-  /********************* methods to support QAbstractTableModel ************************/
+/****************************************** headerData *******************************************/
 
-  int            rowCount( const QModelIndex& parent = QModelIndex() ) const;     // implement virtual row count
-  int            columnCount( const QModelIndex& parent = QModelIndex() ) const;  // implement virtual column count
-  QVariant       data( const QModelIndex&, int ) const;                           // implement virtual return data
-  bool           setData( const QModelIndex&, const QVariant&, int );             // implement virtual set data
-  QVariant       headerData( int, Qt::Orientation, int ) const;                   // implement virtual header data
-  Qt::ItemFlags  flags( const QModelIndex& ) const;                               // implement virtual return flags
-
-};
-
-#endif // RESOURCESMODEL_H
+QVariant  Resource::headerData( int section )
+{
+  // return section horizontal header title text
+  if (section == SECTION_INITIALS)       return "Initials";
+  else if (section == SECTION_NAME)      return "Name";
+  else if (section == SECTION_ORG)       return "Organisation";
+  else if (section == SECTION_GROUP)     return "Group";
+  else if (section == SECTION_START)     return "Start";
+  else if (section == SECTION_END)       return "End";
+  else if (section == SECTION_AVAIL)     return "Available";
+  else if (section == SECTION_COST)      return "Cost";
+  else if (section == SECTION_CALENDAR)  return "Base Calendar";
+  else if (section == SECTION_COMMENT)   return "Comment";
+  else return QVariant();
+}

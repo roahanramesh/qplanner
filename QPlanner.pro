@@ -18,13 +18,17 @@ SOURCES += main.cpp\
     tasksmodel.cpp \
     resourcesmodel.cpp \
     calendarsmodel.cpp \
-    daysmodel.cpp
+    daysmodel.cpp \
+    task.cpp \
+    resource.cpp
 
 HEADERS  += mainwindow.h \
     plan.h \
     tasksmodel.h \
     resourcesmodel.h \
     calendarsmodel.h \
-    daysmodel.h
+    daysmodel.h \
+    task.h \
+    resource.h
 
 FORMS    += mainwindow.ui

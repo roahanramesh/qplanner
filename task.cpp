@@ -18,29 +18,43 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RESOURCESMODEL_H
-#define RESOURCESMODEL_H
+#include "task.h"
 
-#include <QAbstractTableModel>
+#include <QVariant>
 
 /*************************************************************************************************/
-/**************************** Table model containing all resources *******************************/
+/*************************************** Single plan task ****************************************/
 /*************************************************************************************************/
 
-class ResourcesModel : public QAbstractTableModel
+/****************************************** constructor ******************************************/
+
+Task::Task()
 {
-public:
-  ResourcesModel();                       // constructor
+  // set task variables to default/null values
+  m_indent   = 0;
+  m_summary  = FALSE;
+  m_expanded = TRUE;
+  m_duration = -1.0;
+  m_work     = -1.0;
+  m_type     = TYPE_DEFAULT;
+  m_cost     = -1.0;
+  m_priority = 100;
+}
 
-  /********************* methods to support QAbstractTableModel ************************/
+/****************************************** headerData *******************************************/
 
-  int            rowCount( const QModelIndex& parent = QModelIndex() ) const;     // implement virtual row count
-  int            columnCount( const QModelIndex& parent = QModelIndex() ) const;  // implement virtual column count
-  QVariant       data( const QModelIndex&, int ) const;                           // implement virtual return data
-  bool           setData( const QModelIndex&, const QVariant&, int );             // implement virtual set data
-  QVariant       headerData( int, Qt::Orientation, int ) const;                   // implement virtual header data
-  Qt::ItemFlags  flags( const QModelIndex& ) const;                               // implement virtual return flags
-
-};
-
-#endif // RESOURCESMODEL_H
+QVariant  Task::headerData( int section )
+{
+  // return section horizontal header title text
+  if (section == SECTION_TITLE)         return "Title";
+  else if (section == SECTION_DURATION) return "Duration";
+  else if (section == SECTION_WORK)     return "Work";
+  else if (section == SECTION_TYPE)     return "Type";
+  else if (section == SECTION_START)    return "Start";
+  else if (section == SECTION_END)      return "End";
+  else if (section == SECTION_RES)      return "Resources";
+  else if (section == SECTION_COST)     return "Cost";
+  else if (section == SECTION_PRIORITY) return "Priority";
+  else if (section == SECTION_COMMENT)  return "Comment";
+  else return QVariant();
+}
