@@ -28,6 +28,9 @@
 
 ResourcesModel::ResourcesModel() : QAbstractTableModel()
 {
+  // create initial blank resource
+  Resource  blank;
+  m_resources.append( blank );
 }
 
 /******************************************** rowCount *******************************************/
@@ -35,9 +38,7 @@ ResourcesModel::ResourcesModel() : QAbstractTableModel()
 int ResourcesModel::rowCount( const QModelIndex& parent ) const
 {
   Q_UNUSED(parent);
-
-  // TODO
-  return 3;
+  return m_resources.size();
 }
 
 /****************************************** columnCount ******************************************/
@@ -45,17 +46,21 @@ int ResourcesModel::rowCount( const QModelIndex& parent ) const
 int ResourcesModel::columnCount( const QModelIndex& parent ) const
 {
   Q_UNUSED(parent);
-
-  // TODO
-  return 3;
+  return Resource::SECTION_MAXIMUM + 1;
 }
 
 /********************************************** data *********************************************/
 
-QVariant ResourcesModel::data( const QModelIndex& ind, int role  = Qt::DisplayRole ) const
+QVariant ResourcesModel::data( const QModelIndex& index, int role  = Qt::DisplayRole ) const
 {
+  // if index is not valid, return an invalid QVariant
+  if ( !index.isValid() ) return QVariant();
 
-  // TODO
+  // if index row is out of bounds, return an invalid QVariant
+  int row = index.row();
+  if ( row<0 || row>=m_resources.size() ) return QVariant();
+
+  qDebug("ResourcesModel::data row=%i col=%i role=%i",row,index.column(),role);
   return QVariant();
 }
 
@@ -83,14 +88,9 @@ QVariant ResourcesModel::headerData( int section, Qt::Orientation orientation,
   // if role is not DisplayRole, return an invalid QVariant
   if ( role != Qt::DisplayRole ) return QVariant();
 
-  if ( orientation == Qt::Vertical )
-  {
-      // TODO
-      return "Vertical";
-  }
-
-  // TODO
-  return "Horizontal";
+  // if horizontal header, return resource header, otherwise row section number
+  if ( orientation == Qt::Horizontal ) return Resource::headerData( section );
+  return QString("%1").arg( section+1 );
 }
 
 /********************************************* flags *********************************************/

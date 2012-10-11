@@ -23,6 +23,8 @@
 
 #include <QAbstractTableModel>
 
+#include "resource.h"
+
 /*************************************************************************************************/
 /**************************** Table model containing all resources *******************************/
 /*************************************************************************************************/
@@ -40,6 +42,9 @@ public:
   bool           setData( const QModelIndex&, const QVariant&, int );             // implement virtual set data
   QVariant       headerData( int, Qt::Orientation, int ) const;                   // implement virtual header data
   Qt::ItemFlags  flags( const QModelIndex& ) const;                               // implement virtual return flags
+
+private:
+  QList<Resource>  m_resources;       // list of resources available to plan
 
 };
 

@@ -18,38 +18,40 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "plan.h"
-#include "tasksmodel.h"
-#include "resourcesmodel.h"
-#include "calendarsmodel.h"
-#include "daysmodel.h"
+#ifndef DAY_H
+#define DAY_H
+
+#include <QVariant>
+#include <QVector>
+#include <QTime>
 
 /*************************************************************************************************/
-/************************** Holds the complete data model for the plan ***************************/
+/**************************** Single day type used in plan calendars *****************************/
 /*************************************************************************************************/
 
-/****************************************** constructor ******************************************/
-
-Plan::Plan()
+class Day
 {
-  // initialise private variables
-  m_days      = new DaysModel();
-  m_calendars = new CalendarsModel();
-  m_resources = new ResourcesModel();
-  m_tasks     = new TasksModel();
-  m_undostack = new QUndoStack();
-  m_start     = QDateTime::currentDateTime();
-  m_datetime_format = "ddd dd/MM/yy";
-}
+public:
+  Day();                                        // constructor
+  Day( int );                                   // constructor
 
-/****************************************** destructor *******************************************/
+  enum DefaultDayTypes
+  {
+    NONWORK         = 0,
+    STANDARDWORK    = 1,
+    SHORT           = 2,
+    EVENING         = 3,
+    TWENTYFOURHOURS = 4
+  };
 
-Plan::~Plan()
-{
-  // delete models and undostack
-  delete m_tasks;
-  delete m_resources;
-  delete m_calendars;
-  delete m_days;
-  delete m_undostack;
-}
+  static QVariant   headerData( int );          // TODO
+
+private:
+  QString          m_name;              // name of day type
+  double           m_work;              // equivalent days worked (typically 1.0 or 0.0)
+  int              m_periods;           // number of work periods within the day
+  QVector<QTime>   m_start;             // vector of work period start times
+  QVector<QTime>   m_end;               // vector of work period end times
+};
+
+#endif // DAY_H

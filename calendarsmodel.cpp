@@ -28,6 +28,11 @@
 
 CalendarsModel::CalendarsModel() : QAbstractTableModel()
 {
+  // create initial default calendars
+
+  // TODO
+  Calendar  temp;
+  m_calendars.append( temp );
 }
 
 /******************************************** rowCount *******************************************/

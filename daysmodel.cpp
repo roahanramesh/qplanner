@@ -28,6 +28,11 @@
 
 DaysModel::DaysModel() : QAbstractTableModel()
 {
+  // create initial default day types
+
+  // TODO
+  Day  temp;
+  m_days.append( temp );
 }
 
 /******************************************** rowCount *******************************************/

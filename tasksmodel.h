@@ -44,7 +44,7 @@ public:
   Qt::ItemFlags  flags( const QModelIndex& ) const;                               // implement virtual return flags
 
 private:
-  QList<Task>  m_tasks;      // list of tasks in plan
+  QList<Task>    m_tasks;      // list of tasks in plan
 
 };
 
