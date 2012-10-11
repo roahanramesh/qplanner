@@ -23,7 +23,7 @@
 
 #include <QAbstractTableModel>
 
-#include "day.h"
+class Day;
 
 /*************************************************************************************************/
 /************************ Table model containing all calendar day types **************************/
@@ -44,7 +44,7 @@ public:
   Qt::ItemFlags  flags( const QModelIndex& ) const;                               // implement virtual return flags
 
 private:
-  QList<Day>     m_days;      // list of day types available to calendars
+  QList<Day*>     m_days;      // list of day types available to calendars
 
 };
 

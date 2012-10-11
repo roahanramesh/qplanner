@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include "resourcesmodel.h"
+#include "resource.h"
 
 /*************************************************************************************************/
 /**************************** Table model containing all resources *******************************/
@@ -29,8 +30,7 @@
 ResourcesModel::ResourcesModel() : QAbstractTableModel()
 {
   // create initial blank resource
-  Resource  blank;
-  m_resources.append( blank );
+  m_resources.append( new Resource() );
 }
 
 /******************************************** rowCount *******************************************/

@@ -23,7 +23,7 @@
 
 #include <QAbstractTableModel>
 
-#include "calendar.h"
+class Calendar;
 
 /*************************************************************************************************/
 /************************** Table model containing all base calendars ****************************/
@@ -44,7 +44,7 @@ public:
   Qt::ItemFlags  flags( const QModelIndex& ) const;                               // implement virtual return flags
 
 private:
-  QList<Calendar>   m_calendars;     // list of calendars available to plan
+  QList<Calendar*>   m_calendars;     // list of calendars available to plan
 
 };
 

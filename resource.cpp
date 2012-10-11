@@ -31,6 +31,9 @@
 Resource::Resource()
 {
   // set resource variables to default/null values
+  m_availability = 1.0;
+  m_cost         = 0.0;
+  m_calendar     = 0;
 }
 
 /****************************************** headerData *******************************************/

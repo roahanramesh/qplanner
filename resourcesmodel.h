@@ -23,7 +23,7 @@
 
 #include <QAbstractTableModel>
 
-#include "resource.h"
+class Resource;
 
 /*************************************************************************************************/
 /**************************** Table model containing all resources *******************************/
@@ -44,7 +44,7 @@ public:
   Qt::ItemFlags  flags( const QModelIndex& ) const;                               // implement virtual return flags
 
 private:
-  QList<Resource>  m_resources;       // list of resources available to plan
+  QList<Resource*>  m_resources;       // list of resources available to plan
 
 };
 
