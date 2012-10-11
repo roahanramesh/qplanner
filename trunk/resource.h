@@ -24,6 +24,8 @@
 #include <QString>
 #include <QDateTime>
 
+class Calendar;
+
 /*************************************************************************************************/
 /************************************* Single plan resource **************************************/
 /*************************************************************************************************/
@@ -51,6 +53,17 @@ public:
     SECTION_MAXIMUM  = 9
   };
 
+private:
+  QString            m_initials;           // should be unique across all resources in model
+  QString            m_name;               // free text
+  QString            m_org;                // free text
+  QString            m_group;              // free text
+  QDateTime          m_start;
+  QDateTime          m_end;
+  qreal              m_availability;
+  qreal              m_cost;
+  Calendar*          m_calendar;
+  QString            m_comment;            // free text
 };
 
 #endif // RESOURCE_H

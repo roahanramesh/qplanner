@@ -18,38 +18,22 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "plan.h"
-#include "tasksmodel.h"
-#include "resourcesmodel.h"
-#include "calendarsmodel.h"
-#include "daysmodel.h"
+#include "calendar.h"
 
 /*************************************************************************************************/
-/************************** Holds the complete data model for the plan ***************************/
+/********************************* Single calendar for planning **********************************/
 /*************************************************************************************************/
 
 /****************************************** constructor ******************************************/
 
-Plan::Plan()
+Calendar::Calendar()
 {
-  // initialise private variables
-  m_days      = new DaysModel();
-  m_calendars = new CalendarsModel();
-  m_resources = new ResourcesModel();
-  m_tasks     = new TasksModel();
-  m_undostack = new QUndoStack();
-  m_start     = QDateTime::currentDateTime();
-  m_datetime_format = "ddd dd/MM/yy";
 }
 
-/****************************************** destructor *******************************************/
+/****************************************** headerData *******************************************/
 
-Plan::~Plan()
+QVariant  Calendar::headerData( int section )
 {
-  // delete models and undostack
-  delete m_tasks;
-  delete m_resources;
-  delete m_calendars;
-  delete m_days;
-  delete m_undostack;
+  // TODO
+  return QVariant();
 }

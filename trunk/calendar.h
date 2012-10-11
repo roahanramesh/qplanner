@@ -18,38 +18,32 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "plan.h"
-#include "tasksmodel.h"
-#include "resourcesmodel.h"
-#include "calendarsmodel.h"
-#include "daysmodel.h"
+#ifndef CALENDAR_H
+#define CALENDAR_H
+
+#include <QVariant>
+#include <QVector>
+#include <QDate>
+
+class Day;
 
 /*************************************************************************************************/
-/************************** Holds the complete data model for the plan ***************************/
+/********************************* Single calendar for planning **********************************/
 /*************************************************************************************************/
 
-/****************************************** constructor ******************************************/
-
-Plan::Plan()
+class Calendar
 {
-  // initialise private variables
-  m_days      = new DaysModel();
-  m_calendars = new CalendarsModel();
-  m_resources = new ResourcesModel();
-  m_tasks     = new TasksModel();
-  m_undostack = new QUndoStack();
-  m_start     = QDateTime::currentDateTime();
-  m_datetime_format = "ddd dd/MM/yy";
-}
+public:
+  Calendar();                                   // constructor
 
-/****************************************** destructor *******************************************/
+  static QVariant   headerData( int );          // return column header data
 
-Plan::~Plan()
-{
-  // delete models and undostack
-  delete m_tasks;
-  delete m_resources;
-  delete m_calendars;
-  delete m_days;
-  delete m_undostack;
-}
+private:
+  QString             m_name;            // name of calendar
+  QDate               m_cycleAnchor;     // anchor date of calendar cycle
+  quint8              m_cycleLength;     // length of basic cycle (eg 7)
+  QVector<Day*>       m_normal;          // normal basic cycle days
+  QHash<QDate, Day*>  m_exceptions;      // exceptions override normal days
+};
+
+#endif // CALENDAR_H

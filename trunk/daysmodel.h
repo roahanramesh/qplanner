@@ -23,6 +23,8 @@
 
 #include <QAbstractTableModel>
 
+#include "day.h"
+
 /*************************************************************************************************/
 /************************ Table model containing all calendar day types **************************/
 /*************************************************************************************************/
@@ -40,6 +42,9 @@ public:
   bool           setData( const QModelIndex&, const QVariant&, int );             // implement virtual set data
   QVariant       headerData( int, Qt::Orientation, int ) const;                   // implement virtual header data
   Qt::ItemFlags  flags( const QModelIndex& ) const;                               // implement virtual return flags
+
+private:
+  QList<Day>     m_days;      // list of day types available to calendars
 
 };
 

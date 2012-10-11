@@ -20,7 +20,9 @@ SOURCES += main.cpp\
     calendarsmodel.cpp \
     daysmodel.cpp \
     task.cpp \
-    resource.cpp
+    resource.cpp \
+    calendar.cpp \
+    day.cpp
 
 HEADERS  += mainwindow.h \
     plan.h \
@@ -29,6 +31,8 @@ HEADERS  += mainwindow.h \
     calendarsmodel.h \
     daysmodel.h \
     task.h \
-    resource.h
+    resource.h \
+    calendar.h \
+    day.h
 
 FORMS    += mainwindow.ui
