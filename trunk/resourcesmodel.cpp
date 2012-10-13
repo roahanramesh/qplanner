@@ -60,7 +60,7 @@ QVariant ResourcesModel::data( const QModelIndex& index, int role  = Qt::Display
   int row = index.row();
   if ( row<0 || row>=m_resources.size() ) return QVariant();
 
-  qDebug("ResourcesModel::data row=%i col=%i role=%i",row,index.column(),role);
+  //qDebug("ResourcesModel::data row=%i col=%i role=%i",row,index.column(),role);
   return QVariant();
 }
 

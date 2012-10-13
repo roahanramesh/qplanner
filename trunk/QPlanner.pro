@@ -33,6 +33,7 @@ HEADERS  += mainwindow.h \
     task.h \
     resource.h \
     calendar.h \
-    day.h
+    day.h \
+    propertieswidget.h
 
 FORMS    += mainwindow.ui

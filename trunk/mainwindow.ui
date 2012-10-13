@@ -54,7 +54,7 @@
            <property name="widgetResizable">
             <bool>true</bool>
            </property>
-           <widget class="QWidget" name="scrollAreaWidgetContents">
+           <widget class="QWidget" name="ganttWidget">
             <property name="geometry">
              <rect>
               <x>0</x>
@@ -148,22 +148,25 @@
         </property>
         <item>
          <widget class="QSplitter" name="propertiesSplitter">
+          <property name="autoFillBackground">
+           <bool>true</bool>
+          </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <widget class="QScrollArea" name="scrollAreaProperties">
+          <widget class="QScrollArea" name="propertiesScrollArea">
            <property name="frameShape">
             <enum>QFrame::NoFrame</enum>
            </property>
            <property name="widgetResizable">
             <bool>true</bool>
            </property>
-           <widget class="QWidget" name="widgetProperties">
+           <widget class="PropertiesWidget" name="propertiesWidget">
             <property name="geometry">
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>227</width>
+              <width>223</width>
               <height>359</height>
              </rect>
             </property>
@@ -187,7 +190,7 @@
                 </widget>
                </item>
                <item row="0" column="1">
-                <widget class="QLineEdit" name="lineEditTitle"/>
+                <widget class="QLineEdit" name="title"/>
                </item>
                <item row="1" column="0">
                 <widget class="QLabel" name="labelPlanStart">
@@ -197,7 +200,7 @@
                 </widget>
                </item>
                <item row="1" column="1">
-                <widget class="QDateTimeEdit" name="dateTimeEdit"/>
+                <widget class="QDateTimeEdit" name="planStart"/>
                </item>
                <item row="2" column="0">
                 <widget class="QLabel" name="labelPlanEnd">
@@ -207,7 +210,7 @@
                 </widget>
                </item>
                <item row="2" column="1">
-                <widget class="QLineEdit" name="lineEditPlanEnd"/>
+                <widget class="QLineEdit" name="planEnd"/>
                </item>
                <item row="3" column="0">
                 <widget class="QLabel" name="labelDefaultCal">
@@ -217,7 +220,7 @@
                 </widget>
                </item>
                <item row="3" column="1">
-                <widget class="QComboBox" name="comboBox"/>
+                <widget class="QComboBox" name="defaultCal"/>
                </item>
                <item row="4" column="0">
                 <widget class="QLabel" name="labelDateTimeFormat">
@@ -227,7 +230,7 @@
                 </widget>
                </item>
                <item row="4" column="1">
-                <widget class="QLineEdit" name="lineEditDTFormat"/>
+                <widget class="QLineEdit" name="dateTimeFormat"/>
                </item>
                <item row="5" column="0">
                 <widget class="QLabel" name="labelFileName">
@@ -237,7 +240,7 @@
                 </widget>
                </item>
                <item row="5" column="1">
-                <widget class="QLineEdit" name="lineEditFileName"/>
+                <widget class="QLineEdit" name="fileName"/>
                </item>
                <item row="6" column="0">
                 <widget class="QLabel" name="labelFileLocation">
@@ -247,7 +250,7 @@
                 </widget>
                </item>
                <item row="6" column="1">
-                <widget class="QLineEdit" name="lineEditFileLocation"/>
+                <widget class="QLineEdit" name="fileLocation"/>
                </item>
                <item row="7" column="0">
                 <widget class="QLabel" name="labelSavedBy">
@@ -257,7 +260,7 @@
                 </widget>
                </item>
                <item row="7" column="1">
-                <widget class="QLineEdit" name="lineEditSavedBy"/>
+                <widget class="QLineEdit" name="savedBy"/>
                </item>
                <item row="8" column="0">
                 <widget class="QLabel" name="labelSavedWhen">
@@ -267,7 +270,7 @@
                 </widget>
                </item>
                <item row="8" column="1">
-                <widget class="QLineEdit" name="lineEditSavedWhen"/>
+                <widget class="QLineEdit" name="savedWhen"/>
                </item>
               </layout>
              </item>
@@ -344,6 +347,12 @@
            </widget>
           </widget>
           <widget class="QWidget" name="notesWidget" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>1</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <layout class="QVBoxLayout" name="notesLayout">
             <property name="margin">
              <number>9</number>
@@ -557,6 +566,14 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>PropertiesWidget</class>
+   <extends>QWidget</extends>
+   <header>propertieswidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

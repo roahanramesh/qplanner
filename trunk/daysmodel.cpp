@@ -31,10 +31,7 @@ DaysModel::DaysModel() : QAbstractTableModel()
 {
   // create initial default day types
   for ( int day=0 ; day<=Day::DEFAULT_MAX ; day++ )
-  {
     m_days.append( new Day(day) );
-    qDebug("DaysModel creating default %i", day);
-  }
 }
 
 /******************************************** rowCount *******************************************/

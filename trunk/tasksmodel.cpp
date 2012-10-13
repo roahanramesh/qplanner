@@ -60,7 +60,7 @@ QVariant TasksModel::data( const QModelIndex& index, int role  = Qt::DisplayRole
   int row = index.row();
   if ( row<0 || row>=m_tasks.size() ) return QVariant();
 
-  qDebug("TasksModel::data row=%i col=%i role=%i",row,index.column(),role);
+  //qDebug("TasksModel::data row=%i col=%i role=%i",row,index.column(),role);
   return QVariant();
 }
 
