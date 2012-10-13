@@ -21,6 +21,10 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "plan.h"
+#include "tasksmodel.h"
+#include "resourcesmodel.h"
+#include "calendarsmodel.h"
+#include "daysmodel.h"
 
 extern Plan*  plan;
 
@@ -34,6 +38,7 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
 {
   // setup ui for main window
   ui->setupUi( this );
+  resize( 600, 300 );
 
   // set models for table views
   ui->tasksView->setModel( (QAbstractItemModel*)plan->tasks() );
@@ -47,6 +52,12 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   ui->resourcesView->verticalHeader()->setDefaultSectionSize( height );
   ui->calendarsView->verticalHeader()->setDefaultSectionSize( height );
   ui->daysView->verticalHeader()->setDefaultSectionSize( height );
+
+  // column widths for tables views
+  ui->daysView->horizontalHeader()->setDefaultSectionSize( 70 );
+  plan->tasks()->setColumnWidths( ui->tasksView );
+  plan->resources()->setColumnWidths( ui->resourcesView );
+  plan->days()->setColumnWidths( ui->daysView );
 }
 
 /****************************************** destructor *******************************************/

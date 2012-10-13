@@ -24,6 +24,7 @@
 #include <QAbstractTableModel>
 
 class Task;
+class QTableView;
 
 /*************************************************************************************************/
 /**************************** Table model containing all plan tasks ******************************/
@@ -32,7 +33,9 @@ class Task;
 class TasksModel : public QAbstractTableModel
 {
 public:
-  TasksModel();                       // constructor
+  TasksModel();                                  // constructor
+
+  void  setColumnWidths( QTableView* );          // set initial column widths
 
   /********************* methods to support QAbstractTableModel ************************/
 

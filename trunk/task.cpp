@@ -46,15 +46,15 @@ Task::Task()
 QVariant  Task::headerData( int section )
 {
   // return section horizontal header title text
-  if (section == SECTION_TITLE)         return "Title";
-  else if (section == SECTION_DURATION) return "Duration";
-  else if (section == SECTION_WORK)     return "Work";
-  else if (section == SECTION_TYPE)     return "Type";
-  else if (section == SECTION_START)    return "Start";
-  else if (section == SECTION_END)      return "End";
-  else if (section == SECTION_RES)      return "Resources";
-  else if (section == SECTION_COST)     return "Cost";
-  else if (section == SECTION_PRIORITY) return "Priority";
-  else if (section == SECTION_COMMENT)  return "Comment";
+  if ( section == SECTION_TITLE )         return "Title";
+  else if ( section == SECTION_DURATION ) return "Duration";
+  else if ( section == SECTION_WORK )     return "Work";
+  else if ( section == SECTION_TYPE )     return "Type";
+  else if ( section == SECTION_START )    return "Start";
+  else if ( section == SECTION_END )      return "End";
+  else if ( section == SECTION_RES )      return "Resources";
+  else if ( section == SECTION_COST )     return "Cost";
+  else if ( section == SECTION_PRIORITY ) return "Priority";
+  else if ( section == SECTION_COMMENT )  return "Comment";
   else return QVariant();
 }

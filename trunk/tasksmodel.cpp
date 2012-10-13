@@ -21,6 +21,8 @@
 #include "tasksmodel.h"
 #include "task.h"
 
+#include <QTableView>
+
 /*************************************************************************************************/
 /**************************** Table model containing all plan tasks ******************************/
 /*************************************************************************************************/
@@ -31,6 +33,18 @@ TasksModel::TasksModel() : QAbstractTableModel()
 {
   // create initial plan blank task
   m_tasks.append( new Task() );
+}
+
+/**************************************** setColumnWidths ****************************************/
+
+void TasksModel::setColumnWidths( QTableView* table )
+{
+  // set initial column widths
+  table->setColumnWidth( Task::SECTION_TITLE,    200 );
+  table->setColumnWidth( Task::SECTION_DURATION,  60 );
+  table->setColumnWidth( Task::SECTION_WORK,      60 );
+  table->setColumnWidth( Task::SECTION_PRIORITY,  50 );
+  table->setColumnWidth( Task::SECTION_COMMENT,  200 );
 }
 
 /******************************************** rowCount *******************************************/
@@ -81,8 +95,7 @@ bool TasksModel::setData( const QModelIndex& index, const QVariant& value, int r
 
 /****************************************** headerData *******************************************/
 
-QVariant TasksModel::headerData( int section, Qt::Orientation orientation,
-                                      int role = Qt::DisplayRole ) const
+QVariant TasksModel::headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const
 {
   // if role is not DisplayRole, return an invalid QVariant
   if ( role != Qt::DisplayRole ) return QVariant();

@@ -24,6 +24,7 @@
 #include <QAbstractTableModel>
 
 class Resource;
+class QTableView;
 
 /*************************************************************************************************/
 /**************************** Table model containing all resources *******************************/
@@ -32,7 +33,9 @@ class Resource;
 class ResourcesModel : public QAbstractTableModel
 {
 public:
-  ResourcesModel();                       // constructor
+  ResourcesModel();                              // constructor
+
+  void  setColumnWidths( QTableView* );          // set initial column widths
 
   /********************* methods to support QAbstractTableModel ************************/
 

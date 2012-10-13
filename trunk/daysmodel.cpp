@@ -21,6 +21,8 @@
 #include "daysmodel.h"
 #include "day.h"
 
+#include <QTableView>
+
 /*************************************************************************************************/
 /************************ Table model containing all calendar day types **************************/
 /*************************************************************************************************/
@@ -32,6 +34,16 @@ DaysModel::DaysModel() : QAbstractTableModel()
   // create initial default day types
   for ( int day=0 ; day<=Day::DEFAULT_MAX ; day++ )
     m_days.append( new Day(day) );
+}
+
+/**************************************** setColumnWidths ****************************************/
+
+void DaysModel::setColumnWidths( QTableView* table )
+{
+  // set initial column widths
+  table->setColumnWidth( Day::SECTION_NAME, 150 );
+  table->setColumnWidth( Day::SECTION_WORK,  50 );
+  table->setColumnWidth( Day::SECTION_PARTS, 50 );
 }
 
 /******************************************** rowCount *******************************************/
@@ -58,17 +70,22 @@ int DaysModel::columnCount( const QModelIndex& parent ) const
 
 /********************************************** data *********************************************/
 
-QVariant DaysModel::data( const QModelIndex& ind, int role  = Qt::DisplayRole ) const
+QVariant DaysModel::data( const QModelIndex& index, int role  = Qt::DisplayRole ) const
 {
+  // if index is not valid, return an invalid QVariant
+  if ( !index.isValid() ) return QVariant();
 
-  // TODO
-  return QVariant();
+  // if index row is out of bounds, return an invalid QVariant
+  int row = index.row();
+  if ( row<0 || row>=m_days.size() ) return QVariant();
+
+  //qDebug("DaysModel::data row=%i col=%i role=%i",row,index.column(),role);
+  return m_days.at(row)->data( index.column(), role );
 }
 
 /******************************************** setData ********************************************/
 
-bool DaysModel::setData( const QModelIndex& ind, const QVariant& value,
-                               int role = Qt::EditRole )
+bool DaysModel::setData( const QModelIndex& ind, const QVariant& value, int role = Qt::EditRole )
 {
   // if ind is not valid, return FALSE - can't set data
   if ( !ind.isValid() ) return FALSE;
@@ -83,8 +100,7 @@ bool DaysModel::setData( const QModelIndex& ind, const QVariant& value,
 
 /****************************************** headerData *******************************************/
 
-QVariant DaysModel::headerData( int section, Qt::Orientation orientation,
-                                      int role = Qt::DisplayRole ) const
+QVariant DaysModel::headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const
 {
   // if role is not DisplayRole, return an invalid QVariant
   if ( role != Qt::DisplayRole ) return QVariant();

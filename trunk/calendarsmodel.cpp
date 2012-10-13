@@ -66,8 +66,7 @@ QVariant CalendarsModel::data( const QModelIndex& ind, int role  = Qt::DisplayRo
 
 /******************************************** setData ********************************************/
 
-bool CalendarsModel::setData( const QModelIndex& ind, const QVariant& value,
-                               int role = Qt::EditRole )
+bool CalendarsModel::setData( const QModelIndex& ind, const QVariant& value, int role = Qt::EditRole )
 {
   // if ind is not valid, return FALSE - can't set data
   if ( !ind.isValid() ) return FALSE;
@@ -82,8 +81,7 @@ bool CalendarsModel::setData( const QModelIndex& ind, const QVariant& value,
 
 /****************************************** headerData *******************************************/
 
-QVariant CalendarsModel::headerData( int section, Qt::Orientation orientation,
-                                      int role = Qt::DisplayRole ) const
+QVariant CalendarsModel::headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const
 {
   // if role is not DisplayRole, return an invalid QVariant
   if ( role != Qt::DisplayRole ) return QVariant();

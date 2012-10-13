@@ -21,6 +21,8 @@
 #include "resourcesmodel.h"
 #include "resource.h"
 
+#include <QTableView>
+
 /*************************************************************************************************/
 /**************************** Table model containing all resources *******************************/
 /*************************************************************************************************/
@@ -31,6 +33,15 @@ ResourcesModel::ResourcesModel() : QAbstractTableModel()
 {
   // create initial blank resource
   m_resources.append( new Resource() );
+}
+
+/**************************************** setColumnWidths ****************************************/
+
+void ResourcesModel::setColumnWidths( QTableView* table )
+{
+  // set initial column widths
+  table->setColumnWidth( Resource::SECTION_INITIALS,  50 );
+  table->setColumnWidth( Resource::SECTION_COMMENT,  200 );
 }
 
 /******************************************** rowCount *******************************************/
@@ -66,8 +77,7 @@ QVariant ResourcesModel::data( const QModelIndex& index, int role  = Qt::Display
 
 /******************************************** setData ********************************************/
 
-bool ResourcesModel::setData( const QModelIndex& ind, const QVariant& value,
-                               int role = Qt::EditRole )
+bool ResourcesModel::setData( const QModelIndex& ind, const QVariant& value, int role = Qt::EditRole )
 {
   // if ind is not valid, return FALSE - can't set data
   if ( !ind.isValid() ) return FALSE;
@@ -82,8 +92,7 @@ bool ResourcesModel::setData( const QModelIndex& ind, const QVariant& value,
 
 /****************************************** headerData *******************************************/
 
-QVariant ResourcesModel::headerData( int section, Qt::Orientation orientation,
-                                      int role = Qt::DisplayRole ) const
+QVariant ResourcesModel::headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const
 {
   // if role is not DisplayRole, return an invalid QVariant
   if ( role != Qt::DisplayRole ) return QVariant();
