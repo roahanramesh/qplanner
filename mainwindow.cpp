@@ -40,6 +40,13 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   ui->resourcesView->setModel( (QAbstractItemModel*)plan->resources() );
   ui->calendarsView->setModel( (QAbstractItemModel*)plan->calendars() );
   ui->daysView->setModel( (QAbstractItemModel*)plan->days() );
+
+  // set smaller row height for table views
+  int height = ui->tasksView->fontMetrics().lineSpacing() + 3;
+  ui->tasksView->verticalHeader()->setDefaultSectionSize( height );
+  ui->resourcesView->verticalHeader()->setDefaultSectionSize( height );
+  ui->calendarsView->verticalHeader()->setDefaultSectionSize( height );
+  ui->daysView->verticalHeader()->setDefaultSectionSize( height );
 }
 
 /****************************************** destructor *******************************************/
