@@ -20,6 +20,8 @@
 
 #include "day.h"
 
+#include <QColor>
+
 /*************************************************************************************************/
 /**************************** Single day type used in plan calendars *****************************/
 /*************************************************************************************************/
@@ -105,4 +107,50 @@ QVariant  Day::headerData( int section )
     return QString("Start %1").arg( (section-SECTION_START) / 2 + 1 );
   else
     return QString("End %1").arg( (section-SECTION_END) / 2 + 1 );
+}
+
+/********************************************* data **********************************************/
+
+QVariant  Day::data( int column, int role )
+{
+  // if role is EditRole, return appropriate edit value
+  if ( role == Qt::EditRole )
+  {
+    if ( column == SECTION_WORK )   return m_work;
+
+    // for all other columns return the DisplayRole for EditRole
+    role = Qt::DisplayRole;
+  }
+
+  // if role is DisplayRole, return appropriate display value
+  if ( role == Qt::DisplayRole )
+  {
+    if ( column == SECTION_NAME )   return m_name;
+    if ( column == SECTION_WORK )   return QString("%1").arg( m_work, 0, 'f', 2 );
+    if ( column == SECTION_PARTS )  return m_periods;
+
+    if ( column >= m_periods*2+SECTION_START ) return QVariant();
+
+    if ( (column-SECTION_START) % 2 == 0 )
+      return m_start.at(( column-SECTION_START) / 2 );
+    else
+      return m_end.at( (column-SECTION_END) / 2 );
+  }
+
+  // if role is TextAlignmentRole, return appropriate display alignment
+  if ( role == Qt::TextAlignmentRole )
+  {
+    if ( column == SECTION_NAME )   return int( Qt::AlignVCenter | Qt::AlignLeft );
+    return Qt::AlignCenter;
+  }
+
+  // if role is BackgroundRole, return appropriate background colour
+  if ( role == Qt::BackgroundRole )
+  {
+    if ( column >= m_periods*2+SECTION_START ) return QColor( "#F0F0F0" );
+    return QVariant();
+  }
+
+  // otherwise return an invalid QVariant
+  return QVariant();
 }

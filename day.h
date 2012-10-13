@@ -35,7 +35,8 @@ public:
   Day();                                        // constructor
   Day( int );                                   // constructor
 
-  static QVariant   headerData( int );          // TODO
+  static QVariant   headerData( int );          // return column header data
+  QVariant          data( int, int );           // return data for column & role
 
   QString    name() { return m_name; }                 // return day name
   qreal      work() { return m_work; }                 // return work days equivalent

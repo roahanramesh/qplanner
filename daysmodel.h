@@ -24,6 +24,7 @@
 #include <QAbstractTableModel>
 
 class Day;
+class QTableView;
 
 /*************************************************************************************************/
 /************************ Table model containing all calendar day types **************************/
@@ -32,7 +33,9 @@ class Day;
 class DaysModel : public QAbstractTableModel
 {
 public:
-  DaysModel();                       // constructor
+  DaysModel();                                   // constructor
+
+  void  setColumnWidths( QTableView* );          // set initial column widths
 
   /********************* methods to support QAbstractTableModel ************************/
 

@@ -41,15 +41,15 @@ Resource::Resource()
 QVariant  Resource::headerData( int section )
 {
   // return section horizontal header title text
-  if (section == SECTION_INITIALS)       return "Initials";
-  else if (section == SECTION_NAME)      return "Name";
-  else if (section == SECTION_ORG)       return "Organisation";
-  else if (section == SECTION_GROUP)     return "Group";
-  else if (section == SECTION_START)     return "Start";
-  else if (section == SECTION_END)       return "End";
-  else if (section == SECTION_AVAIL)     return "Available";
-  else if (section == SECTION_COST)      return "Cost";
-  else if (section == SECTION_CALENDAR)  return "Base Calendar";
-  else if (section == SECTION_COMMENT)   return "Comment";
+  if ( section == SECTION_INITIALS )       return "Initials";
+  else if ( section == SECTION_NAME )      return "Name";
+  else if ( section == SECTION_ORG )       return "Organisation";
+  else if ( section == SECTION_GROUP )     return "Group";
+  else if ( section == SECTION_START )     return "Start";
+  else if ( section == SECTION_END )       return "End";
+  else if ( section == SECTION_AVAIL )     return "Available";
+  else if ( section == SECTION_COST )      return "Cost";
+  else if ( section == SECTION_CALENDAR )  return "Base Calendar";
+  else if ( section == SECTION_COMMENT )   return "Comment";
   else return QVariant();
 }
