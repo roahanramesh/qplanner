@@ -114,6 +114,11 @@ QVariant DaysModel::headerData( int section, Qt::Orientation orientation, int ro
 
 Qt::ItemFlags DaysModel::flags( const QModelIndex& ind ) const
 {
-  // TODO
+  // if cell refers to non-existing working period, then cell is not selectable, etc
+  int row = ind.row();
+  int col = ind.column();
+  if ( col >= m_days.at(row)->periods()*2+Day::SECTION_START ) return 0;
+
+  // otherwise all cells are selectable, editable, etc
   return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
 }

@@ -33,9 +33,10 @@ class QTableView;
 class DaysModel : public QAbstractTableModel
 {
 public:
-  DaysModel();                                   // constructor
+  DaysModel();                                              // constructor
 
-  void  setColumnWidths( QTableView* );          // set initial column widths
+  void         setColumnWidths( QTableView* );              // set initial column widths
+  Day*         day( int n ) { return m_days.at(n); }        // return the n'th day type
 
   /********************* methods to support QAbstractTableModel ************************/
 

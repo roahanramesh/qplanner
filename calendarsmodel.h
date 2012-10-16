@@ -24,6 +24,7 @@
 #include <QAbstractTableModel>
 
 class Calendar;
+class DaysModel;
 
 /*************************************************************************************************/
 /************************** Table model containing all base calendars ****************************/
@@ -32,7 +33,9 @@ class Calendar;
 class CalendarsModel : public QAbstractTableModel
 {
 public:
-  CalendarsModel();                       // constructor
+  CalendarsModel( DaysModel* );                                     // constructor
+
+  Calendar*      calendar( int n ) { return m_calendars.at(n); }    // return the n'th day calendar
 
   /********************* methods to support QAbstractTableModel ************************/
 
