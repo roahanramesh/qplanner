@@ -30,6 +30,11 @@ class ResourcesModel;
 class CalendarsModel;
 class DaysModel;
 
+class Task;
+class Resource;
+class Calendar;
+class Day;
+
 /*************************************************************************************************/
 /************************** Holds the complete data model for the plan ***************************/
 /*************************************************************************************************/
@@ -45,6 +50,12 @@ public:
   CalendarsModel*  calendars() { return m_calendars; }              // return calendars model pointer
   DaysModel*       days() { return m_days; }                        // return days model pointer
   QUndoStack*      undostack() { return m_undostack; }              // return undo stack pointer
+
+  Task*            task( int );                                     // return the n'th task
+  Resource*        resource( int );                                 // return the n'th resource
+  Calendar*        calendar( int );                                 // return the n'th calendar
+  Day*             day( int );                                      // return the n'th day type
+
   QString          title() { return m_title; }                      // return title
   QDateTime        start() { return m_start; }                      // return start
   QString          datetime_format() { return m_datetime_format; }  // return datetime format
@@ -63,7 +74,9 @@ private:
   ResourcesModel*  m_resources;         // model of plan resources
   CalendarsModel*  m_calendars;         // model of plan calendars
   DaysModel*       m_days;              // model of plan day types
+
   QUndoStack*      m_undostack;         // undo stack of plan editing
+
   QString          m_title;             // plan title as set in properties
   QDateTime        m_start;             // plan start as set in properties
   QString          m_datetime_format;   // plan datetime format as set in properties

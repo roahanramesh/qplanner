@@ -19,6 +19,8 @@
  ***************************************************************************/
 
 #include "calendar.h"
+#include "daysmodel.h"
+#include "day.h"
 
 /*************************************************************************************************/
 /********************************* Single calendar for planning **********************************/
@@ -28,8 +30,93 @@
 
 Calendar::Calendar()
 {
-  // set calendar variables to default/null values
+  // create null calendar
+  m_name        = "Null";
+  m_cycleAnchor = QDate(2000,1,1);   // Saturday 1st Jan 2000
   m_cycleLength = 0;
+  m_normal.resize( m_cycleLength );
+}
+
+/****************************************** constructor ******************************************/
+
+Calendar::Calendar( DaysModel* days, int type )
+{
+  Day* working    = days->day( Day::DEFAULT_STANDARDWORK );
+  Day* nonWorking = days->day( Day::DEFAULT_NONWORK );
+
+  // create calendars
+  if ( type == DEFAULT_CALENDAR )
+  {
+    // create default base calendar
+    m_name        = "Default";
+    m_cycleAnchor = QDate(2000,1,1);   // Saturday 1st Jan 2000
+    m_cycleLength = 7;                 // 7 day week
+    m_normal.resize( m_cycleLength );
+
+    for( int n=0 ; n<7 ; n++ )
+    {
+      if ( n < 2 )    // Sat + Sun
+        m_normal[n] = nonWorking;
+      else            // Mon to Fri
+        m_normal[n] = working;
+    }
+
+    // add easter and some bank holidays
+    m_exceptions[ QDate(2008,12,25) ] = nonWorking;
+    m_exceptions[ QDate(2008,12,26) ] = nonWorking;
+
+    m_exceptions[ QDate(2009, 1, 1) ] = nonWorking;
+    m_exceptions[ QDate(2009, 4,10) ] = nonWorking;
+    m_exceptions[ QDate(2009, 4,13) ] = nonWorking;
+    m_exceptions[ QDate(2009, 5, 4) ] = nonWorking;
+    m_exceptions[ QDate(2009, 5,25) ] = nonWorking;
+    m_exceptions[ QDate(2009, 8,31) ] = nonWorking;
+    m_exceptions[ QDate(2009,12,25) ] = nonWorking;
+    m_exceptions[ QDate(2009,12,28) ] = nonWorking;
+  }
+  else if ( type == DEFAULT_FANCY )
+  {
+    // create fancy calendar
+    m_name        = "Fancy";
+    m_cycleAnchor = QDate(2009,1,1);
+    m_cycleLength = 10;                 // 10 day cycle
+    m_normal.resize( m_cycleLength );
+
+    m_normal[0] = nonWorking;
+    m_normal[1] = nonWorking;
+    m_normal[2] = nonWorking;
+    m_normal[3] = days->day( Day::DEFAULT_SHORT );
+    m_normal[4] = days->day( Day::DEFAULT_SHORT );
+    m_normal[5] = days->day( Day::DEFAULT_EVENING );
+    m_normal[6] = days->day( Day::DEFAULT_EVENING );
+    m_normal[7] = days->day( Day::DEFAULT_TWENTYFOURHOURS );
+    m_normal[8] = nonWorking;
+    m_normal[9] = days->day( Day::DEFAULT_TWENTYFOURHOURS );
+  }
+  else  // DEFAULT_FULLTIME
+  {
+    // create fulltime calendar
+    m_name        = "Full Time";
+    m_cycleAnchor = QDate(2009,1,1);
+    m_cycleLength = 1;                 // same day every day
+    m_normal.resize( m_cycleLength );
+
+    m_normal[0] = days->day( Day::DEFAULT_TWENTYFOURHOURS );
+
+    m_exceptions[ QDate(2009,12,25) ] = nonWorking;
+    m_exceptions[ QDate(2009,12,28) ] = nonWorking;
+  }
+}
+
+/********************************************** day **********************************************/
+
+Day*  Calendar::day( QDate date )
+{
+  // if exception exists return it, otherwise return normal cycle day
+  if ( m_exceptions.contains( date ) )
+    return m_exceptions.value( date );
+
+  return m_normal.at( m_cycleAnchor.daysTo( date ) % m_cycleLength );
 }
 
 /****************************************** headerData *******************************************/

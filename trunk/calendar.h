@@ -26,6 +26,7 @@
 #include <QDate>
 
 class Day;
+class DaysModel;
 
 /*************************************************************************************************/
 /********************************* Single calendar for planning **********************************/
@@ -35,8 +36,18 @@ class Calendar
 {
 public:
   Calendar();                                   // constructor
+  Calendar( DaysModel*, int );                  // constructor for initial default calendars
 
   static QVariant   headerData( int );          // return column header data
+  Day*              day( QDate );               // return day type for date
+
+  enum DefaultCalendarTypes
+  {
+    DEFAULT_CALENDAR = 0,
+    DEFAULT_FULLTIME = 1,
+    DEFAULT_FANCY    = 2,
+    DEFAULT_MAX      = 2
+  };
 
 private:
   QString             m_name;            // name of calendar
@@ -45,5 +56,7 @@ private:
   QVector<Day*>       m_normal;          // normal basic cycle days
   QHash<QDate, Day*>  m_exceptions;      // exceptions override normal days
 };
+
+inline uint qHash( QDate key ) { return key.toJulianDay(); }
 
 #endif // CALENDAR_H
