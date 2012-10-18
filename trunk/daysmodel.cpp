@@ -79,7 +79,6 @@ QVariant DaysModel::data( const QModelIndex& index, int role  = Qt::DisplayRole 
   int row = index.row();
   if ( row<0 || row>=m_days.size() ) return QVariant();
 
-  //qDebug("DaysModel::data row=%i col=%i role=%i",row,index.column(),role);
   return m_days.at(row)->data( index.column(), role );
 }
 
@@ -121,4 +120,16 @@ Qt::ItemFlags DaysModel::flags( const QModelIndex& ind ) const
 
   // otherwise all cells are selectable, editable, etc
   return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
+}
+
+/******************************************* namesList *******************************************/
+
+QStringList  DaysModel::namesList() const
+{
+  // return list of day names
+  QStringList  list;
+  foreach( Day* d, m_days )
+    list << d->name();
+
+  return list;
 }

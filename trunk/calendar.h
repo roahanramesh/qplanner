@@ -38,8 +38,13 @@ public:
   Calendar();                                   // constructor
   Calendar( DaysModel*, int );                  // constructor for initial default calendars
 
-  static QVariant   headerData( int );          // return column header data
+  QVariant          data( int, int ) const;     // return data for row & role
+
   Day*              day( QDate );               // return day type for date
+  int               cycleLength() const         // return calendar cycle length
+                      { return m_cycleLength; }
+  QString           name() const                // return calendar name
+                      { return m_name; }
 
   enum DefaultCalendarTypes
   {
@@ -47,6 +52,15 @@ public:
     DEFAULT_FULLTIME = 1,
     DEFAULT_FANCY    = 2,
     DEFAULT_MAX      = 2
+  };
+
+  enum Rows
+  {
+    ROW_NAME        = 0,
+    ROW_ANCHOR      = 1,
+    ROW_EXCEPTIONS  = 2,
+    ROW_CYCLELENGTH = 3,
+    ROW_NORMAL1     = 4
   };
 
 private:
