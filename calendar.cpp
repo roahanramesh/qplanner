@@ -21,6 +21,11 @@
 #include "calendar.h"
 #include "daysmodel.h"
 #include "day.h"
+#include "plan.h"
+
+#include <QColor>
+
+extern Plan*  plan;
 
 /*************************************************************************************************/
 /********************************* Single calendar for planning **********************************/
@@ -119,10 +124,64 @@ Day*  Calendar::day( QDate date )
   return m_normal.at( m_cycleAnchor.daysTo( date ) % m_cycleLength );
 }
 
-/****************************************** headerData *******************************************/
+/********************************************** data *********************************************/
 
-QVariant  Calendar::headerData( int section )
+QVariant  Calendar::data( int row, int role  = Qt::DisplayRole ) const
 {
-  // TODO
+  // if role is EditRole, return appropriate edit value
+  if ( role == Qt::EditRole )
+  {
+    if ( row >= ROW_NORMAL1 )
+    {
+      QString  name = m_normal.at(row - ROW_NORMAL1)->name();
+      return   plan->days()->namesList().indexOf( name );
+    }
+
+    // if not handled above return DisplayRole
+    role = Qt::DisplayRole;
+  }
+
+  // if role is DisplayRole, return appropriate display value
+  if ( role == Qt::DisplayRole )
+  {
+    if ( row == ROW_NAME )        return m_name;
+    if ( row == ROW_ANCHOR )      return m_cycleAnchor;
+    if ( row == ROW_EXCEPTIONS )  return m_exceptions.size();
+    if ( row == ROW_CYCLELENGTH ) return m_cycleLength;
+
+    if ( row >= m_cycleLength+ROW_NORMAL1 ) return QVariant();
+
+    return m_normal.at(row - ROW_NORMAL1)->name();
+  }
+
+  // if role is TextAlignmentRole, return appropriate display alignment
+  if ( role == Qt::TextAlignmentRole )
+  {
+    return int( Qt::AlignVCenter | Qt::AlignLeft );
+  }
+
+  // if role is BackgroundRole, return appropriate background colour
+  if ( role == Qt::BackgroundRole )
+  {
+    if ( row >= m_cycleLength+ROW_NORMAL1 ) return QColor( "#F0F0F0" );
+    return QVariant();
+  }
+
+  // if role is ToolTipRole, return appropriate tool tip text
+  if ( role == Qt::ToolTipRole )
+  {
+    if ( row < m_cycleLength+ROW_NORMAL1 &&
+         row >= ROW_NORMAL1 )
+    {
+      QDate  anchor  = m_cycleAnchor;
+      int    len     = m_cycleLength;
+      int    normal  = anchor.daysTo( QDate::currentDate() ) % len;
+      QDate  example = QDate::currentDate().addDays( row - ROW_NORMAL1 - normal );
+      return example.toString( "ddd dd MMM yyyy" );
+    }
+    return QVariant( QVariant::String );
+  }
+
+  // otherwise return an invalid QVariant
   return QVariant();
 }

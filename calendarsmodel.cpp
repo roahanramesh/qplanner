@@ -40,8 +40,12 @@ int CalendarsModel::rowCount( const QModelIndex& parent ) const
 {
   Q_UNUSED(parent);
 
-  // TODO
-  return 3;
+  // table row count is largest cycle length + ROW_NORMAL1
+  int max = 0;
+  foreach( Calendar* cal, m_calendars )
+    if ( max < cal->cycleLength() ) max = cal->cycleLength();
+
+  return max + Calendar::ROW_NORMAL1;
 }
 
 /****************************************** columnCount ******************************************/
@@ -50,17 +54,22 @@ int CalendarsModel::columnCount( const QModelIndex& parent ) const
 {
   Q_UNUSED(parent);
 
-  // TODO
-  return 3;
+  // table column count is number of calendars in m_cals QList
+  return m_calendars.size();
 }
 
 /********************************************** data *********************************************/
 
-QVariant CalendarsModel::data( const QModelIndex& ind, int role  = Qt::DisplayRole ) const
+QVariant CalendarsModel::data( const QModelIndex& index, int role  = Qt::DisplayRole ) const
 {
+  // if index is not valid, return an invalid QVariant
+  if ( !index.isValid() ) return QVariant();
 
-  // TODO
-  return QVariant();
+  // if index column is out of bounds, return an invalid QVariant
+  int column = index.column();
+  if ( column<0 || column>=m_calendars.size() ) return QVariant();
+
+  return m_calendars.at(column)->data( index.row(), role );
 }
 
 /******************************************** setData ********************************************/
@@ -87,18 +96,26 @@ QVariant CalendarsModel::headerData( int section, Qt::Orientation orientation, i
 
   if ( orientation == Qt::Vertical )
   {
-      // TODO
-      return "Vertical";
-  }
+    if ( section == Calendar::ROW_NAME )        return "Name";
+    if ( section == Calendar::ROW_ANCHOR )      return "Anchor";
+    if ( section == Calendar::ROW_EXCEPTIONS )  return "Exceptions";
+    if ( section == Calendar::ROW_CYCLELENGTH ) return "Cycle";
 
-  // TODO
-  return "Horizontal";
+    return QString("Normal %1").arg( section - Calendar::ROW_NORMAL1 + 1 );
+  }
+  else
+    return m_calendars.at(section)->name();
 }
 
 /********************************************* flags *********************************************/
 
-Qt::ItemFlags CalendarsModel::flags( const QModelIndex& ind ) const
+Qt::ItemFlags CalendarsModel::flags( const QModelIndex& index ) const
 {
-  // TODO
+  // if cell refers to non-existing working period, then cell is not selectable, etc
+  int row = index.row();
+  int col = index.column();
+  if ( row >= m_calendars.at(col)->cycleLength()+Calendar::ROW_NORMAL1 ) return 0;
+
+  // otherwise all cells are selectable, editable, etc
   return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
 }

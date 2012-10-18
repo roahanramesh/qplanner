@@ -37,6 +37,7 @@ public:
 
   void         setColumnWidths( QTableView* );              // set initial column widths
   Day*         day( int n ) { return m_days.at(n); }        // return the n'th day type
+  QStringList  namesList() const;                           // return list of day type names
 
   /********************* methods to support QAbstractTableModel ************************/
 
