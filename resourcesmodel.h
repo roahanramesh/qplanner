@@ -35,9 +35,11 @@ class ResourcesModel : public QAbstractTableModel
 public:
   ResourcesModel();                                                     // constructor
 
-  Resource*      resource( int n ) { return m_resources.at(n); }        // return the n'th resource
   void           initialise();                                          // create initial default contents
   void           setColumnWidths( QTableView* );                        // set initial column widths
+
+  Resource*      resource( int n ) { return m_resources.at(n); }        // return the n'th resource
+  int            number() { return m_resources.size(); }                // return number of tasks in plan
 
   /********************* methods to support QAbstractTableModel ************************/
 

@@ -38,8 +38,9 @@ public:
   explicit MainWindow( QWidget *parent = 0 );               // constructor
   
 public slots:
-  void slotUndoStackView( bool );              // slot to receive actionUndoStackView triggered signal
-  void slotUndoStackViewDestroyed();           // slot to receive undo stack view destroyed signal
+  void slotUndoStackView( bool );              // slot for actionUndoStackView triggered signal
+  void slotUndoStackViewDestroyed();           // slot for undo stack view destroyed signal
+  void slotTabChange( int );                   // slot for mainTabWidget current changed signal
 
 private:
   Ui::MainWindow*  ui;                         // user interface created using qt designer

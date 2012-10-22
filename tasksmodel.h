@@ -22,6 +22,7 @@
 #define TASKSMODEL_H
 
 #include <QAbstractTableModel>
+#include <QDateTime>
 
 class Task;
 class QTableView;
@@ -35,9 +36,12 @@ class TasksModel : public QAbstractTableModel
 public:
   TasksModel();                                                   // constructor
 
-  Task*          task( int n ) { return m_tasks.at(n); }          // return the n'th day type
   void           initialise();                                    // create initial default contents
   void           setColumnWidths( QTableView* );                  // set initial column widths
+
+  Task*          task( int n ) { return m_tasks.at(n); }          // return the n'th day type
+  QDateTime      end() { return QDateTime::currentDateTime(); }   // return plan end *** TODO ***
+  int            number() { return m_tasks.size(); }              // return number of tasks in plan
 
   /********************* methods to support QAbstractTableModel ************************/
 
