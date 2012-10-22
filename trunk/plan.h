@@ -57,9 +57,17 @@ public:
   Resource*        resource( int );                                 // return the n'th resource
   Calendar*        calendar( int );                                 // return the n'th calendar
   Day*             day( int );                                      // return the n'th day type
+  Calendar*        calendar();                                      // return default calendar
 
-  QString          title() { return m_title; }                      // return title
-  QDateTime        start() { return m_start; }                      // return start
+  int              numTasks();                                      // return number of tasks in plan
+  int              numResources();                                  // return number of resources in plan
+  int              numCalendars();                                  // return number of calendars in plan
+  int              numDays();                                       // return number of day types in plan
+
+  QString          title() { return m_title; }                      // return title of plan
+  QDateTime        start() { return m_start; }                      // return start of plan
+  QDateTime        end();                                           // return end of plan
+  int              default_cal() { return m_default_cal; }          // return default calendar index
   QString          datetime_format() { return m_datetime_format; }  // return datetime format
   QString          filename() {return m_filename; }                 // return filename
   QString          file_location() { return m_file_location; }      // return file location
@@ -81,6 +89,7 @@ private:
 
   QString          m_title;             // plan title as set in properties
   QDateTime        m_start;             // plan start as set in properties
+  int              m_default_cal;       // plan default calendar index
   QString          m_datetime_format;   // plan datetime format as set in properties
   QString          m_filename;          // filename when last opened/saved
   QString          m_file_location;     // file location when last opened/saved

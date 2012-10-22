@@ -32,6 +32,14 @@ Task*      Plan::task( int n ) { return m_tasks->task(n); }               // ret
 Resource*  Plan::resource( int n ) { return m_resources->resource(n); }   // return the n'th resource
 Calendar*  Plan::calendar( int n ) { return m_calendars->calendar(n); }   // return the n'th calendar
 Day*       Plan::day( int n ) { return m_days->day(n); }                  // return the n'th day type
+Calendar*  Plan::calendar() { return m_calendars->calendar(m_default_cal); }  // return default calendar
+
+QDateTime  Plan::end() { return m_tasks->end(); }                         // return end
+
+int        Plan::numTasks() { return m_tasks->number(); }                 // return number of tasks in plan
+int        Plan::numResources() { return m_resources->number(); }         // return number of resources in plan
+int        Plan::numCalendars() { return m_calendars->number(); }         // return number of calendars in plan
+int        Plan::numDays() { return m_days->number(); }                   // return number of day types in plan
 
 /****************************************** constructor ******************************************/
 
@@ -43,8 +51,10 @@ Plan::Plan()
   m_resources = new ResourcesModel();
   m_tasks     = new TasksModel();
   m_undostack = new QUndoStack();
-  m_start     = QDateTime::currentDateTime();
+
+  m_start           = QDateTime::currentDateTime();
   m_datetime_format = "ddd dd/MM/yy";
+  m_default_cal     = 0;
 }
 
 /****************************************** destructor *******************************************/

@@ -35,8 +35,11 @@ class CalendarsModel : public QAbstractTableModel
 public:
   CalendarsModel();                                                 // constructor
 
-  Calendar*      calendar( int n ) { return m_calendars.at(n); }    // return the n'th day calendar
   void           initialise();                                      // create initial default contents
+
+  Calendar*      calendar( int n ) { return m_calendars.at(n); }    // return the n'th day calendar
+  int            number() { return m_calendars.size(); }            // return number of tasks in plan
+  QStringList    namesList() const;                                 // return list of calendar names
 
   /********************* methods to support QAbstractTableModel ************************/
 

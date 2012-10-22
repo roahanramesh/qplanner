@@ -64,6 +64,25 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   plan->tasks()->setColumnWidths( ui->tasksView );
   plan->resources()->setColumnWidths( ui->resourcesView );
   plan->days()->setColumnWidths( ui->daysView );
+
+  // create new palette for read-only edit widgets with different Base colour
+  QPalette*     palette = new QPalette( ui->propertiesWidget->palette() );
+  palette->setColor( QPalette::Base, palette->window().color() );
+
+  // setup properties tab
+  ui->planEnd->setReadOnly( true );
+  ui->planEnd->setPalette( const_cast<const QPalette&>(*palette) );
+  ui->fileName->setReadOnly( true );
+  ui->fileName->setPalette( const_cast<const QPalette&>(*palette) );
+  ui->fileLocation->setReadOnly( true );
+  ui->fileLocation->setPalette( const_cast<const QPalette&>(*palette) );
+  ui->savedBy->setReadOnly( true );
+  ui->savedBy->setPalette( const_cast<const QPalette&>(*palette) );
+  ui->savedWhen->setReadOnly( true );
+  ui->savedWhen->setPalette( const_cast<const QPalette&>(*palette) );
+
+  // ensure properties widget and plan variables are kept up-to-date
+  connect( ui->mainTabWidget, SIGNAL(currentChanged(int)), this, SLOT(slotTabChange(int)) );
 }
 
 /*************************************** slotViewUndoStack ***************************************/
@@ -96,4 +115,57 @@ void MainWindow::slotUndoStackViewDestroyed()
   // undo stack view window closed and destroyed so reset pointer and uncheck action
   m_undoview = 0;
   ui->actionUndoStackView->setChecked( false );
+}
+
+/***************************************** slotTabChange *****************************************/
+
+void MainWindow::slotTabChange( int index )
+{
+  // if changing away from 'Properties' tab then ensure plan is kept up-to-date
+  if ( true )
+  {
+    // TODO !!!!!!
+    qDebug("MainWindow::slotTabChange - moving from 'Properties' index=%i",index);
+
+
+    // return;
+  }
+
+  // otherwise ensure 'Properties' tab widgets are up-to-date
+  ui->title->setText( plan->title() );
+  ui->title->setCursorPosition( 0 );
+
+  ui->planStart->setDateTime( plan->start() );
+  ui->planStart->setToolTip( plan->start().toString(ui->dateTimeFormat->text()) );
+
+  ui->planEnd->setText( plan->end().toString("dd/MM/yyyy hh:mm:ss") );
+  ui->planEnd->setCursorPosition( 0 );
+  ui->planEnd->setToolTip( plan->end().toString(ui->dateTimeFormat->text()) );
+
+  ui->defaultCal->clear();
+  ui->defaultCal->addItems( plan->calendars()->namesList() );
+  ui->defaultCal->setCurrentIndex( plan->default_cal() );
+
+  ui->dateTimeFormat->setText( plan->datetime_format() );
+  ui->dateTimeFormat->setCursorPosition( 0 );
+  ui->dateTimeFormat->setToolTip( QDateTime::currentDateTime().toString(ui->dateTimeFormat->text()));
+
+  ui->fileName->setText( plan->filename() );
+  ui->fileName->setCursorPosition( 0 );
+
+  ui->fileLocation->setText( plan->file_location() );
+  ui->fileLocation->setCursorPosition( 0 );
+  ui->fileLocation->setToolTip( plan->file_location() );
+
+  ui->savedBy->setText( plan->saved_by() );
+  ui->savedBy->setCursorPosition( 0 );
+
+  ui->savedWhen->setText( plan->saved_when().toString("dd/MM/yyyy hh:mm:ss") );
+  ui->savedWhen->setCursorPosition( 0 );
+  ui->savedWhen->setToolTip( plan->saved_when().toString(ui->dateTimeFormat->text()) );
+
+  ui->numTasks->setText( QString(": %1").arg(plan->numTasks()) );
+  ui->numResources->setText( QString(": %1").arg(plan->numResources()) );
+  ui->numCalendars->setText( QString(": %1").arg(plan->numCalendars()) );
+  ui->numDays->setText( QString(": %1").arg(plan->numDays()) );
 }

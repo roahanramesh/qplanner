@@ -21,6 +21,8 @@
 #include "calendarsmodel.h"
 #include "calendar.h"
 
+#include <QStringList>
+
 /*************************************************************************************************/
 /************************** Table model containing all base calendars ****************************/
 /*************************************************************************************************/
@@ -124,4 +126,16 @@ Qt::ItemFlags CalendarsModel::flags( const QModelIndex& index ) const
 
   // otherwise all cells are selectable, editable, etc
   return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
+}
+
+/******************************************* namesList *******************************************/
+
+QStringList  CalendarsModel::namesList() const
+{
+  // return list of calendar names
+  QStringList  list;
+  foreach( Calendar* cal, m_calendars )
+    list << cal->name();
+
+  return list;
 }
