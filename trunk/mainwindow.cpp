@@ -26,6 +26,8 @@
 #include "calendarsmodel.h"
 #include "daysmodel.h"
 
+#include <QUndoView>
+
 extern Plan*  plan;
 
 /*************************************************************************************************/
@@ -36,6 +38,9 @@ extern Plan*  plan;
 
 MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::MainWindow )
 {
+  // initialise private variables
+  m_undoview = 0;
+
   // setup ui for main window
   ui->setupUi( this );
   resize( 600, 300 );
@@ -53,7 +58,7 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   ui->calendarsView->verticalHeader()->setDefaultSectionSize( height );
   ui->daysView->verticalHeader()->setDefaultSectionSize( height );
 
-  // column widths for tables views
+  // set initial column widths for tables views
   ui->daysView->horizontalHeader()->setDefaultSectionSize( 70 );
   ui->calendarsView->horizontalHeader()->setDefaultSectionSize( 150 );
   plan->tasks()->setColumnWidths( ui->tasksView );
@@ -61,9 +66,34 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   plan->days()->setColumnWidths( ui->daysView );
 }
 
-/****************************************** destructor *******************************************/
+/*************************************** slotViewUndoStack ***************************************/
 
-MainWindow::~MainWindow()
+void MainWindow::slotUndoStackView( bool checked )
 {
-  delete ui;
+  // show undo stack view window if checked, otherwise hide
+  if ( checked )
+  {
+    if ( m_undoview == 0 )
+    {
+      m_undoview = new QUndoView( plan->undostack() );
+      m_undoview->setWindowTitle( "Undo stack" );
+      m_undoview->setAttribute( Qt::WA_QuitOnClose, false );
+      m_undoview->setAttribute( Qt::WA_DeleteOnClose, true );
+      connect( m_undoview, SIGNAL(destroyed()), this, SLOT(slotUndoStackViewDestroyed()) );
+    }
+    m_undoview->show();
+  }
+  else
+  {
+    if ( m_undoview ) m_undoview->hide();
+  }
+}
+
+/*********************************** slotUndoStackViewDestroyed **********************************/
+
+void MainWindow::slotUndoStackViewDestroyed()
+{
+  // undo stack view window closed and destroyed so reset pointer and uncheck action
+  m_undoview = 0;
+  ui->actionUndoStackView->setChecked( false );
 }

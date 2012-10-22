@@ -31,6 +31,12 @@
 
 ResourcesModel::ResourcesModel() : QAbstractTableModel()
 {
+}
+
+/****************************************** initialise ******************************************/
+
+void ResourcesModel::initialise()
+{
   // create initial blank resource
   m_resources.append( new Resource() );
 }

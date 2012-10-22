@@ -35,8 +35,9 @@ class TasksModel : public QAbstractTableModel
 public:
   TasksModel();                                                   // constructor
 
-  void           setColumnWidths( QTableView* );                  // set initial column widths
   Task*          task( int n ) { return m_tasks.at(n); }          // return the n'th day type
+  void           initialise();                                    // create initial default contents
+  void           setColumnWidths( QTableView* );                  // set initial column widths
 
   /********************* methods to support QAbstractTableModel ************************/
 

@@ -37,9 +37,9 @@ Day*       Plan::day( int n ) { return m_days->day(n); }                  // ret
 
 Plan::Plan()
 {
-  // initialise private variables
+  // create blank models and set private variables
   m_days      = new DaysModel();
-  m_calendars = new CalendarsModel( m_days );  // need to pass m_days as plan pointer isn't ready to use yet
+  m_calendars = new CalendarsModel();
   m_resources = new ResourcesModel();
   m_tasks     = new TasksModel();
   m_undostack = new QUndoStack();
@@ -57,4 +57,15 @@ Plan::~Plan()
   delete m_calendars;
   delete m_days;
   delete m_undostack;
+}
+
+/****************************************** initialise *******************************************/
+
+void Plan::initialise()
+{
+  // initialise the models
+  m_days->initialise();
+  m_calendars->initialise();
+  m_resources->initialise();
+  m_tasks->initialise();
 }

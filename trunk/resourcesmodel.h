@@ -35,8 +35,9 @@ class ResourcesModel : public QAbstractTableModel
 public:
   ResourcesModel();                                                     // constructor
 
-  void           setColumnWidths( QTableView* );                        // set initial column widths
   Resource*      resource( int n ) { return m_resources.at(n); }        // return the n'th resource
+  void           initialise();                                          // create initial default contents
+  void           setColumnWidths( QTableView* );                        // set initial column widths
 
   /********************* methods to support QAbstractTableModel ************************/
 
