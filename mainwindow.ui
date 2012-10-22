@@ -166,7 +166,7 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>223</width>
+              <width>98</width>
               <height>359</height>
              </rect>
             </property>
@@ -406,7 +406,6 @@
     </property>
     <addaction name="actionUndo"/>
     <addaction name="actionRedo"/>
-    <addaction name="actionViewUndoStack"/>
     <addaction name="separator"/>
     <addaction name="actionInsert"/>
     <addaction name="separator"/>
@@ -428,9 +427,16 @@
      <string>Report</string>
     </property>
    </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <addaction name="actionUndoStackView"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuReport"/>
+   <addaction name="menuView"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
@@ -482,7 +488,7 @@
   </action>
   <action name="actionPrintPreview">
    <property name="text">
-    <string>Print preview</string>
+    <string>Print preview...</string>
    </property>
   </action>
   <action name="actionPrint">
@@ -545,7 +551,7 @@
   </action>
   <action name="actionFindReplace">
    <property name="text">
-    <string>Find/Replace</string>
+    <string>Find/Replace...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+F</string>
@@ -559,9 +565,15 @@
     <string>Ins</string>
    </property>
   </action>
-  <action name="actionViewUndoStack">
+  <action name="actionUndoStackView">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
-    <string>View Undo Stack</string>
+    <string>Undo Stack...</string>
+   </property>
+   <property name="toolTip">
+    <string>Open/close undo stack view</string>
    </property>
   </action>
  </widget>
@@ -575,5 +587,25 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>actionUndoStackView</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slotUndoStackView(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>266</x>
+     <y>144</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>slotUndoStackView(bool)</slot>
+ </slots>
 </ui>

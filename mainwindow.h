@@ -23,24 +23,27 @@
 
 #include <QMainWindow>
 
+class QUndoView;
+
 /*************************************************************************************************/
 /********************* Main application window showing tabbed main screens ***********************/
 /*************************************************************************************************/
 
-namespace Ui {
-  class MainWindow;
-}
+namespace Ui { class MainWindow; }
 
 class MainWindow : public QMainWindow
 {
   Q_OBJECT
-  
 public:
   explicit MainWindow( QWidget *parent = 0 );               // constructor
-  ~MainWindow();                                            // destructor
   
+public slots:
+  void slotUndoStackView( bool );              // slot to receive actionUndoStackView triggered signal
+  void slotUndoStackViewDestroyed();           // slot to receive undo stack view destroyed signal
+
 private:
-  Ui::MainWindow *ui;
+  Ui::MainWindow*  ui;                         // user interface created using qt designer
+  QUndoView*       m_undoview;                 // window to display contents of undostack
 };
 
 #endif // MAINWINDOW_H

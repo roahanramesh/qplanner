@@ -43,6 +43,7 @@ int main( int argc, char *argv[] )
 
   // create complete data model for the plan
   plan = new Plan();
+  plan->initialise();
 
   // create application main window & enter main event loop
   MainWindow window;

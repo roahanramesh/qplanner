@@ -36,7 +36,7 @@ class Calendar
 {
 public:
   Calendar();                                   // constructor
-  Calendar( DaysModel*, int );                  // constructor for initial default calendars
+  Calendar( int );                              // constructor for initial default calendars
 
   QVariant          data( int, int ) const;     // return data for row & role
 

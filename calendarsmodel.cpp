@@ -27,11 +27,17 @@
 
 /****************************************** constructor ******************************************/
 
-CalendarsModel::CalendarsModel( DaysModel* days ) : QAbstractTableModel()
+CalendarsModel::CalendarsModel() : QAbstractTableModel()
+{
+}
+
+/****************************************** initialise *******************************************/
+
+void CalendarsModel::initialise()
 {
   // create initial default calendars
   for ( int cal=0 ; cal<=Calendar::DEFAULT_MAX ; cal++ )
-    m_calendars.append( new Calendar(days,cal) );
+    m_calendars.append( new Calendar(cal) );
 }
 
 /******************************************** rowCount *******************************************/

@@ -33,9 +33,10 @@ class DaysModel;
 class CalendarsModel : public QAbstractTableModel
 {
 public:
-  CalendarsModel( DaysModel* );                                     // constructor
+  CalendarsModel();                                                 // constructor
 
   Calendar*      calendar( int n ) { return m_calendars.at(n); }    // return the n'th day calendar
+  void           initialise();                                      // create initial default contents
 
   /********************* methods to support QAbstractTableModel ************************/
 

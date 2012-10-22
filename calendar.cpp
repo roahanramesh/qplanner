@@ -44,10 +44,10 @@ Calendar::Calendar()
 
 /****************************************** constructor ******************************************/
 
-Calendar::Calendar( DaysModel* days, int type )
+Calendar::Calendar( int type )
 {
-  Day* working    = days->day( Day::DEFAULT_STANDARDWORK );
-  Day* nonWorking = days->day( Day::DEFAULT_NONWORK );
+  Day* working    = plan->day( Day::DEFAULT_STANDARDWORK );
+  Day* nonWorking = plan->day( Day::DEFAULT_NONWORK );
 
   // create calendars
   if ( type == DEFAULT_CALENDAR )
@@ -67,49 +67,49 @@ Calendar::Calendar( DaysModel* days, int type )
     }
 
     // add easter and some bank holidays
-    m_exceptions[ QDate(2008,12,25) ] = nonWorking;
-    m_exceptions[ QDate(2008,12,26) ] = nonWorking;
+    m_exceptions[ QDate(2012,12,25) ] = nonWorking;
+    m_exceptions[ QDate(2012,12,26) ] = nonWorking;
 
-    m_exceptions[ QDate(2009, 1, 1) ] = nonWorking;
-    m_exceptions[ QDate(2009, 4,10) ] = nonWorking;
-    m_exceptions[ QDate(2009, 4,13) ] = nonWorking;
-    m_exceptions[ QDate(2009, 5, 4) ] = nonWorking;
-    m_exceptions[ QDate(2009, 5,25) ] = nonWorking;
-    m_exceptions[ QDate(2009, 8,31) ] = nonWorking;
-    m_exceptions[ QDate(2009,12,25) ] = nonWorking;
-    m_exceptions[ QDate(2009,12,28) ] = nonWorking;
+    m_exceptions[ QDate(2013, 1, 1) ] = nonWorking;
+    m_exceptions[ QDate(2013, 3,29) ] = nonWorking;
+    m_exceptions[ QDate(2013, 4, 1) ] = nonWorking;
+    m_exceptions[ QDate(2013, 5, 6) ] = nonWorking;
+    m_exceptions[ QDate(2013, 5,27) ] = nonWorking;
+    m_exceptions[ QDate(2013, 8,26) ] = nonWorking;
+    m_exceptions[ QDate(2013,12,25) ] = nonWorking;
+    m_exceptions[ QDate(2013,12,26) ] = nonWorking;
   }
   else if ( type == DEFAULT_FANCY )
   {
     // create fancy calendar
     m_name        = "Fancy";
-    m_cycleAnchor = QDate(2009,1,1);
+    m_cycleAnchor = QDate(2012,1,1);
     m_cycleLength = 10;                 // 10 day cycle
     m_normal.resize( m_cycleLength );
 
     m_normal[0] = nonWorking;
     m_normal[1] = nonWorking;
     m_normal[2] = nonWorking;
-    m_normal[3] = days->day( Day::DEFAULT_SHORT );
-    m_normal[4] = days->day( Day::DEFAULT_SHORT );
-    m_normal[5] = days->day( Day::DEFAULT_EVENING );
-    m_normal[6] = days->day( Day::DEFAULT_EVENING );
-    m_normal[7] = days->day( Day::DEFAULT_TWENTYFOURHOURS );
+    m_normal[3] = plan->day( Day::DEFAULT_SHORT );
+    m_normal[4] = plan->day( Day::DEFAULT_SHORT );
+    m_normal[5] = plan->day( Day::DEFAULT_EVENING );
+    m_normal[6] = plan->day( Day::DEFAULT_EVENING );
+    m_normal[7] = plan->day( Day::DEFAULT_TWENTYFOURHOURS );
     m_normal[8] = nonWorking;
-    m_normal[9] = days->day( Day::DEFAULT_TWENTYFOURHOURS );
+    m_normal[9] = plan->day( Day::DEFAULT_TWENTYFOURHOURS );
+
+    m_exceptions[ QDate(2012,12,25) ] = nonWorking;
+    m_exceptions[ QDate(2012,12,26) ] = nonWorking;
   }
   else  // DEFAULT_FULLTIME
   {
     // create fulltime calendar
     m_name        = "Full Time";
-    m_cycleAnchor = QDate(2009,1,1);
+    m_cycleAnchor = QDate(2012,1,1);
     m_cycleLength = 1;                 // same day every day
     m_normal.resize( m_cycleLength );
 
-    m_normal[0] = days->day( Day::DEFAULT_TWENTYFOURHOURS );
-
-    m_exceptions[ QDate(2009,12,25) ] = nonWorking;
-    m_exceptions[ QDate(2009,12,28) ] = nonWorking;
+    m_normal[0] = plan->day( Day::DEFAULT_TWENTYFOURHOURS );
   }
 }
 

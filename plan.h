@@ -45,6 +45,8 @@ public:
   Plan();                       // constructor
   ~Plan();                      // destructor
 
+  void             initialise();                                    // create initial default contents
+
   TasksModel*      tasks() { return m_tasks; }                      // return tasks model pointer
   ResourcesModel*  resources() { return m_resources; }              // return resources model pointer
   CalendarsModel*  calendars() { return m_calendars; }              // return calendars model pointer
@@ -67,7 +69,7 @@ public:
   void             setTitle( QString t ) { m_title = t; }           // set title
   void             setStart( QDateTime dt ) { m_start = dt; }       // set start
   void             setDatetime_format( QString f )
-                                        { m_datetime_format = f; }  // set datetime format
+                     { m_datetime_format = f; }                     // set datetime format
 
 private:
   TasksModel*      m_tasks;             // model of plan tasks
