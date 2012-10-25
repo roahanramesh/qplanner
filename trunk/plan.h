@@ -39,8 +39,9 @@ class Day;
 /************************** Holds the complete data model for the plan ***************************/
 /*************************************************************************************************/
 
-class Plan
+class Plan : public QObject
 {
+  Q_OBJECT
 public:
   Plan();                       // constructor
   ~Plan();                      // destructor
@@ -67,17 +68,26 @@ public:
   QString          title() { return m_title; }                      // return title of plan
   QDateTime        start() { return m_start; }                      // return start of plan
   QDateTime        end();                                           // return end of plan
-  int              default_cal() { return m_default_cal; }          // return default calendar index
-  QString          datetime_format() { return m_datetime_format; }  // return datetime format
+  int              defaultCal() { return m_default_cal; }           // return default calendar index
+  QString          datetimeFormat() { return m_datetime_format; }   // return datetime format
   QString          filename() {return m_filename; }                 // return filename
-  QString          file_location() { return m_file_location; }      // return file location
-  QString          saved_by() { return m_saved_by; }                // return saved by username
-  QDateTime        saved_when() { return m_saved_when; }            // return saved datetime
+  QString          fileLocation() { return m_file_location; }       // return file location
+  QString          savedBy() { return m_saved_by; }                 // return saved by username
+  QDateTime        savedWhen() { return m_saved_when; }             // return saved datetime
+  QString          notes() { return m_notes; }                      // return notes text
 
   void             setTitle( QString t ) { m_title = t; }           // set title
   void             setStart( QDateTime dt ) { m_start = dt; }       // set start
-  void             setDatetime_format( QString f )
+  void             setDatetimeFormat( QString f )
                      { m_datetime_format = f; }                     // set datetime format
+  void             setDefaultCal( int c ) { m_default_cal = c; }    // set default calendar index
+  void             setNotes( QString n ) { m_notes = n; }           // set notes text
+
+  void             emitPropertiesUpdated()
+                     { emit signalPropertiesUpdated(); }            // emit signalPropertiesUpdated
+
+signals:
+  void  signalPropertiesUpdated();      // signal to say plan properties updated
 
 private:
   TasksModel*      m_tasks;             // model of plan tasks
@@ -95,6 +105,7 @@ private:
   QString          m_file_location;     // file location when last opened/saved
   QString          m_saved_by;          // username of who last saved
   QDateTime        m_saved_when;        // datetime when last saved
+  QString          m_notes;             // plan notes as in properties
 };
 
 #endif // PLAN_H

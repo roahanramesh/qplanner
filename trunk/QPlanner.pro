@@ -34,6 +34,7 @@ HEADERS  += mainwindow.h \
     resource.h \
     calendar.h \
     day.h \
-    propertieswidget.h
+    propertieswidget.h \
+    commandpropertieschange.h
 
 FORMS    += mainwindow.ui

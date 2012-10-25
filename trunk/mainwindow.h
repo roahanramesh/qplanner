@@ -41,6 +41,7 @@ public slots:
   void slotUndoStackView( bool );              // slot for actionUndoStackView triggered signal
   void slotUndoStackViewDestroyed();           // slot for undo stack view destroyed signal
   void slotTabChange( int );                   // slot for mainTabWidget current changed signal
+  void slotUpdatePropertiesWidgets();          // slot for ensuring 'Properties' tab widgets are up-to-date
 
 private:
   Ui::MainWindow*  ui;                         // user interface created using qt designer
