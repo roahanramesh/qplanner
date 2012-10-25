@@ -26,6 +26,8 @@
 #include "calendarsmodel.h"
 #include "daysmodel.h"
 
+#include "commandpropertieschange.h"
+
 #include <QUndoView>
 
 extern Plan*  plan;
@@ -43,7 +45,7 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
 
   // setup ui for main window
   ui->setupUi( this );
-  resize( 600, 300 );
+  resize( 900, 450 );
 
   // set models for table views
   ui->tasksView->setModel( (QAbstractItemModel*)plan->tasks() );
@@ -82,7 +84,9 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   ui->savedWhen->setPalette( const_cast<const QPalette&>(*palette) );
 
   // ensure properties widget and plan variables are kept up-to-date
+  slotUpdatePropertiesWidgets();
   connect( ui->mainTabWidget, SIGNAL(currentChanged(int)), this, SLOT(slotTabChange(int)) );
+  connect( plan, SIGNAL(signalPropertiesUpdated()), this, SLOT(slotUpdatePropertiesWidgets()) );
 }
 
 /*************************************** slotViewUndoStack ***************************************/
@@ -121,17 +125,33 @@ void MainWindow::slotUndoStackViewDestroyed()
 
 void MainWindow::slotTabChange( int index )
 {
-  // if changing away from 'Properties' tab then ensure plan is kept up-to-date
-  if ( true )
+  // check if we need to update plan from 'Properties' tab widgets
+  if ( ui->title->text()              != plan->title()          ||
+       ui->planStart->dateTime()      != plan->start()          ||
+       ui->defaultCal->currentIndex() != plan->defaultCal()     ||
+       ui->dateTimeFormat->text()     != plan->datetimeFormat() ||
+       ui->notesEdit->toPlainText()   != plan->notes() )
   {
-    // TODO !!!!!!
-    qDebug("MainWindow::slotTabChange - moving from 'Properties' index=%i",index);
+    plan->undostack()->push( new CommandPropertiesChange(
+                               ui->title->text(),              plan->title(),
+                               ui->planStart->dateTime(),      plan->start(),
+                               ui->defaultCal->currentIndex(), plan->defaultCal(),
+                               ui->dateTimeFormat->text(),     plan->datetimeFormat(),
+                               ui->notesEdit->toPlainText(),   plan->notes()) );
 
 
-    // return;
+    return;
   }
 
-  // otherwise ensure 'Properties' tab widgets are up-to-date
+  // otherwise just update the 'Properties' tab widgets
+  slotUpdatePropertiesWidgets();
+}
+
+/************************************ updatePropertiesWidgets ************************************/
+
+void MainWindow::slotUpdatePropertiesWidgets()
+{
+  // ensure 'Properties' tab widgets are up-to-date with what is in plan
   ui->title->setText( plan->title() );
   ui->title->setCursorPosition( 0 );
 
@@ -144,28 +164,30 @@ void MainWindow::slotTabChange( int index )
 
   ui->defaultCal->clear();
   ui->defaultCal->addItems( plan->calendars()->namesList() );
-  ui->defaultCal->setCurrentIndex( plan->default_cal() );
+  ui->defaultCal->setCurrentIndex( plan->defaultCal() );
 
-  ui->dateTimeFormat->setText( plan->datetime_format() );
+  ui->dateTimeFormat->setText( plan->datetimeFormat() );
   ui->dateTimeFormat->setCursorPosition( 0 );
   ui->dateTimeFormat->setToolTip( QDateTime::currentDateTime().toString(ui->dateTimeFormat->text()));
 
   ui->fileName->setText( plan->filename() );
   ui->fileName->setCursorPosition( 0 );
 
-  ui->fileLocation->setText( plan->file_location() );
+  ui->fileLocation->setText( plan->fileLocation() );
   ui->fileLocation->setCursorPosition( 0 );
-  ui->fileLocation->setToolTip( plan->file_location() );
+  ui->fileLocation->setToolTip( plan->fileLocation() );
 
-  ui->savedBy->setText( plan->saved_by() );
+  ui->savedBy->setText( plan->savedBy() );
   ui->savedBy->setCursorPosition( 0 );
 
-  ui->savedWhen->setText( plan->saved_when().toString("dd/MM/yyyy hh:mm:ss") );
+  ui->savedWhen->setText( plan->savedWhen().toString("dd/MM/yyyy hh:mm:ss") );
   ui->savedWhen->setCursorPosition( 0 );
-  ui->savedWhen->setToolTip( plan->saved_when().toString(ui->dateTimeFormat->text()) );
+  ui->savedWhen->setToolTip( plan->savedWhen().toString(ui->dateTimeFormat->text()) );
 
   ui->numTasks->setText( QString(": %1").arg(plan->numTasks()) );
   ui->numResources->setText( QString(": %1").arg(plan->numResources()) );
   ui->numCalendars->setText( QString(": %1").arg(plan->numCalendars()) );
   ui->numDays->setText( QString(": %1").arg(plan->numDays()) );
+
+  ui->notesEdit->setPlainText( plan->notes() );
 }
