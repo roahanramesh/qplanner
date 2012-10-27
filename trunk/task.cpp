@@ -18,9 +18,14 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "task.h"
-
 #include <QVariant>
+#include <QColor>
+#include <QFont>
+
+#include "task.h"
+#include "plan.h"
+
+extern Plan*  plan;
 
 /*************************************************************************************************/
 /*************************************** Single plan task ****************************************/
@@ -43,18 +48,174 @@ Task::Task()
 
 /****************************************** headerData *******************************************/
 
-QVariant  Task::headerData( int section )
+QVariant  Task::headerData( int column )
 {
   // return section horizontal header title text
-  if ( section == SECTION_TITLE )         return "Title";
-  else if ( section == SECTION_DURATION ) return "Duration";
-  else if ( section == SECTION_WORK )     return "Work";
-  else if ( section == SECTION_TYPE )     return "Type";
-  else if ( section == SECTION_START )    return "Start";
-  else if ( section == SECTION_END )      return "End";
-  else if ( section == SECTION_RES )      return "Resources";
-  else if ( section == SECTION_COST )     return "Cost";
-  else if ( section == SECTION_PRIORITY ) return "Priority";
-  else if ( section == SECTION_COMMENT )  return "Comment";
-  else return QVariant();
+  if ( column == SECTION_TITLE )    return "Title";
+  if ( column == SECTION_DURATION ) return "Duration";
+  if ( column == SECTION_WORK )     return "Work";
+  if ( column == SECTION_TYPE )     return "Type";
+  if ( column == SECTION_START )    return "Start";
+  if ( column == SECTION_END )      return "End";
+  if ( column == SECTION_RES )      return "Resources";
+  if ( column == SECTION_COST )     return "Cost";
+  if ( column == SECTION_PRIORITY ) return "Priority";
+  if ( column == SECTION_COMMENT )  return "Comment";
+  return QVariant();
+}
+
+/************************************* dataBackgroundColorRole ***********************************/
+
+QVariant  Task::dataBackgroundColorRole( int col ) const
+{
+  // return appropriate background colour for summary calculated cells
+  if ( isSummary() &&
+       col != SECTION_TITLE &&
+       col != SECTION_COMMENT ) return QColor( "#E0E0E0" );
+
+  // return appropriate background colour from plan cell
+  if ( col    == SECTION_WORK &&
+       m_type != TYPE_ASAP_FWORK &&
+       m_type != TYPE_SON_FWORK ) return QColor( "#F0F0F0" );
+
+  if ( col    == SECTION_DURATION &&
+       m_type != TYPE_ASAP_FDUR &&
+       m_type != TYPE_SON_FDUR ) return QColor( "#F0F0F0" );
+
+  if ( col    == SECTION_START &&
+       m_type != TYPE_SON_FWORK &&
+       m_type != TYPE_SON_FDUR ) return QColor( "#F0F0F0" );
+
+  if ( col    == SECTION_END &&
+       m_type != TYPE_FIXED_PERIOD ) return QColor( "#F0F0F0" );
+
+  if ( col    == SECTION_COST ) return QColor( "#F0F0F0" );
+
+  return QVariant();
+}
+
+/***************************************** dataEditRole ******************************************/
+
+QVariant  Task::dataEditRole( int col ) const
+{
+  // return data in a form suitable for editing in an editor
+  if ( col == SECTION_TITLE ) return m_title; // return title without indentation
+
+  if ( col == SECTION_TYPE  ) return m_type;  // return m_types as int for QComboBox index
+
+  if ( col == SECTION_START )
+  {
+    if ( m_start.isValid() ) return m_start;
+    return plan->start();
+  }
+
+  if ( col == SECTION_END )
+  {
+    if ( m_end.isValid() ) return m_end;
+    return plan->start();
+  }
+
+  if ( col == SECTION_WORK )
+  {
+    // return m_work as float for QDoubleSpinBox value
+    if ( m_work < 0 ) return 1;
+    return m_work;
+  }
+
+  if ( col == SECTION_DURATION )
+  {
+    // return m_duration as float for QDoubleSpinBox value
+    if ( m_duration < 0 ) return 1;
+    return m_duration;
+  }
+
+  // if not any of above return display text
+  return dataDisplayRole( col );
+}
+
+/************************************* dataTextAlignmentRole *************************************/
+
+QVariant  Task::dataTextAlignmentRole( int col ) const
+{
+  // return right aligned if numeric field
+  if ( col == SECTION_DURATION ||
+       col == SECTION_WORK ||
+       col == SECTION_COST ||
+       col == SECTION_PRIORITY ) return Qt::AlignRight;
+
+  // return centre aligned if date or m_type field
+  if ( col == SECTION_START ||
+       col == SECTION_END ||
+       col == SECTION_TYPE ) return Qt::AlignHCenter;
+
+  return QVariant();
+}
+
+/**************************************** dataToolTipRole ****************************************/
+
+QVariant  Task::dataToolTipRole( int col ) const
+{
+  // return tool tip text for cell
+  if ( col == SECTION_START && m_start.isValid() )
+    return m_start.toString( "ddd dd MMM yyyy hh:mm" );
+
+  if ( col == SECTION_END && m_end.isValid() )
+    return m_end.toString( "ddd dd MMM yyyy hh:mm" );
+
+  return QVariant();
+}
+
+/***************************************** dataFontRole ******************************************/
+
+QVariant  Task::dataFontRole( int col ) const
+{
+  Q_UNUSED(col);
+
+  // return bold font for cell if task is a summary
+  if ( isSummary() )
+  {
+    QFont font;
+    font.setBold( TRUE );
+    return font;
+  }
+
+  return QVariant();
+}
+
+/***************************************** dataDisplayRole ***************************************/
+
+QVariant  Task::dataDisplayRole( int col ) const
+{
+  // if summary return appropriate display text for summary calculated cells
+  if ( isSummary() )
+  {
+    // TODO
+      return QVariant();
+  }
+
+  // return appropriate display text from plan data
+  if ( col == SECTION_TITLE ) return QString( 2*abs(m_indent), QChar::Nbsp ) + m_title;
+
+  if ( col == SECTION_DURATION && m_duration >= 0 )
+    return QString("%1 d").arg( m_duration );
+
+  if ( col == SECTION_WORK && m_work >= 0 )
+    return QString("%1 d").arg( m_work );
+
+  //if ( col == SECTION_TYPE ) return typeToString( m_type );
+
+  if ( col == SECTION_START ) return m_start.toString( plan->datetimeFormat() );
+
+  if ( col == SECTION_END ) return m_end.toString( plan->datetimeFormat() );
+
+  if ( col == SECTION_RES ) return "";
+
+  if ( col == SECTION_COST && m_cost >= 0 )
+    return QString("£ %1").arg( m_cost );
+
+  if ( col == SECTION_PRIORITY ) return m_priority;
+
+  if ( col == SECTION_COMMENT ) return m_comment;
+
+  return QVariant();
 }

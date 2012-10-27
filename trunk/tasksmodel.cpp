@@ -80,7 +80,15 @@ QVariant TasksModel::data( const QModelIndex& index, int role  = Qt::DisplayRole
   int row = index.row();
   if ( row<0 || row>=m_tasks.size() ) return QVariant();
 
-  //qDebug("TasksModel::data row=%i col=%i role=%i",row,index.column(),role);
+  int col = index.column();
+  if ( role == Qt::DisplayRole )         return m_tasks.at(row)->dataDisplayRole( col );
+  if ( role == Qt::ToolTipRole )         return m_tasks.at(row)->dataToolTipRole( col );
+  if ( role == Qt::EditRole )            return m_tasks.at(row)->dataEditRole( col );
+  if ( role == Qt::TextAlignmentRole )   return m_tasks.at(row)->dataTextAlignmentRole( col );
+  if ( role == Qt::BackgroundColorRole ) return m_tasks.at(row)->dataBackgroundColorRole( col );
+  if ( role == Qt::FontRole )            return m_tasks.at(row)->dataFontRole( col );
+
+  // otherwise return an invalid QVariant
   return QVariant();
 }
 
@@ -113,8 +121,14 @@ QVariant TasksModel::headerData( int section, Qt::Orientation orientation, int r
 
 /********************************************* flags *********************************************/
 
-Qt::ItemFlags TasksModel::flags( const QModelIndex& ind ) const
+Qt::ItemFlags TasksModel::flags( const QModelIndex& index ) const
 {
-  // TODO
+  // if task is summary, then some cells not editable
+  if ( m_tasks.at(index.row())->isSummary() &&
+       index.column() != Task::SECTION_TITLE &&
+       index.column() != Task::SECTION_COMMENT )
+    return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+
+  // otherwise cell is enabled, selectable, editable
   return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
 }

@@ -22,7 +22,7 @@
 #define RESOURCE_H
 
 #include <QString>
-#include <QDateTime>
+#include <QDate>
 
 class Calendar;
 
@@ -33,11 +33,14 @@ class Calendar;
 class Resource
 {
 public:
-  Resource();                                   // constructor
+  Resource();                                                   // constructor
 
-  static QVariant   headerData( int );          // return column header data
+  static QVariant   headerData( int );                          // return column header data
+  QVariant          data( int, int );                           // return data for column & role
 
-  enum sections                                 // sections to be displayed by view
+  QString           initials() const { return m_initials; }     // return initials
+
+  enum sections                            // sections to be displayed by view
   {
     SECTION_MINIMUM  = 0,
     SECTION_INITIALS = 0,
@@ -47,10 +50,11 @@ public:
     SECTION_START    = 4,
     SECTION_END      = 5,
     SECTION_AVAIL    = 6,
-    SECTION_COST     = 7,
-    SECTION_CALENDAR = 8,
-    SECTION_COMMENT  = 9,
-    SECTION_MAXIMUM  = 9
+    SECTION_ABILITY  = 7,
+    SECTION_COST     = 8,
+    SECTION_CALENDAR = 9,
+    SECTION_COMMENT  = 10,
+    SECTION_MAXIMUM  = 10
   };
 
 private:
@@ -58,11 +62,12 @@ private:
   QString            m_name;               // free text
   QString            m_org;                // free text
   QString            m_group;              // free text
-  QDateTime          m_start;
-  QDateTime          m_end;
-  qreal              m_availability;
-  qreal              m_cost;
-  Calendar*          m_calendar;
+  QDate              m_start;              // date availability starts
+  QDate              m_end;                // date availability end
+  qreal              m_availability;       // number available
+  qreal              m_ability;            // ability factor - typical 1.0
+  qreal              m_cost;               // cost TODO
+  Calendar*          m_calendar;           // base calendar for resource
   QString            m_comment;            // free text
 };
 
