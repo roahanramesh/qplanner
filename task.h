@@ -31,11 +31,19 @@
 class Task
 {
 public:
-  Task();                                       // constructor
+  Task();                                                         // constructor
 
-  static QVariant   headerData( int );          // return column header data
+  static QVariant   headerData( int );                            // return column header data
+  QVariant          dataDisplayRole( int ) const;                 // return display text for cell
+  QVariant          dataEditRole( int ) const;                    // return cell data ready for editor
+  QVariant          dataBackgroundColorRole( int ) const;         // return background colour for cell
+  QVariant          dataTextAlignmentRole( int ) const;           // return text alignment for cell
+  QVariant          dataToolTipRole( int ) const;                 // return tool tip text for cell
+  QVariant          dataFontRole( int ) const;                    // return font for cell
 
-  enum sections                                 // sections to be displayed by view
+  bool              isSummary() const { return m_summary; }       // is the task a summary
+
+  enum sections                 // sections to be displayed by view
   {
     SECTION_MINIMUM  = 0,
     SECTION_TITLE    = 0,
@@ -51,7 +59,7 @@ public:
     SECTION_MAXIMUM  = 9
   };
 
-  enum typeEnum
+  enum task_type
   {
     TYPE_ASAP_FWORK    = 0,     // Early as possible - fixed work
     TYPE_ASAP_FDUR     = 1,     // Early as possible - fixed duration
@@ -62,19 +70,19 @@ public:
   };
 
 private:
-  short      m_indent;
-  bool       m_summary;
-  bool       m_expanded;
-  QString    m_title;
-  float      m_duration;
-  float      m_work;
-  char       m_type;
-  QDateTime  m_start;
-  QDateTime  m_end;
-  QString    m_resources;
-  float      m_cost;
-  short      m_priority;
-  QString    m_comment;
+  short       m_indent;          // task indent level, zero for no indent
+  bool        m_summary;         // is a summary task
+  bool        m_expanded;        // is summary task expanded
+  QString     m_title;           // free text title
+  float       m_duration;        //
+  float       m_work;            //
+  char        m_type;            // see enumerator task_type
+  QDateTime   m_start;
+  QDateTime   m_end;
+  QString     m_resources;
+  float       m_cost;
+  short       m_priority;
+  QString     m_comment;
 };
 
 #endif // TASK_H

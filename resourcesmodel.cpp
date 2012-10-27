@@ -47,7 +47,13 @@ void ResourcesModel::setColumnWidths( QTableView* table )
 {
   // set initial column widths
   table->setColumnWidth( Resource::SECTION_INITIALS,  50 );
-  table->setColumnWidth( Resource::SECTION_COMMENT,  200 );
+  table->setColumnWidth( Resource::SECTION_NAME,     150 );
+  table->setColumnWidth( Resource::SECTION_ORG,      150 );
+  table->setColumnWidth( Resource::SECTION_GROUP,    150 );
+  table->setColumnWidth( Resource::SECTION_AVAIL,     65 );
+  table->setColumnWidth( Resource::SECTION_ABILITY,   65 );
+  table->setColumnWidth( Resource::SECTION_COST,      65 );
+  table->setColumnWidth( Resource::SECTION_COMMENT,  250 );
 }
 
 /******************************************** rowCount *******************************************/
@@ -77,8 +83,7 @@ QVariant ResourcesModel::data( const QModelIndex& index, int role  = Qt::Display
   int row = index.row();
   if ( row<0 || row>=m_resources.size() ) return QVariant();
 
-  //qDebug("ResourcesModel::data row=%i col=%i role=%i",row,index.column(),role);
-  return QVariant();
+  return m_resources.at(row)->data( index.column(), role );
 }
 
 /******************************************** setData ********************************************/
@@ -110,8 +115,14 @@ QVariant ResourcesModel::headerData( int section, Qt::Orientation orientation, i
 
 /********************************************* flags *********************************************/
 
-Qt::ItemFlags ResourcesModel::flags( const QModelIndex& ind ) const
+Qt::ItemFlags ResourcesModel::flags( const QModelIndex& index ) const
 {
-  // TODO
+  // if initials are blank, other sections are not editable
+  int row = index.row();
+  int col = index.column();
+  if ( col != Resource::SECTION_INITIALS  &&  m_resources.at(row)->initials().isEmpty() )
+    return 0;
+
+  // otherwise item is selectable/enabled/editable
   return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
 }

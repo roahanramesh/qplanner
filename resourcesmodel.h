@@ -39,7 +39,7 @@ public:
   void           setColumnWidths( QTableView* );                        // set initial column widths
 
   Resource*      resource( int n ) { return m_resources.at(n); }        // return the n'th resource
-  int            number() { return m_resources.size(); }                // return number of tasks in plan
+  int            number() { return m_resources.size(); }                // return number of resources in plan
 
   /********************* methods to support QAbstractTableModel ************************/
 
