@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     task.cpp \
     resource.cpp \
     calendar.cpp \
-    day.cpp
+    day.cpp \
+    predecessors.cpp
 
 HEADERS  += mainwindow.h \
     plan.h \
@@ -35,6 +36,7 @@ HEADERS  += mainwindow.h \
     calendar.h \
     day.h \
     propertieswidget.h \
-    commandpropertieschange.h
+    commandpropertieschange.h \
+    predecessors.h
 
 FORMS    += mainwindow.ui

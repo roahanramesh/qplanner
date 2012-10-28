@@ -400,9 +400,9 @@
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
-   <widget class="QMenu" name="menuEdit">
+   <widget class="QMenu" name="menuEditTemp">
     <property name="title">
-     <string>Edit</string>
+     <string>EditTemp</string>
     </property>
     <addaction name="actionUndo"/>
     <addaction name="actionRedo"/>
@@ -415,6 +415,7 @@
     <addaction name="actionDelete"/>
     <addaction name="separator"/>
     <addaction name="actionFindReplace"/>
+    <addaction name="actionSchedule"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -426,6 +427,7 @@
     <property name="title">
      <string>Report</string>
     </property>
+    <addaction name="actionTBD"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -433,8 +435,14 @@
     </property>
     <addaction name="actionUndoStackView"/>
    </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
+   <addaction name="menuEditTemp"/>
    <addaction name="menuReport"/>
    <addaction name="menuView"/>
    <addaction name="menuHelp"/>
@@ -447,119 +455,216 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionOpen"/>
+   <addaction name="actionSchedule"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOpen">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Open...</string>
+   </property>
+   <property name="statusTip">
+    <string>Open a file containing a plan</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
    </property>
   </action>
   <action name="actionNew">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>New</string>
+   </property>
+   <property name="statusTip">
+    <string>Start a new plan</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
    </property>
   </action>
   <action name="actionSave">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Save</string>
+   </property>
+   <property name="statusTip">
+    <string>Save plan to existing file</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
    </property>
   </action>
   <action name="actionSaveAs">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Save As...</string>
    </property>
+   <property name="statusTip">
+    <string>Save plan to new file</string>
+   </property>
   </action>
   <action name="actionExit">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Exit</string>
+   </property>
+   <property name="statusTip">
+    <string>Exit QPlanner application</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
    </property>
   </action>
   <action name="actionPrintPreview">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Print preview...</string>
    </property>
+   <property name="statusTip">
+    <string>Print preview of plan</string>
+   </property>
   </action>
   <action name="actionPrint">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Print...</string>
    </property>
+   <property name="statusTip">
+    <string>Print plan</string>
+   </property>
   </action>
   <action name="actionAboutQPlanner">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>About QPlanner...</string>
    </property>
+   <property name="statusTip">
+    <string>Information about QPlanner</string>
+   </property>
   </action>
   <action name="actionRedo">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Redo</string>
+   </property>
+   <property name="statusTip">
+    <string>--- replaced by redo action from undostack ---</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Y</string>
    </property>
   </action>
   <action name="actionUndo">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Undo</string>
+   </property>
+   <property name="statusTip">
+    <string>--- replaced by undo action from undostack ---</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Z</string>
    </property>
   </action>
   <action name="actionCut">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Cut</string>
+   </property>
+   <property name="statusTip">
+    <string>Cut selection</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+X</string>
    </property>
   </action>
   <action name="actionCopy">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Copy</string>
+   </property>
+   <property name="statusTip">
+    <string>Copy selection</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+C</string>
    </property>
   </action>
   <action name="actionPaste">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Paste</string>
+   </property>
+   <property name="statusTip">
+    <string>Paste from clipboard</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+V</string>
    </property>
   </action>
   <action name="actionDelete">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Delete</string>
+   </property>
+   <property name="statusTip">
+    <string>Delete selection</string>
    </property>
    <property name="shortcut">
     <string>Del</string>
    </property>
   </action>
   <action name="actionFindReplace">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Find/Replace...</string>
+   </property>
+   <property name="statusTip">
+    <string>Find &amp; Replace</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+F</string>
    </property>
   </action>
   <action name="actionInsert">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Insert</string>
+   </property>
+   <property name="statusTip">
+    <string>Insert above</string>
    </property>
    <property name="shortcut">
     <string>Ins</string>
@@ -574,6 +679,25 @@
    </property>
    <property name="toolTip">
     <string>Open/close undo stack view</string>
+   </property>
+   <property name="statusTip">
+    <string>Open/close undo stack view</string>
+   </property>
+  </action>
+  <action name="actionTBD">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>TBD</string>
+   </property>
+  </action>
+  <action name="actionSchedule">
+   <property name="text">
+    <string>Schedule</string>
+   </property>
+   <property name="statusTip">
+    <string>Calculate project schedule</string>
    </property>
   </action>
  </widget>

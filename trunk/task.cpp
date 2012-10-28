@@ -57,6 +57,8 @@ QVariant  Task::headerData( int column )
   if ( column == SECTION_TYPE )     return "Type";
   if ( column == SECTION_START )    return "Start";
   if ( column == SECTION_END )      return "End";
+  if ( column == SECTION_PREDS )    return "Predecessors";
+  if ( column == SECTION_DEADLINE ) return "Deadline";
   if ( column == SECTION_RES )      return "Resources";
   if ( column == SECTION_COST )     return "Cost";
   if ( column == SECTION_PRIORITY ) return "Priority";
@@ -115,6 +117,12 @@ QVariant  Task::dataEditRole( int col ) const
     return plan->start();
   }
 
+  if ( col == SECTION_DEADLINE )
+  {
+    if ( m_deadline.isValid() ) return m_deadline;
+    return plan->start();
+  }
+
   if ( col == SECTION_WORK )
   {
     // return m_work as float for QDoubleSpinBox value
@@ -146,6 +154,7 @@ QVariant  Task::dataTextAlignmentRole( int col ) const
   // return centre aligned if date or m_type field
   if ( col == SECTION_START ||
        col == SECTION_END ||
+       col == SECTION_DEADLINE ||
        col == SECTION_TYPE ) return Qt::AlignHCenter;
 
   return QVariant();
@@ -161,6 +170,9 @@ QVariant  Task::dataToolTipRole( int col ) const
 
   if ( col == SECTION_END && m_end.isValid() )
     return m_end.toString( "ddd dd MMM yyyy hh:mm" );
+
+  if ( col == SECTION_DEADLINE && m_deadline.isValid() )
+    return m_deadline.toString( "ddd dd MMM yyyy hh:mm" );
 
   return QVariant();
 }
@@ -202,11 +214,15 @@ QVariant  Task::dataDisplayRole( int col ) const
   if ( col == SECTION_WORK && m_work >= 0 )
     return QString("%1 d").arg( m_work );
 
-  //if ( col == SECTION_TYPE ) return typeToString( m_type );
+  if ( col == SECTION_TYPE ) return typeToString( m_type );
 
   if ( col == SECTION_START ) return m_start.toString( plan->datetimeFormat() );
 
   if ( col == SECTION_END ) return m_end.toString( plan->datetimeFormat() );
+
+  if ( col == SECTION_PREDS ) return m_predecessors.toString();
+
+  if ( col == SECTION_DEADLINE ) return m_deadline.toString( plan->datetimeFormat() );
 
   if ( col == SECTION_RES ) return "";
 
@@ -218,4 +234,17 @@ QVariant  Task::dataDisplayRole( int col ) const
   if ( col == SECTION_COMMENT ) return m_comment;
 
   return QVariant();
+}
+
+/***************************************** typetoString ******************************************/
+
+QString  Task::typeToString( int type )
+{
+  // return type string description equivalent
+  if ( type == TYPE_ASAP_FWORK )   return "ASAP - work fixed";
+  if ( type == TYPE_ASAP_FDUR )    return "ASAP - duration fixed";
+  if ( type == TYPE_SON_FWORK )    return "Start on - work fixed";
+  if ( type == TYPE_SON_FDUR )     return "Start on - duration fixed";
+  if ( type == TYPE_FIXED_PERIOD ) return "Fixed period";
+  return "";
 }
