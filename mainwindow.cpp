@@ -87,6 +87,26 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   slotUpdatePropertiesWidgets();
   connect( ui->mainTabWidget, SIGNAL(currentChanged(int)), this, SLOT(slotTabChange(int)) );
   connect( plan, SIGNAL(signalPropertiesUpdated()), this, SLOT(slotUpdatePropertiesWidgets()) );
+
+  // construct Edit menu with undostack undo & redo actions at the top
+  QAction* undoAction = plan->undostack()->createUndoAction( this );
+  undoAction->setShortcut( QKeySequence::Undo );
+  undoAction->setStatusTip( "Undo the last operation" );
+  ui->menuEdit->addAction( undoAction );
+  QAction* redoAction = plan->undostack()->createRedoAction( this );
+  redoAction->setShortcut( QKeySequence::Redo );
+  redoAction->setStatusTip( "Redo the last operation" );
+  ui->menuEdit->addAction( redoAction );
+  ui->menuEdit->addSeparator();
+  ui->menuEdit->addAction( ui->actionInsert );
+  ui->menuEdit->addSeparator();
+  ui->menuEdit->addAction( ui->actionCut );
+  ui->menuEdit->addAction( ui->actionCopy );
+  ui->menuEdit->addAction( ui->actionPaste );
+  ui->menuEdit->addAction( ui->actionDelete );
+  ui->menuEdit->addSeparator();
+  ui->menuEdit->addAction( ui->actionFindReplace );
+  delete ui->menuEditTemp;
 }
 
 /*************************************** slotViewUndoStack ***************************************/

@@ -37,7 +37,11 @@ TasksModel::TasksModel() : QAbstractTableModel()
 
 void TasksModel::initialise()
 {
-  // create initial plan blank task
+  // create initial plan blank tasks
+  m_tasks.append( new Task() );
+  m_tasks.append( new Task() );
+  m_tasks.append( new Task() );
+  m_tasks.append( new Task() );
   m_tasks.append( new Task() );
 }
 
