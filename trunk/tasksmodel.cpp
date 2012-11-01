@@ -53,7 +53,9 @@ void TasksModel::setColumnWidths( QTableView* table )
   table->setColumnWidth( Task::SECTION_TITLE,    200 );
   table->setColumnWidth( Task::SECTION_DURATION,  60 );
   table->setColumnWidth( Task::SECTION_WORK,      60 );
+  table->setColumnWidth( Task::SECTION_TYPE,     150 );
   table->setColumnWidth( Task::SECTION_PRIORITY,  50 );
+  table->setColumnWidth( Task::SECTION_COST,      50 );
   table->setColumnWidth( Task::SECTION_COMMENT,  200 );
 }
 
@@ -108,6 +110,12 @@ bool TasksModel::setData( const QModelIndex& index, const QVariant& value, int r
 
 
   // TODO
+  int row = index.row();
+  int col = index.column();
+  qDebug("TasksModel::setData  row=%i col=%i value=%s",row,col,qPrintable(value.toString()));
+  TimeSpan ts = TimeSpan( value.toString() );
+  if ( ts.isValid() ) qDebug("VALID %f %c",ts.number(),ts.units());
+  else qDebug("INVALID");
   return FALSE;
 }
 
@@ -127,6 +135,11 @@ QVariant TasksModel::headerData( int section, Qt::Orientation orientation, int r
 
 Qt::ItemFlags TasksModel::flags( const QModelIndex& index ) const
 {
+  // if task is blank, then only title is enabled, selectable, editable
+  if ( m_tasks.at(index.row())->isBlank() &&
+       index.column() != Task::SECTION_TITLE )
+    return 0;
+
   // if task is summary, then some cells not editable
   if ( m_tasks.at(index.row())->isSummary() &&
        index.column() != Task::SECTION_TITLE &&

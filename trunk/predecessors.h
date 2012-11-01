@@ -22,6 +22,11 @@
 #define PREDECESSORS_H
 
 #include <QString>
+#include <QList>
+
+#include "timespan.h"
+
+class Task;
 
 /*************************************************************************************************/
 /********************** Task predecessors shows dependencies on other tasks **********************/
@@ -34,7 +39,24 @@ public:
 
   QString     toString() const;                      // return string for display in tasks view
 
+  enum pred_type
+  {
+    TYPE_FINISH_START  = 0,     // Finish (other task) to start (this start)
+    TYPE_START_START   = 1,     // Start to start
+    TYPE_START_FINISH  = 2,     // Start to finish
+    TYPE_FINISH_FINSIH = 3,     // Finish to finish
+    TYPE_DEFAULT       = 0
+  };
+
+  typedef struct
+  {
+    Task*     task;
+    uchar     type;
+    TimeSpan  lag;
+  } Predecessor;
+
 private:
+  QList<Predecessor>    m_preds;      // list of task predecessors
 
 };
 

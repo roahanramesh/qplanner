@@ -39,10 +39,8 @@ Task::Task()
   m_indent   = 0;
   m_summary  = FALSE;
   m_expanded = TRUE;
-  m_duration = -1.0;
-  m_work     = -1.0;
   m_type     = TYPE_DEFAULT;
-  m_cost     = -1.0;
+  m_cost     = 0.0;
   m_priority = 100;
 }
 
@@ -70,6 +68,9 @@ QVariant  Task::headerData( int column )
 
 QVariant  Task::dataBackgroundColorRole( int col ) const
 {
+  // if task is blank grey out all but title
+  if ( isBlank() && col != SECTION_TITLE ) return QColor( "#F0F0F0" );
+
   // return appropriate background colour for summary calculated cells
   if ( isSummary() &&
        col != SECTION_TITLE &&
@@ -126,15 +127,15 @@ QVariant  Task::dataEditRole( int col ) const
   if ( col == SECTION_WORK )
   {
     // return m_work as float for QDoubleSpinBox value
-    if ( m_work < 0 ) return 1;
-    return m_work;
+    //if ( m_work < 0 ) return 1;
+    return m_work.toString();
   }
 
   if ( col == SECTION_DURATION )
   {
     // return m_duration as float for QDoubleSpinBox value
-    if ( m_duration < 0 ) return 1;
-    return m_duration;
+    //if ( m_duration < 0 ) return 1;
+    return m_duration.toString();
   }
 
   // if not any of above return display text
@@ -198,6 +199,9 @@ QVariant  Task::dataFontRole( int col ) const
 
 QVariant  Task::dataDisplayRole( int col ) const
 {
+  // negative indent means blank task
+  if ( isBlank() ) return QVariant();
+
   // if summary return appropriate display text for summary calculated cells
   if ( isSummary() )
   {
@@ -208,11 +212,9 @@ QVariant  Task::dataDisplayRole( int col ) const
   // return appropriate display text from plan data
   if ( col == SECTION_TITLE ) return QString( 2*abs(m_indent), QChar::Nbsp ) + m_title;
 
-  if ( col == SECTION_DURATION && m_duration >= 0 )
-    return QString("%1 d").arg( m_duration );
+  if ( col == SECTION_DURATION ) return m_duration.toString();
 
-  if ( col == SECTION_WORK && m_work >= 0 )
-    return QString("%1 d").arg( m_work );
+  if ( col == SECTION_WORK ) return m_work.toString();
 
   if ( col == SECTION_TYPE ) return typeToString( m_type );
 
@@ -226,8 +228,7 @@ QVariant  Task::dataDisplayRole( int col ) const
 
   if ( col == SECTION_RES ) return "";
 
-  if ( col == SECTION_COST && m_cost >= 0 )
-    return QString("£ %1").arg( m_cost );
+  if ( col == SECTION_COST ) return QString("£ %1").arg( m_cost );
 
   if ( col == SECTION_PRIORITY ) return m_priority;
 

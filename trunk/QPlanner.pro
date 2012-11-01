@@ -37,6 +37,7 @@ HEADERS  += mainwindow.h \
     day.h \
     propertieswidget.h \
     commandpropertieschange.h \
-    predecessors.h
+    predecessors.h \
+    timespan.h
 
 FORMS    += mainwindow.ui
