@@ -102,21 +102,16 @@ QVariant TasksModel::data( const QModelIndex& index, int role  = Qt::DisplayRole
 
 bool TasksModel::setData( const QModelIndex& index, const QVariant& value, int role = Qt::EditRole )
 {
-  // if ind is not valid, return FALSE - can't set data
-  if ( !index.isValid() ) return FALSE;
+  // if index is not valid, return false - can't set data
+  if ( !index.isValid() ) return false;
 
-  // if role is not Qt::EditRole, return FALSE - can't set data
-  if ( role != Qt::EditRole ) return FALSE;
+  // if role is not Qt::EditRole, return false - can't set data
+  if ( role != Qt::EditRole ) return false;
 
-
-  // TODO
+  // try to set data
   int row = index.row();
   int col = index.column();
-  qDebug("TasksModel::setData  row=%i col=%i value=%s",row,col,qPrintable(value.toString()));
-  TimeSpan ts = TimeSpan( value.toString() );
-  if ( ts.isValid() ) qDebug("VALID %f %c",ts.number(),ts.units());
-  else qDebug("INVALID");
-  return FALSE;
+  return m_tasks.at( row )->setData( row, col, value );
 }
 
 /****************************************** headerData *******************************************/

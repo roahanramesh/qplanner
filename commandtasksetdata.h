@@ -18,42 +18,59 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RESOURCESMODEL_H
-#define RESOURCESMODEL_H
+#ifndef COMMANDTASKSETDATA_H
+#define COMMANDTASKSETDATA_H
 
-#include <QAbstractTableModel>
+#include <QUndoCommand>
 
-class Resource;
-class QTableView;
+#include "plan.h"
+extern Plan*  plan;
+
+#include "task.h"
+#include "tasksmodel.h"
 
 /*************************************************************************************************/
-/**************************** Table model containing all resources *******************************/
+/********************** Command for TasksModek setting data for QUndoStack ***********************/
 /*************************************************************************************************/
 
-class ResourcesModel : public QAbstractTableModel
+class CommandTaskSetData : public QUndoCommand
 {
-  Q_OBJECT
 public:
-  ResourcesModel();                                                     // constructor
+  CommandTaskSetData( const Task* old_task, int row, int col, const QVariant& new_value )
+  {
+    // set private variables for new and old values
+    m_old_task  = *old_task;
+    m_row       = row;
+    m_column    = col;
+    m_new_value = new_value;
 
-  void           initialise();                                          // create initial default contents
-  void           setColumnWidths( QTableView* );                        // set initial column widths
+    // construct command description
+    setText( QString("'%1' %2 = %3")
+             .arg( old_task->name() )
+             .arg( Task::headerData( col ).toString() )
+             .arg( new_value.toString() ) );
+  }
 
-  Resource*      resource( int n ) { return m_resources.at(n); }        // return the n'th resource
-  int            number() { return m_resources.size(); }                // return number of resources in plan
+  void  redo()
+  {
+    // update plan with new values
+    plan->task( m_row )->setDataDirect( m_column, m_new_value );
+    plan->tasks()->emitDataChanged( m_row );
+  }
 
-  /********************* methods to support QAbstractTableModel ************************/
-
-  int            rowCount( const QModelIndex& parent = QModelIndex() ) const;     // implement virtual row count
-  int            columnCount( const QModelIndex& parent = QModelIndex() ) const;  // implement virtual column count
-  QVariant       data( const QModelIndex&, int ) const;                           // implement virtual return data
-  bool           setData( const QModelIndex&, const QVariant&, int );             // implement virtual set data
-  QVariant       headerData( int, Qt::Orientation, int ) const;                   // implement virtual header data
-  Qt::ItemFlags  flags( const QModelIndex& ) const;                               // implement virtual return flags
+  void  undo()
+  {
+    // revert plan back to old values
+    Task* task = plan->task( m_row );
+    *task = m_old_task;
+    plan->tasks()->emitDataChanged( m_row );
+  }
 
 private:
-  QList<Resource*>  m_resources;       // list of resources available to plan
-
+  Task      m_old_task;
+  int       m_row;
+  int       m_column;
+  QVariant  m_new_value;
 };
 
-#endif // RESOURCESMODEL_H
+#endif // COMMANDTASKSETDATA_H

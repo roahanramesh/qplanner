@@ -82,17 +82,17 @@ QVariant CalendarsModel::data( const QModelIndex& index, int role  = Qt::Display
 
 /******************************************** setData ********************************************/
 
-bool CalendarsModel::setData( const QModelIndex& ind, const QVariant& value, int role = Qt::EditRole )
+bool CalendarsModel::setData( const QModelIndex& index, const QVariant& value, int role = Qt::EditRole )
 {
-  // if ind is not valid, return FALSE - can't set data
-  if ( !ind.isValid() ) return FALSE;
+  // if index is not valid, return false - can't set data
+  if ( !index.isValid() ) return false;
 
-  // if role is not Qt::EditRole, return FALSE - can't set data
-  if ( role != Qt::EditRole ) return FALSE;
+  // if role is not Qt::EditRole, return false - can't set data
+  if ( role != Qt::EditRole ) return false;
 
 
   // TODO
-  return FALSE;
+  return false;
 }
 
 /****************************************** headerData *******************************************/

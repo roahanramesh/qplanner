@@ -22,10 +22,11 @@
 #include <QColor>
 #include <QFont>
 
-#include "task.h"
 #include "plan.h"
-
 extern Plan*  plan;
+
+#include "task.h"
+#include "commandtasksetdata.h"
 
 /*************************************************************************************************/
 /*************************************** Single plan task ****************************************/
@@ -37,8 +38,8 @@ Task::Task()
 {
   // set task variables to default/null values
   m_indent   = 0;
-  m_summary  = FALSE;
-  m_expanded = TRUE;
+  m_summary  = false;
+  m_expanded = true;
   m_type     = TYPE_DEFAULT;
   m_cost     = 0.0;
   m_priority = 100;
@@ -69,30 +70,30 @@ QVariant  Task::headerData( int column )
 QVariant  Task::dataBackgroundColorRole( int col ) const
 {
   // if task is blank grey out all but title
-  if ( isBlank() && col != SECTION_TITLE ) return QColor( "#F0F0F0" );
+  if ( isBlank() && col != SECTION_TITLE ) return QColor( "#F0F0E0" );
 
   // return appropriate background colour for summary calculated cells
   if ( isSummary() &&
        col != SECTION_TITLE &&
-       col != SECTION_COMMENT ) return QColor( "#E0E0E0" );
+       col != SECTION_COMMENT ) return QColor( "#F0F0E0" );
 
   // return appropriate background colour from plan cell
   if ( col    == SECTION_WORK &&
        m_type != TYPE_ASAP_FWORK &&
-       m_type != TYPE_SON_FWORK ) return QColor( "#F0F0F0" );
+       m_type != TYPE_SON_FWORK ) return QColor( "#F0F0E0" );
 
   if ( col    == SECTION_DURATION &&
        m_type != TYPE_ASAP_FDUR &&
-       m_type != TYPE_SON_FDUR ) return QColor( "#F0F0F0" );
+       m_type != TYPE_SON_FDUR ) return QColor( "#F0F0E0" );
 
   if ( col    == SECTION_START &&
        m_type != TYPE_SON_FWORK &&
-       m_type != TYPE_SON_FDUR ) return QColor( "#F0F0F0" );
+       m_type != TYPE_SON_FDUR ) return QColor( "#F0F0E0" );
 
   if ( col    == SECTION_END &&
-       m_type != TYPE_FIXED_PERIOD ) return QColor( "#F0F0F0" );
+       m_type != TYPE_FIXED_PERIOD ) return QColor( "#F0F0E0" );
 
-  if ( col    == SECTION_COST ) return QColor( "#F0F0F0" );
+  if ( col    == SECTION_COST ) return QColor( "#F0F0E0" );
 
   return QVariant();
 }
@@ -188,7 +189,7 @@ QVariant  Task::dataFontRole( int col ) const
   if ( isSummary() )
   {
     QFont font;
-    font.setBold( TRUE );
+    font.setBold( true );
     return font;
   }
 
@@ -248,4 +249,34 @@ QString  Task::typeToString( int type )
   if ( type == TYPE_SON_FDUR )     return "Start on - duration fixed";
   if ( type == TYPE_FIXED_PERIOD ) return "Fixed period";
   return "";
+}
+
+/******************************************** setData ********************************************/
+
+bool  Task::setData( int row, int col, const QVariant& value )
+{
+  // TODO some checks that set data will be allowed, return false if not allowed
+
+  // set data via undo/redo command
+  plan->undostack()->push( new CommandTaskSetData( this, row, col, value ) );
+  return true;
+}
+
+/***************************************** setDataDirect *****************************************/
+
+void  Task::setDataDirect( int col, const QVariant& value )
+{
+  // update task (should only be called by undostack)
+  if ( col == SECTION_TITLE )    m_title        = value.toString();
+  if ( col == SECTION_DURATION ) m_duration     = TimeSpan( value.toString() );
+  if ( col == SECTION_WORK )     m_work         = TimeSpan( value.toString() );
+  if ( col == SECTION_TYPE )     m_type         = value.toInt();
+  if ( col == SECTION_START )    m_start        = value.toDateTime();
+  if ( col == SECTION_END )      m_end          = value.toDateTime();
+  if ( col == SECTION_PREDS )    m_predecessors = Predecessors( value.toString() );
+  if ( col == SECTION_DEADLINE ) m_deadline     = value.toDateTime();
+  if ( col == SECTION_RES )      m_resources    = value.toString();
+  if ( col == SECTION_COST )     m_cost         = value.toReal();
+  if ( col == SECTION_PRIORITY ) m_priority     = value.toInt();
+  if ( col == SECTION_COMMENT )  m_comment      = value.toString();
 }

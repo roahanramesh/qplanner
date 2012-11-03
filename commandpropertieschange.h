@@ -27,7 +27,7 @@
 extern Plan*  plan;
 
 /*************************************************************************************************/
-/********************* Command for setting data in a DaysModel for QUndoStack ********************/
+/************************ Command plan properties changes for QUndoStack *************************/
 /*************************************************************************************************/
 
 class CommandPropertiesChange : public QUndoCommand

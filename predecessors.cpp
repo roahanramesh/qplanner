@@ -30,6 +30,12 @@ Predecessors::Predecessors()
 {
 }
 
+/****************************************** constructor ******************************************/
+
+Predecessors::Predecessors( QString str )
+{
+}
+
 /******************************************** toString *******************************************/
 
 QString Predecessors::toString() const
