@@ -42,7 +42,10 @@ public:
   QVariant          dataTextAlignmentRole( int ) const;           // return text alignment for cell
   QVariant          dataToolTipRole( int ) const;                 // return tool tip text for cell
   QVariant          dataFontRole( int ) const;                    // return font for cell
+  bool              setData( int, int, const QVariant& );         // attempt to set value via undostack
+  void              setDataDirect( int, const QVariant& );        // set value directly
 
+  QString           name() const { return m_title; }              // return name of task (i.e. title)
   bool              isSummary() const { return m_summary; }       // is the task a summary
   bool              isBlank() const { return m_title.isNull(); }  // is the task blank
   static QString    typeToString( int );                          // return type string equivalent
@@ -90,7 +93,7 @@ private:
   char          m_type;            // see enumerator task_type
   short         m_priority;        // overall task priority
   QDateTime     m_deadline;        // task warning deadline
-  float         m_cost;            // calculated cost based on resource use
+  qreal         m_cost;            // calculated cost based on resource use
   QString       m_comment;         // free text comment
 };
 

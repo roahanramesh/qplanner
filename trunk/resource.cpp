@@ -69,7 +69,7 @@ QVariant  Resource::data( int column, int role )
   if ( role == Qt::BackgroundRole )
   {
     if ( column != SECTION_INITIALS  &&  m_initials.isEmpty() )
-      return QColor( "#F0F0F0" );
+      return QColor( "#F0F0E0" );
   }
 
   // if initials are blank don't show anything

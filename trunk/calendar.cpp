@@ -163,7 +163,7 @@ QVariant  Calendar::data( int row, int role  = Qt::DisplayRole ) const
   // if role is BackgroundRole, return appropriate background colour
   if ( role == Qt::BackgroundRole )
   {
-    if ( row >= m_cycleLength+ROW_NORMAL1 ) return QColor( "#F0F0F0" );
+    if ( row >= m_cycleLength+ROW_NORMAL1 ) return QColor( "#F0F0E0" );
     return QVariant();
   }
 

@@ -32,6 +32,7 @@ class QTableView;
 
 class DaysModel : public QAbstractTableModel
 {
+  Q_OBJECT
 public:
   DaysModel();                                              // constructor
 

@@ -147,7 +147,7 @@ QVariant  Day::data( int column, int role )
   // if role is BackgroundRole, return appropriate background colour
   if ( role == Qt::BackgroundRole )
   {
-    if ( column >= m_periods*2+SECTION_START ) return QColor( "#F0F0F0" );
+    if ( column >= m_periods*2+SECTION_START ) return QColor( "#F0F0E0" );
     return QVariant();
   }
 

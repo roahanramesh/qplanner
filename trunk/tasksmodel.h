@@ -33,6 +33,7 @@ class QTableView;
 
 class TasksModel : public QAbstractTableModel
 {
+  Q_OBJECT
 public:
   TasksModel();                                                   // constructor
 
@@ -42,6 +43,9 @@ public:
   Task*          task( int n ) { return m_tasks.at(n); }          // return the n'th day type
   QDateTime      end() { return QDateTime::currentDateTime(); }   // return plan end *** TODO ***
   int            number() { return m_tasks.size(); }              // return number of tasks in plan
+
+  void           emitDataChanged( int row )                       // emit data changed signal for row
+                   { emit dataChanged( index( row, 0 ), index( row, 9999 ) ); }
 
   /********************* methods to support QAbstractTableModel ************************/
 

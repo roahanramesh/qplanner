@@ -90,17 +90,17 @@ QVariant DaysModel::data( const QModelIndex& index, int role  = Qt::DisplayRole 
 
 /******************************************** setData ********************************************/
 
-bool DaysModel::setData( const QModelIndex& ind, const QVariant& value, int role = Qt::EditRole )
+bool DaysModel::setData( const QModelIndex& index, const QVariant& value, int role = Qt::EditRole )
 {
-  // if ind is not valid, return FALSE - can't set data
-  if ( !ind.isValid() ) return FALSE;
+  // if index is not valid, return false - can't set data
+  if ( !index.isValid() ) return false;
 
-  // if role is not Qt::EditRole, return FALSE - can't set data
-  if ( role != Qt::EditRole ) return FALSE;
+  // if role is not Qt::EditRole, return false - can't set data
+  if ( role != Qt::EditRole ) return false;
 
 
   // TODO
-  return FALSE;
+  return false;
 }
 
 /****************************************** headerData *******************************************/
@@ -117,11 +117,11 @@ QVariant DaysModel::headerData( int section, Qt::Orientation orientation, int ro
 
 /********************************************* flags *********************************************/
 
-Qt::ItemFlags DaysModel::flags( const QModelIndex& ind ) const
+Qt::ItemFlags DaysModel::flags( const QModelIndex& index ) const
 {
   // if cell refers to non-existing working period, then cell is not selectable, etc
-  int row = ind.row();
-  int col = ind.column();
+  int row = index.row();
+  int col = index.column();
   if ( col >= m_days.at(row)->periods()*2+Day::SECTION_START ) return 0;
 
   // otherwise all cells are selectable, editable, etc

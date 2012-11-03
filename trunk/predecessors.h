@@ -35,7 +35,8 @@ class Task;
 class Predecessors
 {
 public:
-  Predecessors();
+  Predecessors();                                    // constructor
+  Predecessors( QString );                           // constructor
 
   QString     toString() const;                      // return string for display in tasks view
 
@@ -51,7 +52,7 @@ public:
   typedef struct
   {
     Task*     task;
-    uchar     type;
+    char      type;
     TimeSpan  lag;
   } Predecessor;
 
