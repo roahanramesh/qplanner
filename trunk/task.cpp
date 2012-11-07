@@ -23,8 +23,6 @@
 #include <QFont>
 
 #include "plan.h"
-extern Plan*  plan;
-
 #include "task.h"
 #include "commandtasksetdata.h"
 

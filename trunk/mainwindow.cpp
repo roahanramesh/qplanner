@@ -30,8 +30,6 @@
 
 #include <QUndoView>
 
-extern Plan*  plan;
-
 /*************************************************************************************************/
 /********************* Main application window showing tabbed main screens ***********************/
 /*************************************************************************************************/
@@ -41,7 +39,7 @@ extern Plan*  plan;
 MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::MainWindow )
 {
   // initialise private variables
-  m_undoview = 0;
+  m_undoview = NULL;
 
   // setup ui for main window
   ui->setupUi( this );
@@ -116,7 +114,7 @@ void MainWindow::slotUndoStackView( bool checked )
   // show undo stack view window if checked, otherwise hide
   if ( checked )
   {
-    if ( m_undoview == 0 )
+    if ( m_undoview == NULL )
     {
       m_undoview = new QUndoView( plan->undostack() );
       m_undoview->setWindowTitle( "Undo stack" );
@@ -148,14 +146,14 @@ void MainWindow::slotTabChange( int index )
   // check if we need to update plan from 'Properties' tab widgets
   if ( ui->title->text()              != plan->title()          ||
        ui->planStart->dateTime()      != plan->start()          ||
-       ui->defaultCal->currentIndex() != plan->defaultCal()     ||
+       ui->defaultCal->currentIndex() != plan->index( plan->calendar() ) ||
        ui->dateTimeFormat->text()     != plan->datetimeFormat() ||
        ui->notesEdit->toPlainText()   != plan->notes() )
   {
     plan->undostack()->push( new CommandPropertiesChange(
                                ui->title->text(),              plan->title(),
                                ui->planStart->dateTime(),      plan->start(),
-                               ui->defaultCal->currentIndex(), plan->defaultCal(),
+                               ui->defaultCal->currentIndex(), plan->index( plan->calendar() ),
                                ui->dateTimeFormat->text(),     plan->datetimeFormat(),
                                ui->notesEdit->toPlainText(),   plan->notes()) );
 
@@ -184,7 +182,7 @@ void MainWindow::slotUpdatePropertiesWidgets()
 
   ui->defaultCal->clear();
   ui->defaultCal->addItems( plan->calendars()->namesList() );
-  ui->defaultCal->setCurrentIndex( plan->defaultCal() );
+  ui->defaultCal->setCurrentIndex( plan->index( plan->calendar() ) );
 
   ui->dateTimeFormat->setText( plan->datetimeFormat() );
   ui->dateTimeFormat->setCursorPosition( 0 );

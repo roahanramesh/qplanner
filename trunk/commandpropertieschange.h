@@ -24,7 +24,6 @@
 #include <QUndoCommand>
 
 #include "plan.h"
-extern Plan*  plan;
 
 /*************************************************************************************************/
 /************************ Command plan properties changes for QUndoStack *************************/
@@ -68,7 +67,7 @@ public:
     // update plan with new values
     if ( m_title_new != m_title_old ) plan->setTitle( m_title_new );
     if ( m_start_new != m_start_old ) plan->setStart( m_start_new );
-    if ( m_cal_new   != m_cal_old   ) plan->setDefaultCal( m_cal_new );
+    if ( m_cal_new   != m_cal_old   ) plan->setCalendar( m_cal_new );
     if ( m_dtf_new   != m_dtf_old   ) plan->setDatetimeFormat( m_dtf_new );
     if ( m_notes_new != m_notes_old ) plan->setNotes( m_notes_new );
     plan->emitPropertiesUpdated();
@@ -79,7 +78,7 @@ public:
     // revert plan back to old values
     if ( m_title_new != m_title_old ) plan->setTitle( m_title_old );
     if ( m_start_new != m_start_old ) plan->setStart( m_start_old );
-    if ( m_cal_new   != m_cal_old   ) plan->setDefaultCal( m_cal_old );
+    if ( m_cal_new   != m_cal_old   ) plan->setCalendar( m_cal_old );
     if ( m_dtf_new   != m_dtf_old   ) plan->setDatetimeFormat( m_dtf_old );
     if ( m_notes_new != m_notes_old ) plan->setNotes( m_notes_old );
     plan->emitPropertiesUpdated();

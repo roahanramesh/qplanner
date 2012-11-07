@@ -34,13 +34,14 @@ class ResourcesModel : public QAbstractTableModel
 {
   Q_OBJECT
 public:
-  ResourcesModel();                                                     // constructor
+  ResourcesModel();                                                       // constructor
 
-  void           initialise();                                          // create initial default contents
-  void           setColumnWidths( QTableView* );                        // set initial column widths
+  void           initialise();                                            // create initial default contents
+  void           setColumnWidths( QTableView* );                          // set initial column widths
 
-  Resource*      resource( int n ) { return m_resources.at(n); }        // return the n'th resource
-  int            number() { return m_resources.size(); }                // return number of resources in plan
+  Resource*      resource( int n ) { return m_resources.at(n); }          // return the n'th resource
+  int            index( Resource* r ) { return m_resources.indexOf(r); }  // return index of task
+  int            number() { return m_resources.size(); }                  // return number of resources in plan
 
   /********************* methods to support QAbstractTableModel ************************/
 

@@ -58,7 +58,11 @@ public:
   Resource*        resource( int );                                 // return the n'th resource
   Calendar*        calendar( int );                                 // return the n'th calendar
   Day*             day( int );                                      // return the n'th day type
-  Calendar*        calendar();                                      // return default calendar
+
+  int              index( Task* );                                  // return index of task
+  int              index( Resource* );                              // return index of resource
+  int              index( Calendar* );                              // return index of calendar
+  int              index( Day* );                                   // return index of day
 
   int              numTasks();                                      // return number of tasks in plan
   int              numResources();                                  // return number of resources in plan
@@ -68,7 +72,7 @@ public:
   QString          title() { return m_title; }                      // return title of plan
   QDateTime        start() { return m_start; }                      // return start of plan
   QDateTime        end();                                           // return end of plan
-  int              defaultCal() { return m_default_cal; }           // return default calendar index
+  Calendar*        calendar() { return m_calendar; }                // return default calendar
   QString          datetimeFormat() { return m_datetime_format; }   // return datetime format
   QString          filename() {return m_filename; }                 // return filename
   QString          fileLocation() { return m_file_location; }       // return file location
@@ -80,7 +84,9 @@ public:
   void             setStart( QDateTime dt ) { m_start = dt; }       // set start
   void             setDatetimeFormat( QString f )
                      { m_datetime_format = f; }                     // set datetime format
-  void             setDefaultCal( int c ) { m_default_cal = c; }    // set default calendar index
+  void             setCalendar( Calendar* c ) { m_calendar = c; }   // set plan default calendar
+  void             setCalendar( int c )
+                     { m_calendar = calendar(c); }                  // set plan default calendar
   void             setNotes( QString n ) { m_notes = n; }           // set notes text
 
   void             emitPropertiesUpdated()
@@ -99,7 +105,7 @@ private:
 
   QString          m_title;             // plan title as set in properties
   QDateTime        m_start;             // plan start as set in properties
-  int              m_default_cal;       // plan default calendar index
+  Calendar*        m_calendar;          // plan default calendar
   QString          m_datetime_format;   // plan datetime format as set in properties
   QString          m_filename;          // filename when last opened/saved
   QString          m_file_location;     // file location when last opened/saved
@@ -107,5 +113,8 @@ private:
   QDateTime        m_saved_when;        // datetime when last saved
   QString          m_notes;             // plan notes as in properties
 };
+
+extern Plan*  plan;
+
 
 #endif // PLAN_H

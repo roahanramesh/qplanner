@@ -34,13 +34,14 @@ class CalendarsModel : public QAbstractTableModel
 {
   Q_OBJECT
 public:
-  CalendarsModel();                                                 // constructor
+  CalendarsModel();                                                       // constructor
 
-  void           initialise();                                      // create initial default contents
+  void           initialise();                                            // create initial default contents
 
-  Calendar*      calendar( int n ) { return m_calendars.at(n); }    // return the n'th day calendar
-  int            number() { return m_calendars.size(); }            // return number of tasks in plan
-  QStringList    namesList() const;                                 // return list of calendar names
+  Calendar*      calendar( int n ) { return m_calendars.at(n); }          // return the n'th day calendar
+  int            index( Calendar* c ) { return m_calendars.indexOf(c); }  // return index of task
+  int            number() { return m_calendars.size(); }                  // return number of tasks in plan
+  QStringList    namesList() const;                                       // return list of calendar names
 
   /********************* methods to support QAbstractTableModel ************************/
 

@@ -38,13 +38,13 @@ public:
   Calendar();                                   // constructor
   Calendar( int );                              // constructor for initial default calendars
 
-  QVariant          data( int, int ) const;     // return data for row & role
+  QVariant      data( int, int ) const;                        // return data for row & role
+  QDateTime     workUp( QDateTime ) const;                     // return first work date-time at or after
+  QDateTime     workDown( QDateTime ) const;                   // return first work date-time at or before
+  Day*          getDay( QDate ) const;                         // return day type for date
+  int           cycleLength() const { return m_cycleLength; }  // return calendar cycle length
+  QString       name() const { return m_name; }                // return calendar name
 
-  Day*              day( QDate );               // return day type for date
-  int               cycleLength() const         // return calendar cycle length
-                      { return m_cycleLength; }
-  QString           name() const                // return calendar name
-                      { return m_name; }
 
   enum DefaultCalendarTypes
   {

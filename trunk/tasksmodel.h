@@ -41,11 +41,13 @@ public:
   void           setColumnWidths( QTableView* );                  // set initial column widths
 
   Task*          task( int n ) { return m_tasks.at(n); }          // return the n'th day type
+  int            index( Task* t ) { return m_tasks.indexOf(t); }  // return index of task
   QDateTime      end() { return QDateTime::currentDateTime(); }   // return plan end *** TODO ***
   int            number() { return m_tasks.size(); }              // return number of tasks in plan
 
   void           emitDataChanged( int row )                       // emit data changed signal for row
-                   { emit dataChanged( index( row, 0 ), index( row, 9999 ) ); }
+                   { emit dataChanged( QAbstractTableModel::index( row, 0 ),
+                                       QAbstractTableModel::index( row, 9999 ) ); }
 
   /********************* methods to support QAbstractTableModel ************************/
 
