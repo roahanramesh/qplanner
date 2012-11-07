@@ -34,14 +34,15 @@ class DaysModel : public QAbstractTableModel
 {
   Q_OBJECT
 public:
-  DaysModel();                                              // constructor
+  DaysModel();                                                     // constructor
 
-  void         initialise();                                // create initial default contents
-  void         setColumnWidths( QTableView* );              // set initial column widths
+  void         initialise();                                       // create initial default contents
+  void         setColumnWidths( QTableView* );                     // set initial column widths
 
-  Day*         day( int n ) { return m_days.at(n); }        // return the n'th day type
-  int          number() { return m_days.size(); }           // return number of tasks in plan
-  QStringList  namesList() const;                           // return list of day type names
+  Day*         day( int n ) { return m_days.at(n); }               // return the n'th day type
+  int          index( Day* d ) { return m_days.indexOf(d); }       // return index of task
+  int          number() { return m_days.size(); }                  // return number of tasks in plan
+  QStringList  namesList() const;                                  // return list of day type names
 
   /********************* methods to support QAbstractTableModel ************************/
 

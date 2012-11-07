@@ -24,10 +24,8 @@
 #include <QUndoCommand>
 
 #include "plan.h"
-extern Plan*  plan;
-
-#include "task.h"
 #include "tasksmodel.h"
+#include "task.h"
 
 /*************************************************************************************************/
 /********************** Command for TasksModek setting data for QUndoStack ***********************/

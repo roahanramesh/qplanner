@@ -21,11 +21,9 @@
 #include <QVariant>
 #include <QColor>
 
-#include "resource.h"
 #include "plan.h"
+#include "resource.h"
 #include "calendar.h"
-
-extern Plan*  plan;
 
 /*************************************************************************************************/
 /************************************* Single plan resource **************************************/
@@ -38,7 +36,7 @@ Resource::Resource()
   // set resource variables to default/null values
   m_availability = 1.0;
   m_cost         = 0.0;
-  m_calendar     = plan->calendar( plan->defaultCal() );
+  m_calendar     = plan->calendar();
   m_ability      = 1.0;
 }
 

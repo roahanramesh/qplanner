@@ -43,6 +43,14 @@ public:
   quint8     periods() { return m_periods; }           // return number of work periods
   QTime      start( int n ) { return m_start.at(n); }  // return work period start
   QTime      end( int n ) { return m_end.at(n); }      // return work period end
+  QTime      start() const                             // return first working time for this day
+               { if ( m_start.size() == 0 ) return QTime();
+                 return m_start.first(); }
+  QTime      end() const                               // return last working time for this day
+               { if ( m_end.size() == 0 ) return QTime();
+                 return m_end.last(); }
+  bool       isWorking() const                         // is the day a working day (i.e. work > 0.0)
+               { return m_work > 0.0; }
 
   enum DefaultDayTypes
   {

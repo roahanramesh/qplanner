@@ -18,14 +18,12 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "calendar.h"
-#include "daysmodel.h"
-#include "day.h"
 #include "plan.h"
+#include "daysmodel.h"
+#include "calendar.h"
+#include "day.h"
 
 #include <QColor>
-
-extern Plan*  plan;
 
 /*************************************************************************************************/
 /********************************* Single calendar for planning **********************************/
@@ -113,17 +111,78 @@ Calendar::Calendar( int type )
   }
 }
 
-/********************************************** day **********************************************/
+/********************************************* getDay ********************************************/
 
-Day*  Calendar::day( QDate date )
+Day*  Calendar::getDay( QDate date ) const
 {
   // if exception exists return it, otherwise return normal cycle day
-  if ( m_exceptions.contains( date ) )
-    return m_exceptions.value( date );
+  if ( m_exceptions.contains( date ) ) return m_exceptions.value( date );
 
   return m_normal.at( m_cycleAnchor.daysTo( date ) % m_cycleLength );
 }
 
+/********************************************* workUp ********************************************/
+
+QDateTime  Calendar::workUp( QDateTime dt ) const
+{
+  // if input date-time is not valid, return null date-time
+  if ( !dt.isValid() ) return QDateTime();
+
+  QDate date = dt.date();
+  QTime time = dt.time();
+  Day*  day  = getDay( date );
+
+  // if day is not working or after day end, move forward one day until working day is found
+  while ( !day->isWorking() || time > day->end() )
+  {
+    date = date.addDays(1);
+    time = QTime(0,0,0);
+    day  = getDay( date );
+  }
+
+  // if time is before day start, return day start
+  if ( time < day->start() ) return QDateTime( date, day->start() );
+
+  // otherwise check in working period
+  for ( int n=0 ; n < day->periods()-1 ; n++ )
+  {
+      if ( time >= day->start(n) && time <= day->end(n) ) return QDateTime( date, time );
+      if ( time >  day->end(n)   && time <= day->start(n+1) ) return QDateTime( date, day->start(n+1) );
+  }
+
+  return QDateTime( date, time );
+}
+/******************************************** workDown *******************************************/
+
+QDateTime  Calendar::workDown( QDateTime dt ) const
+{
+  // return first valid date-time at or before
+  if ( !dt.isValid() ) return QDateTime();
+
+  QDate date = dt.date();
+  QTime time = dt.time();
+  Day*  day  = getDay( date );
+
+  // if day is not working or before day start, move back one day until working day is found
+  while ( !day->isWorking() || time < day->start() )
+  {
+    date = date.addDays(-1);
+    time = QTime(23,59,59);
+    day  = getDay( date );
+  }
+
+  // if time is after day end, return day end
+  if ( time > day->end() ) return QDateTime( date, day->end() );
+
+  // otherwise check in working period
+  for ( int n=day->periods()-1 ; n > 0 ; n-- )
+  {
+      if ( time >= day->start(n) && time <= day->end(n) ) return QDateTime( date, time );
+      if ( time >= day->end(n-1) && time <  day->start(n) ) return QDateTime( date, day->end(n-1) );
+  }
+
+  return QDateTime( date, time );
+}
 /********************************************** data *********************************************/
 
 QVariant  Calendar::data( int row, int role  = Qt::DisplayRole ) const

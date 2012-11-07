@@ -61,7 +61,7 @@ Day::Day( int type )
     m_start.resize(1);
     m_start[0] = QTime( 0,0);
     m_end.resize(1);
-    m_end[0]   = QTime(23,59,59,999);
+    m_end[0]   = QTime(23,59,59);
   }
   else if ( type == DEFAULT_SHORT )
   {
