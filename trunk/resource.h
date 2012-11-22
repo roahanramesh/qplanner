@@ -64,9 +64,9 @@ private:
   QString            m_group;              // free text
   QDate              m_start;              // date availability starts
   QDate              m_end;                // date availability end
-  qreal              m_availability;       // number available
-  qreal              m_ability;            // ability factor - typical 1.0
-  qreal              m_cost;               // cost TODO
+  float              m_availability;       // number available
+  float              m_ability;            // ability factor - typical 1.0
+  float              m_cost;               // cost TODO
   Calendar*          m_calendar;           // base calendar for resource
   QString            m_comment;            // free text
 };

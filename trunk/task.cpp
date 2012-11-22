@@ -24,6 +24,7 @@
 
 #include "plan.h"
 #include "task.h"
+#include "calendar.h"
 #include "commandtasksetdata.h"
 
 /*************************************************************************************************/
@@ -40,7 +41,9 @@ Task::Task()
   m_expanded = true;
   m_type     = TYPE_DEFAULT;
   m_cost     = 0.0;
-  m_priority = 100;
+  m_priority = 100 * 1000000;
+  m_duration = TimeSpan("1d");
+  m_work     = TimeSpan("1d");
 }
 
 /****************************************** headerData *******************************************/
@@ -61,6 +64,29 @@ QVariant  Task::headerData( int column )
   if ( column == SECTION_PRIORITY ) return "Priority";
   if ( column == SECTION_COMMENT )  return "Comment";
   return QVariant();
+}
+
+/**************************************** scheduleOrder ******************************************/
+
+bool  Task::scheduleOrder( Task* t1, Task* t2 )
+{
+  // less than function for qSort - firstly if predecessor
+  //if ( t1->hasPredecessor(t2) ) return true;
+
+  // otherwise, by priority and index
+  return (t1->m_priority - plan->index(t1)) > (t2->m_priority - plan->index(t2));
+}
+
+/******************************************* schedule ********************************************/
+
+void  Task::schedule()
+{
+  // schedule individual task
+  if ( !m_start.isValid() ) m_start = plan->start();
+
+  // determine task end - TODO currently assumes no resources
+  QDateTime end = plan->calendar()->addTimeSpan( m_start, m_duration );
+  m_end = plan->calendar()->workDown( end );
 }
 
 /************************************* dataBackgroundColorRole ***********************************/
@@ -229,7 +255,7 @@ QVariant  Task::dataDisplayRole( int col ) const
 
   if ( col == SECTION_COST ) return QString("£ %1").arg( m_cost );
 
-  if ( col == SECTION_PRIORITY ) return m_priority;
+  if ( col == SECTION_PRIORITY ) return m_priority / 1000000;
 
   if ( col == SECTION_COMMENT ) return m_comment;
 
@@ -275,6 +301,9 @@ void  Task::setDataDirect( int col, const QVariant& value )
   if ( col == SECTION_DEADLINE ) m_deadline     = value.toDateTime();
   if ( col == SECTION_RES )      m_resources    = value.toString();
   if ( col == SECTION_COST )     m_cost         = value.toReal();
-  if ( col == SECTION_PRIORITY ) m_priority     = value.toInt();
+  if ( col == SECTION_PRIORITY ) m_priority     = value.toInt() * 1000000;
   if ( col == SECTION_COMMENT )  m_comment      = value.toString();
+
+  // TODO - should probably check if auto-scheduling on
+  plan->tasks()->schedule();
 }

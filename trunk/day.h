@@ -39,7 +39,7 @@ public:
   QVariant          data( int, int );           // return data for column & role
 
   QString    name() { return m_name; }                 // return day name
-  qreal      work() { return m_work; }                 // return work days equivalent
+  float      work() { return m_work; }                 // return work days equivalent
   quint8     periods() { return m_periods; }           // return number of work periods
   QTime      start( int n ) { return m_start.at(n); }  // return work period start
   QTime      end( int n ) { return m_end.at(n); }      // return work period end
@@ -51,6 +51,11 @@ public:
                  return m_end.last(); }
   bool       isWorking() const                         // is the day a working day (i.e. work > 0.0)
                { return m_work > 0.0; }
+  float      workToGo( QTime ) const;                  // return day working equivalent remaining
+  int        secsToGo( QTime ) const;                  // return day working seconds remaining
+  int        seconds() const;                          // return length of working day in seconds
+  QTime      doWork( QTime, float ) const;             // return time after doing some working day
+  QTime      doSecs( QTime, int ) const;               // return time after doing some working seconds
 
   enum DefaultDayTypes
   {
@@ -73,7 +78,7 @@ public:
 
 private:
   QString          m_name;              // name of day type
-  qreal            m_work;              // equivalent days worked (typically 1.0 or 0.0)
+  float            m_work;              // equivalent days worked (typically 1.0 or 0.0)
   quint8           m_periods;           // number of work periods within the day
   QVector<QTime>   m_start;             // vector of work period start times
   QVector<QTime>   m_end;               // vector of work period end times

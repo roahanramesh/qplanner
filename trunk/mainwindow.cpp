@@ -25,6 +25,7 @@
 #include "resourcesmodel.h"
 #include "calendarsmodel.h"
 #include "daysmodel.h"
+#include "task.h"
 
 #include "commandpropertieschange.h"
 
@@ -59,6 +60,7 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   ui->daysView->verticalHeader()->setDefaultSectionSize( height );
 
   // set initial column widths for tables views
+  ui->tasksView->horizontalHeader()->setDefaultSectionSize( 150 );
   ui->daysView->horizontalHeader()->setDefaultSectionSize( 70 );
   ui->calendarsView->horizontalHeader()->setDefaultSectionSize( 150 );
   plan->tasks()->setColumnWidths( ui->tasksView );
@@ -105,6 +107,18 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   ui->menuEdit->addSeparator();
   ui->menuEdit->addAction( ui->actionFindReplace );
   delete ui->menuEditTemp;
+}
+
+/**************************************** slotSchedulePlan ***************************************/
+
+void MainWindow::slotSchedulePlan()
+{
+  // get plan to reschedule all the tasks
+  plan->tasks()->schedule();
+  plan->tasks()->emitDataChangedColumn( Task::SECTION_DURATION );
+  plan->tasks()->emitDataChangedColumn( Task::SECTION_START );
+  plan->tasks()->emitDataChangedColumn( Task::SECTION_END );
+  plan->tasks()->emitDataChangedColumn( Task::SECTION_WORK );
 }
 
 /*************************************** slotViewUndoStack ***************************************/

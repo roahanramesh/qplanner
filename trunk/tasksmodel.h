@@ -38,6 +38,7 @@ public:
   TasksModel();                                                   // constructor
 
   void           initialise();                                    // create initial default contents
+  void           schedule();                                      // re-schedule tasks
   void           setColumnWidths( QTableView* );                  // set initial column widths
 
   Task*          task( int n ) { return m_tasks.at(n); }          // return the n'th day type
@@ -45,9 +46,12 @@ public:
   QDateTime      end() { return QDateTime::currentDateTime(); }   // return plan end *** TODO ***
   int            number() { return m_tasks.size(); }              // return number of tasks in plan
 
-  void           emitDataChanged( int row )                       // emit data changed signal for row
+  void           emitDataChangedRow( int row )                    // emit data changed signal for row
                    { emit dataChanged( QAbstractTableModel::index( row, 0 ),
-                                       QAbstractTableModel::index( row, 9999 ) ); }
+                                       QAbstractTableModel::index( row, columnCount() ) ); }
+  void           emitDataChangedColumn( int col )                 // emit data changed signal for column
+                   { emit dataChanged( QAbstractTableModel::index( 0, col ),
+                                       QAbstractTableModel::index( rowCount(), col ) ); }
 
   /********************* methods to support QAbstractTableModel ************************/
 

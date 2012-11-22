@@ -25,6 +25,8 @@
 #include <QVector>
 #include <QDate>
 
+#include "timespan.h"
+
 class Day;
 class DaysModel;
 
@@ -44,7 +46,12 @@ public:
   Day*          getDay( QDate ) const;                         // return day type for date
   int           cycleLength() const { return m_cycleLength; }  // return calendar cycle length
   QString       name() const { return m_name; }                // return calendar name
-
+  QDateTime     addTimeSpan( QDateTime, TimeSpan );            // return date-time moved by TimeSpan
+  QDateTime     addSeconds( QDateTime, int );                  // return date-time moved by seconds
+  QDateTime     addDays( QDateTime, float );                   // return date-time moved by days
+  QDateTime     addWeeks( QDateTime, float );                  // return date-time moved by weeks
+  QDateTime     addMonths( QDateTime, float );                 // return date-time moved by months
+  QDateTime     addYears( QDateTime, float );                  // return date-time moved by years
 
   enum DefaultCalendarTypes
   {

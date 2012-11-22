@@ -49,6 +49,8 @@ public:
   bool              isSummary() const { return m_summary; }       // is the task a summary
   bool              isBlank() const { return m_title.isNull(); }  // is the task blank
   static QString    typeToString( int );                          // return type string equivalent
+  static bool       scheduleOrder( Task*, Task* );                // less than function for qSort
+  void              schedule();                                   // schedule task
 
   enum sections                 // sections to be displayed by view
   {
@@ -84,16 +86,16 @@ private:
   bool          m_expanded;        // if summary, is task expanded
 
   QString       m_title;           // free text title
-  TimeSpan      m_duration;        // duration in days (TODO support other units)
+  TimeSpan      m_duration;        // duration of task
   QDateTime     m_start;           // start date-time of task
   QDateTime     m_end;             // end date-time of task
-  TimeSpan      m_work;            // work in days effort (TODO support other units)
+  TimeSpan      m_work;            // work effort for task
   Predecessors  m_predecessors;    // task predecessors
   QString       m_resources;       // resources allocated to task
   char          m_type;            // see enumerator task_type
-  short         m_priority;        // overall task priority
+  int           m_priority;        // overall task priority (0 to 999 times 1 million)
   QDateTime     m_deadline;        // task warning deadline
-  qreal         m_cost;            // calculated cost based on resource use
+  float         m_cost;            // calculated cost based on resource use
   QString       m_comment;         // free text comment
 };
 

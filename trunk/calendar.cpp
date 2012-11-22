@@ -121,6 +121,112 @@ Day*  Calendar::getDay( QDate date ) const
   return m_normal.at( m_cycleAnchor.daysTo( date ) % m_cycleLength );
 }
 
+/********************************************* addXXX ********************************************/
+
+QDateTime  Calendar::addTimeSpan( QDateTime start, TimeSpan ts )
+{
+  // return date-time moved by TimeSpan
+  if ( ts.units() == TimeSpan::UNIT_SECONDS ) return addSeconds( start, ts.number() );
+  if ( ts.units() == TimeSpan::UNIT_MINUTES ) return addSeconds( start, ts.number()*60.0 );
+  if ( ts.units() == TimeSpan::UNIT_HOURS )   return addSeconds( start, ts.number()*3600.0 );
+  if ( ts.units() == TimeSpan::UNIT_DAYS )    return addDays(    start, ts.number() );
+  if ( ts.units() == TimeSpan::UNIT_WEEKS )   return addWeeks(   start, ts.number() );
+  if ( ts.units() == TimeSpan::UNIT_MONTHS )  return addMonths(  start, ts.number() );
+  if ( ts.units() == TimeSpan::UNIT_YEARS )   return addYears(   start, ts.number() );
+  return start;
+}
+
+QDateTime  Calendar::addSeconds( QDateTime start, int secs )
+{
+  // check that secs is greater than zero
+  if ( secs <  0 ) return QDateTime();   // return invalid date-time
+  if ( secs == 0 ) return start;         // nothing to add
+
+  // use up any remaining working periods on start
+  QDate date  = start.date();
+  Day*  today = getDay( date );
+  int toGo  = today->secsToGo( start.time() );
+  if ( toGo == secs ) return QDateTime( date, today->end() );
+  if ( toGo >  secs ) return QDateTime( date, today->doSecs( start.time(), secs ) );
+
+  // to go was insufficient so move to next day
+  date  = date.addDays(1);
+  secs -= toGo;
+
+  // repeat forever until no need to move to next day
+  while ( true )
+  {
+    // check if found finish date
+    today = getDay( date );
+    if ( today->seconds() == secs ) return QDateTime( date, today->end() );
+    if ( today->seconds() >  secs ) return QDateTime( date, today->doSecs( QTime(), secs ) );
+
+    // not finished so move to next day
+    date  = date.addDays(1);
+    secs -= today->seconds();
+  }
+}
+
+QDateTime  Calendar::addDays( QDateTime start, float days )
+{
+  // check that days is greater than zero
+  if ( days <  0.0 ) return QDateTime();   // return invalid date-time
+  if ( days == 0.0 ) return start;         // nothing to add
+
+  // use up any remaining working periods on start
+  QDate date  = start.date();
+  Day*  today = getDay( date );
+  float toGo  = today->workToGo( start.time() );
+  if ( toGo == days ) return QDateTime( date, today->end() );
+  if ( toGo >  days ) return QDateTime( date, today->doWork( start.time(), days ) );
+
+  // to go was insufficient so move to next day
+  date  = date.addDays(1);
+  days -= toGo;
+
+  // repeat forever until no need to move to next day
+  while ( true )
+  {
+    // check if found finish date
+    today = getDay( date );
+    if ( today->work() == days ) return QDateTime( date, today->end() );
+    if ( today->work() >  days ) return QDateTime( date, today->doWork( QTime(), days ) );
+
+    // not finished so move to next day
+    date  = date.addDays(1);
+    days -= today->work();
+  }
+}
+
+QDateTime  Calendar::addWeeks( QDateTime start, float weeks )
+{
+  // return date-time moved by weeks (7 day week ignores non-working days)
+  return start.addDays( weeks*7.0 );
+}
+
+QDateTime  Calendar::addMonths( QDateTime start, float months )
+{
+  // return date-time moved by months
+  int   whole    = floor(months);
+  float fraction = months - whole;
+
+  if ( fraction == 0.0 ) return start.addMonths( whole );
+  QDate date1 = start.date();
+  QDate date2 = date1.addMonths(1);
+  int   diff  = date2.toJulianDay() - date1.toJulianDay();
+  return start.addDays( diff * fraction );
+}
+
+QDateTime  Calendar::addYears( QDateTime start, float years )
+{
+  // return date-time moved by years
+  int   whole    = floor(years);
+  float fraction = years - whole;
+
+  if ( fraction == 0.0 ) return start.addYears( whole );
+  return addMonths( start.addYears( whole ), fraction*12.0 );
+}
+
 /********************************************* workUp ********************************************/
 
 QDateTime  Calendar::workUp( QDateTime dt ) const
@@ -132,8 +238,8 @@ QDateTime  Calendar::workUp( QDateTime dt ) const
   QTime time = dt.time();
   Day*  day  = getDay( date );
 
-  // if day is not working or after day end, move forward one day until working day is found
-  while ( !day->isWorking() || time > day->end() )
+  // if day is not working or on/after day end, move forward one day until working day is found
+  while ( !day->isWorking() || time >= day->end() )
   {
     date = date.addDays(1);
     time = QTime(0,0,0);
@@ -163,8 +269,8 @@ QDateTime  Calendar::workDown( QDateTime dt ) const
   QTime time = dt.time();
   Day*  day  = getDay( date );
 
-  // if day is not working or before day start, move back one day until working day is found
-  while ( !day->isWorking() || time < day->start() )
+  // if day is not working or on/before day start, move back one day until working day is found
+  while ( !day->isWorking() || time <= day->start() )
   {
     date = date.addDays(-1);
     time = QTime(23,59,59);
