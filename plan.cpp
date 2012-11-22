@@ -57,7 +57,7 @@ Plan::Plan()
   m_tasks     = new TasksModel();
   m_undostack = new QUndoStack();
 
-  m_datetime_format = "ddd dd/MM/yy";
+  m_datetime_format = "ddd dd/MM/yyyy hh:mm:ss";
   m_calendar        = NULL;
 }
 

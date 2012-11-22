@@ -24,6 +24,7 @@
 #include <QString>
 #include <QChar>
 #include <QDateTime>
+#include <cmath>
 
 /*************************************************************************************************/
 /********************************** Quantity of time with units **********************************/
@@ -82,6 +83,9 @@ public:
     bool  ok;
     m_num = str.toDouble( &ok );
     if ( !ok ) m_units = UNIT_INVALID;    // check remainder converted to number ok
+
+    // only allow integer seconds
+    if ( m_units == UNIT_SECONDS ) m_num = floor(m_num);
   }
 
 /******************************************** methods ********************************************/
@@ -100,11 +104,11 @@ public:
   }
 
   bool       isValid() { return ( m_units != UNIT_INVALID ); }
-  qreal      number() { return m_num; }
+  float      number() { return m_num; }
   char       units()  { return m_units; }
 
 private:
-  qreal      m_num;        // number of units time quantity
+  float      m_num;        // number of units time quantity
   char       m_units;      // units for time quantity
 };
 

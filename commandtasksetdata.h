@@ -53,7 +53,7 @@ public:
   {
     // update plan with new values
     plan->task( m_row )->setDataDirect( m_column, m_new_value );
-    plan->tasks()->emitDataChanged( m_row );
+    plan->tasks()->emitDataChangedRow( m_row );
   }
 
   void  undo()
@@ -61,7 +61,7 @@ public:
     // revert plan back to old values
     Task* task = plan->task( m_row );
     *task = m_old_task;
-    plan->tasks()->emitDataChanged( m_row );
+    plan->tasks()->emitDataChangedRow( m_row );
   }
 
 private:

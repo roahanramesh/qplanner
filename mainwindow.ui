@@ -728,8 +728,25 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionSchedule</sender>
+   <signal>activated()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slotSchedulePlan()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>266</x>
+     <y>144</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>slotUndoStackView(bool)</slot>
+  <slot>slotSchedulePlan()</slot>
  </slots>
 </ui>

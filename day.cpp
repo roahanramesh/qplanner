@@ -154,3 +154,108 @@ QVariant  Day::data( int column, int role )
   // otherwise return an invalid QVariant
   return QVariant();
 }
+
+/******************************************** workToGo ********************************************/
+
+float Day::workToGo( QTime time ) const
+{
+  // count working seconds and worked seconds
+  int working = 0;
+  int worked  = 0;
+  for( int period=0 ; period < m_periods ; period++ )
+  {
+    int secs = m_start.at(period).secsTo( m_end.at(period) );
+
+    working += secs;
+
+    if ( time >= m_end.at(period) ) worked += secs;
+    if ( time >  m_start.at(period) && time < m_end.at(period) )
+      worked += m_start.at(period).secsTo( time );
+  }
+
+  if ( working == 0 ) return 0.0;
+  return float( working - worked ) * m_work / working;
+}
+
+/******************************************** secsToGo ********************************************/
+
+int Day::secsToGo( QTime time ) const
+{
+  // count remaining working seconds to end of day
+  int remain = 0;
+  for( int period = m_periods-1 ; period >= 0 ; period-- )
+  {
+    if ( time <= m_start.at(period) )
+      remain += m_start.at(period).secsTo( m_end.at(period) );
+    if ( time >  m_start.at(period) && time < m_end.at(period) )
+      remain += time.secsTo( m_end.at(period) );
+  }
+
+  return remain;
+}
+
+/******************************************** seconds ********************************************/
+
+int  Day::seconds() const
+{
+  // count number of working seconds in day
+  int secs = 0;
+  for( int period=0 ; period < m_periods ; period++ )
+    secs += m_start.at(period).secsTo( m_end.at(period) );
+
+  return secs;
+}
+
+/******************************************** doWork *********************************************/
+
+QTime  Day::doWork( QTime time, float work ) const
+{
+  // calculate number of seconds to move forward
+  int secs = int( seconds() * work / m_work );
+
+  for( int period=0 ; period < m_periods ; period++ )
+  {
+    // if start time is after this period, skip to next period
+    if ( !time.isValid() ) time = m_start.at(period);
+    else if ( time > m_end.at(period) ) continue;
+
+    int s = time.secsTo( m_end.at(period) );
+
+    if ( s < secs )
+    {
+      secs -= s;
+      time  = QTime();
+    }
+    else
+      return time.addSecs( secs );
+  }
+
+  qDebug("Day::doWork - ERROR asked to do more work than remains!!!");
+  return QTime();
+}
+
+/******************************************** doSecs *********************************************/
+
+QTime  Day::doSecs( QTime time, int secs ) const
+{
+  // move forward by number of working seconds
+  for( int period=0 ; period < m_periods ; period++ )
+  {
+    // if start time is after this period, skip to next period
+    if ( !time.isValid() ) time = m_start.at(period);
+    else if ( time > m_end.at(period) ) continue;
+
+    int s = time.secsTo( m_end.at(period) );
+
+    if ( s < secs )
+    {
+      secs -= s;
+      time  = QTime();
+    }
+    else
+      return time.addSecs( secs );
+  }
+
+  qDebug("Day::doSecs - ERROR asked to do more work than remains!!!");
+  return QTime();
+}
