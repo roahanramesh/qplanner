@@ -26,6 +26,7 @@
 #include "calendarsmodel.h"
 #include "daysmodel.h"
 #include "task.h"
+#include "tasksdelegate.h"
 
 #include "commandpropertieschange.h"
 
@@ -46,8 +47,9 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   ui->setupUi( this );
   resize( 900, 450 );
 
-  // set models for table views
+  // set models & delegates for table views
   ui->tasksView->setModel( (QAbstractItemModel*)plan->tasks() );
+  ui->tasksView->setItemDelegate( new TasksDelegate() );
   ui->resourcesView->setModel( (QAbstractItemModel*)plan->resources() );
   ui->calendarsView->setModel( (QAbstractItemModel*)plan->calendars() );
   ui->daysView->setModel( (QAbstractItemModel*)plan->days() );

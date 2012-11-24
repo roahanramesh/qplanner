@@ -23,7 +23,9 @@ SOURCES += main.cpp\
     resource.cpp \
     calendar.cpp \
     day.cpp \
-    predecessors.cpp
+    predecessors.cpp \
+    tasksdelegate.cpp \
+    timespanspinbox.cpp
 
 HEADERS  += mainwindow.h \
     plan.h \
@@ -39,6 +41,8 @@ HEADERS  += mainwindow.h \
     commandpropertieschange.h \
     predecessors.h \
     timespan.h \
-    commandtasksetdata.h
+    commandtasksetdata.h \
+    tasksdelegate.h \
+    timespanspinbox.h
 
 FORMS    += mainwindow.ui

@@ -81,7 +81,7 @@ bool  Task::scheduleOrder( Task* t1, Task* t2 )
 
 void  Task::schedule()
 {
-  // schedule individual task
+  // schedule individual task, ensure start is valid
   if ( !m_start.isValid() ) m_start = plan->start();
 
   // determine task end - TODO currently assumes no resources
