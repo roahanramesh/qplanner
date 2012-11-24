@@ -50,8 +50,8 @@ public:
   TimeSpan()
   {
     // initialise default invalid time-span
-    m_num   = 1.0;
     m_units = UNIT_INVALID;
+    m_num   = 0.0;
   };
 
 /****************************************** constructor ******************************************/
@@ -62,9 +62,7 @@ public:
     str = str.simplified();
     QString lastchr = str.right(1);
     if ( QString("0123456789.").contains(lastchr) )
-    {
       m_units = UNIT_DAYS;   // no units specified so assume 'days'
-    }
     else
     {
       if ( QString("SMHdwmy").contains(lastchr) )   // check if valid units
@@ -74,8 +72,8 @@ public:
       }
       else
       {
-        m_num   = 1.0;
         m_units = UNIT_INVALID;
+        m_num   = 0.0;
         return;
       }
     }
@@ -92,15 +90,8 @@ public:
 
   QString    toString() const
   {
-    if ( m_units == UNIT_INVALID ) return "Invalid";
-    return QString("%1 %2").arg(m_num).arg(m_units);
-  }
-
-  QDateTime  add( QDateTime dt )
-  {
-    // TODO
-    qDebug("TimeSpan::add ---------- TODO");
-    return dt;
+    if ( m_units == UNIT_INVALID ) return "-";
+    return QString("%1 %2").arg( m_num ).arg( m_units );
   }
 
   bool       isValid() { return ( m_units != UNIT_INVALID ); }

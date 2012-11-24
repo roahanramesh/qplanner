@@ -56,19 +56,19 @@ void TasksModel::initialise()
 void TasksModel::schedule()
 {
   // re-schedule tasks - first construct list of tasks in correct order
-  qDebug("TasksModel::schedule()");
+  //---------qDebug("TasksModel::schedule()");
   QList<Task*>   scheduleList;
   scheduleList.reserve( m_tasks.size() );
 
   foreach( Task* t, m_tasks )
     if ( !t->isBlank() ) scheduleList.append( t );
-  qDebug("Tasks to schedule = %i",scheduleList.size());
+  //---------qDebug("Tasks to schedule = %i",scheduleList.size());
   qSort( scheduleList.begin(), scheduleList.end(), Task::scheduleOrder );
 
   // re-schedule each task
   foreach( Task* t, scheduleList )
   {
-    qDebug("Post sort %i %s",plan->index(t),qPrintable(t->name()));
+    //---------qDebug("Post sort %i %s",plan->index(t),qPrintable(t->name()));
     t->schedule();
   }
 }
