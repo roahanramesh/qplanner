@@ -69,6 +69,10 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   plan->resources()->setColumnWidths( ui->resourcesView );
   plan->days()->setColumnWidths( ui->daysView );
 
+  // setup tasks gantt
+  ui->ganttView->createGantt( ui->ganttWidget );
+  ui->ganttView->setTable( ui->tasksView );
+
   // create new palette for read-only edit widgets with different Base colour
   QPalette*     palette = new QPalette( ui->propertiesWidget->palette() );
   palette->setColor( QPalette::Base, palette->window().color() );

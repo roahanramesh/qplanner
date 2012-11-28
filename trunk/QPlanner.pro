@@ -25,7 +25,11 @@ SOURCES += main.cpp\
     day.cpp \
     predecessors.cpp \
     tasksdelegate.cpp \
-    timespanspinbox.cpp
+    timespanspinbox.cpp \
+    ganttview.cpp \
+    ganttscale.cpp \
+    ganttchart.cpp \
+    xdatetime.cpp
 
 HEADERS  += mainwindow.h \
     plan.h \
@@ -43,6 +47,10 @@ HEADERS  += mainwindow.h \
     timespan.h \
     commandtasksetdata.h \
     tasksdelegate.h \
-    timespanspinbox.h
+    timespanspinbox.h \
+    ganttview.h \
+    ganttscale.h \
+    ganttchart.h \
+    xdatetime.h
 
 FORMS    += mainwindow.ui
