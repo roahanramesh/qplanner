@@ -62,6 +62,9 @@ public:
   QVariant       headerData( int, Qt::Orientation, int ) const;                   // implement virtual header data
   Qt::ItemFlags  flags( const QModelIndex& ) const;                               // implement virtual return flags
 
+signals:
+  void           ganttChanged( int );            // signal task changed for gantt chart
+
 private:
   QList<Task*>    m_tasks;      // list of tasks in plan
 
