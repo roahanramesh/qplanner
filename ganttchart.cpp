@@ -21,6 +21,7 @@
 #include "ganttchart.h"
 #include "calendar.h"
 #include "tasksmodel.h"
+#include "task.h"
 #include "plan.h"
 
 #include <QPaintEvent>
@@ -195,6 +196,9 @@ void GanttChart::drawTasks( QPainter* p, int x, int y, int w, int h )
   if ( last  < 0 ) last  = plan->tasks()->rowCount() - 1;
 
   // TODO for each row draw the gantt task
+  for( int row=first ; row<=last ; row++ )
+    plan->task(row)->ganttData()->drawTask( p, m_table->rowViewportPosition(row) + ( m_table->rowHeight(row) / 2 ), m_start, m_secsPP );
+
   //for( int row=first ; row<=last ; row++ )
   //  plan->tasks()->ganttData( row )->drawTask( p,
   //    m_table->rowViewportPosition(row) + ( m_table->rowHeight(row) / 2 ), m_start, m_secsPP, m_calendar );

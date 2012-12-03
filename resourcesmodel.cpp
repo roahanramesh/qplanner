@@ -121,7 +121,7 @@ Qt::ItemFlags ResourcesModel::flags( const QModelIndex& index ) const
   int row = index.row();
   int col = index.column();
   if ( col != Resource::SECTION_INITIALS  &&  m_resources.at(row)->initials().isEmpty() )
-    return 0;
+    return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 
   // otherwise item is selectable/enabled/editable
   return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;

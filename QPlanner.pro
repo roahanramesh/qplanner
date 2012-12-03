@@ -29,7 +29,8 @@ SOURCES += main.cpp\
     ganttview.cpp \
     ganttscale.cpp \
     ganttchart.cpp \
-    xdatetime.cpp
+    xdatetime.cpp \
+    ganttdata.cpp
 
 HEADERS  += mainwindow.h \
     plan.h \
@@ -51,6 +52,7 @@ HEADERS  += mainwindow.h \
     ganttview.h \
     ganttscale.h \
     ganttchart.h \
-    xdatetime.h
+    xdatetime.h \
+    ganttdata.h
 
 FORMS    += mainwindow.ui

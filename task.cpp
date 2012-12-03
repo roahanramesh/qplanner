@@ -87,6 +87,7 @@ void  Task::schedule()
   // determine task end - TODO currently assumes no resources
   QDateTime end = plan->calendar()->addTimeSpan( m_start, m_duration );
   m_end = plan->calendar()->workDown( end );
+  m_gantt.setTask( m_start, m_end );
 }
 
 /************************************* dataBackgroundColorRole ***********************************/
@@ -253,7 +254,7 @@ QVariant  Task::dataDisplayRole( int col ) const
 
   if ( col == SECTION_RES ) return "";
 
-  if ( col == SECTION_COST ) return QString("£ %1").arg( m_cost );
+  if ( col == SECTION_COST ) return QString("$ %1").arg( m_cost );
 
   if ( col == SECTION_PRIORITY ) return m_priority / 1000000;
 
