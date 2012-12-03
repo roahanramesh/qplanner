@@ -71,6 +71,7 @@ void TasksModel::schedule()
     //---------qDebug("Post sort %i %s",plan->index(t),qPrintable(t->name()));
     t->schedule();
   }
+  emit ganttChanged(0);
 }
 
 /**************************************** setColumnWidths ****************************************/
@@ -161,7 +162,7 @@ Qt::ItemFlags TasksModel::flags( const QModelIndex& index ) const
   // if task is blank, then only title is enabled, selectable, editable
   if ( m_tasks.at(index.row())->isBlank() &&
        index.column() != Task::SECTION_TITLE )
-    return 0;
+    return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 
   // if task is summary, then some cells not editable
   if ( m_tasks.at(index.row())->isSummary() &&

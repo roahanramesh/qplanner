@@ -122,7 +122,7 @@ Qt::ItemFlags DaysModel::flags( const QModelIndex& index ) const
   // if cell refers to non-existing working period, then cell is not selectable, etc
   int row = index.row();
   int col = index.column();
-  if ( col >= m_days.at(row)->periods()*2+Day::SECTION_START ) return 0;
+  if ( col >= m_days.at(row)->periods()*2+Day::SECTION_START ) return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 
   // otherwise all cells are selectable, editable, etc
   return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;

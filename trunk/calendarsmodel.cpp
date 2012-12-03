@@ -122,7 +122,7 @@ Qt::ItemFlags CalendarsModel::flags( const QModelIndex& index ) const
   // if cell refers to non-existing working period, then cell is not selectable, etc
   int row = index.row();
   int col = index.column();
-  if ( row >= m_calendars.at(col)->cycleLength()+Calendar::ROW_NORMAL1 ) return 0;
+  if ( row >= m_calendars.at(col)->cycleLength()+Calendar::ROW_NORMAL1 ) return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 
   // otherwise all cells are selectable, editable, etc
   return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;

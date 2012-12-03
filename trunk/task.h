@@ -25,6 +25,7 @@
 #include <QDateTime>
 
 #include "predecessors.h"
+#include "ganttdata.h"
 
 /*************************************************************************************************/
 /*************************************** Single plan task ****************************************/
@@ -48,6 +49,7 @@ public:
   QString           name() const { return m_title; }              // return name of task (i.e. title)
   bool              isSummary() const { return m_summary; }       // is the task a summary
   bool              isBlank() const { return m_title.isNull(); }  // is the task blank
+  GanttData*        ganttData() { return &m_gantt; }              // return pointer to gantt data
   static QString    typeToString( int );                          // return type string equivalent
   static bool       scheduleOrder( Task*, Task* );                // less than function for qSort
   void              schedule();                                   // schedule task
@@ -84,6 +86,7 @@ private:
   short         m_indent;          // task indent level, zero for no indent
   bool          m_summary;         // is a summary task
   bool          m_expanded;        // if summary, is task expanded
+  GanttData     m_gantt;           // data for drawing task gantt
 
   QString       m_title;           // free text title
   TimeSpan      m_duration;        // duration of task
