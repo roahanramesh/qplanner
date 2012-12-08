@@ -34,7 +34,7 @@
 class CommandTaskSetData : public QUndoCommand
 {
 public:
-  CommandTaskSetData( const Task* old_task, int row, int col, const QVariant& new_value )
+  CommandTaskSetData( Task* old_task, int row, int col, const QVariant& new_value )
   {
     // set private variables for new and old values
     m_old_task  = *old_task;
@@ -43,8 +43,8 @@ public:
     m_new_value = new_value;
 
     // construct command description
-    setText( QString("'%1' %2 = %3")
-             .arg( old_task->name() )
+    setText( QString("Task %1 %2 = %3")
+             .arg( plan->index( old_task ) + 1 )
              .arg( Task::headerData( col ).toString() )
              .arg( new_value.toString() ) );
   }
@@ -54,6 +54,7 @@ public:
     // update plan with new values
     plan->task( m_row )->setDataDirect( m_column, m_new_value );
     plan->tasks()->emitDataChangedRow( m_row );
+    plan->tasks()->schedule();
   }
 
   void  undo()
@@ -62,6 +63,7 @@ public:
     Task* task = plan->task( m_row );
     *task = m_old_task;
     plan->tasks()->emitDataChangedRow( m_row );
+    plan->tasks()->schedule();
   }
 
 private:

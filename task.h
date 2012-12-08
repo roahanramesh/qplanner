@@ -74,12 +74,12 @@ public:
 
   enum task_type
   {
-    TYPE_ASAP_FWORK    = 0,     // Early as possible - fixed work
-    TYPE_ASAP_FDUR     = 1,     // Early as possible - fixed duration
-    TYPE_SON_FWORK     = 2,     // Start on - fixed work
-    TYPE_SON_FDUR      = 3,     // Start on - fixed duration
+    TYPE_ASAP_FDUR     = 0,     // Early as possible - fixed duration
+    TYPE_ASAP_FWORK    = 1,     // Early as possible - fixed work
+    TYPE_SON_FDUR      = 2,     // Start on - fixed duration
+    TYPE_SON_FWORK     = 3,     // Start on - fixed work
     TYPE_FIXED_PERIOD  = 4,     // Fixed period
-    TYPE_DEFAULT       = 1
+    TYPE_DEFAULT       = 0
   };
 
 private:

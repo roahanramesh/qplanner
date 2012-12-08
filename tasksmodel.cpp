@@ -71,6 +71,11 @@ void TasksModel::schedule()
     //---------qDebug("Post sort %i %s",plan->index(t),qPrintable(t->name()));
     t->schedule();
   }
+
+  emitDataChangedColumn( Task::SECTION_DURATION );
+  emitDataChangedColumn( Task::SECTION_START );
+  emitDataChangedColumn( Task::SECTION_END );
+  emitDataChangedColumn( Task::SECTION_WORK );
   emit ganttChanged(0);
 }
 

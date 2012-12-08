@@ -22,6 +22,9 @@
 #include "task.h"
 #include "timespanspinbox.h"
 
+#include <QDateTimeEdit>
+#include <QComboBox>
+
 /*************************************************************************************************/
 /*********************** Delegate for displaying & editing task data items ***********************/
 /*************************************************************************************************/
@@ -44,6 +47,26 @@ QWidget*  TasksDelegate::createEditor( QWidget *parent,
     case Task::SECTION_DURATION:
     case Task::SECTION_WORK:
       return new TimeSpanSpinBox( parent );
+
+    case Task::SECTION_START:
+    case Task::SECTION_END:
+    case Task::SECTION_DEADLINE:
+    {
+      QDateTimeEdit* editor = new QDateTimeEdit( parent );
+      editor->setCalendarPopup( TRUE );
+      return editor;
+    }
+
+    case Task::SECTION_TYPE:
+    {
+      QComboBox* editor = new QComboBox( parent );
+      editor->addItem( Task::typeToString( Task::TYPE_ASAP_FDUR ) );
+      editor->addItem( Task::typeToString( Task::TYPE_ASAP_FWORK ) );
+      editor->addItem( Task::typeToString( Task::TYPE_SON_FDUR ) );
+      editor->addItem( Task::typeToString( Task::TYPE_SON_FWORK ) );
+      editor->addItem( Task::typeToString( Task::TYPE_FIXED_PERIOD ) );
+      return editor;
+    }
 
     default:
       return QStyledItemDelegate::createEditor( parent, option, index );

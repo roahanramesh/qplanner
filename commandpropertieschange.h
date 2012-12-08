@@ -24,6 +24,7 @@
 #include <QUndoCommand>
 
 #include "plan.h"
+#include "tasksmodel.h"
 
 /*************************************************************************************************/
 /************************ Command plan properties changes for QUndoStack *************************/
@@ -71,6 +72,10 @@ public:
     if ( m_dtf_new   != m_dtf_old   ) plan->setDatetimeFormat( m_dtf_new );
     if ( m_notes_new != m_notes_old ) plan->setNotes( m_notes_new );
     plan->emitPropertiesUpdated();
+
+    // if default calendar or start changed, need to re-schedule
+    if ( m_cal_new   != m_cal_old   ||
+         m_start_new != m_start_old ) plan->tasks()->schedule();
   }
 
   void  undo()
@@ -82,6 +87,10 @@ public:
     if ( m_dtf_new   != m_dtf_old   ) plan->setDatetimeFormat( m_dtf_old );
     if ( m_notes_new != m_notes_old ) plan->setNotes( m_notes_old );
     plan->emitPropertiesUpdated();
+
+    // if default calendar or start changed, need to re-schedule
+    if ( m_cal_new   != m_cal_old   ||
+         m_start_new != m_start_old ) plan->tasks()->schedule();
   }
 
 private:

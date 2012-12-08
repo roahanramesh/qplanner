@@ -121,10 +121,6 @@ void MainWindow::slotSchedulePlan()
 {
   // get plan to reschedule all the tasks
   plan->tasks()->schedule();
-  plan->tasks()->emitDataChangedColumn( Task::SECTION_DURATION );
-  plan->tasks()->emitDataChangedColumn( Task::SECTION_START );
-  plan->tasks()->emitDataChangedColumn( Task::SECTION_END );
-  plan->tasks()->emitDataChangedColumn( Task::SECTION_WORK );
 }
 
 /*************************************** slotViewUndoStack ***************************************/
