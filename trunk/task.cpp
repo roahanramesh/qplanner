@@ -282,6 +282,9 @@ bool  Task::setData( int row, int col, const QVariant& value )
 {
   // TODO some checks that set data will be allowed, return false if not allowed
 
+  // if value hasn't changed, don't proceed
+  if ( value == dataEditRole(col) ) return false;
+
   // set data via undo/redo command
   plan->undostack()->push( new CommandTaskSetData( this, row, col, value ) );
   return true;
@@ -304,7 +307,4 @@ void  Task::setDataDirect( int col, const QVariant& value )
   if ( col == SECTION_COST )     m_cost         = value.toReal();
   if ( col == SECTION_PRIORITY ) m_priority     = value.toInt() * 1000000;
   if ( col == SECTION_COMMENT )  m_comment      = value.toString();
-
-  // TODO - should probably check if auto-scheduling on
-  plan->tasks()->schedule();
 }
