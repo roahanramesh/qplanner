@@ -80,9 +80,10 @@ void Plan::initialise()
   // initialise the models
   m_days->initialise();
   m_calendars->initialise();
-  m_resources->initialise();
-  m_tasks->initialise();
 
   m_calendar = calendar( Calendar::DEFAULT_CALENDAR );
   m_start    = m_calendar->workUp( QDateTime( QDate::currentDate(), QTime(0,0,0) ) );
+
+  m_resources->initialise();
+  m_tasks->initialise();
 }

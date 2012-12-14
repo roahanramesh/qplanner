@@ -51,6 +51,30 @@ void TasksModel::initialise()
   m_tasks.append( new Task() );
 }
 
+/********************************************** end **********************************************/
+
+QDateTime TasksModel::end()
+{
+  // return plan end, i.e. latest end of all tasks
+  QDateTime  end = plan->start();
+  foreach( Task* t, m_tasks )
+    if ( !t->isNull() && t->end() > end ) end = t->end();
+
+  return end;
+}
+
+/******************************************** number *********************************************/
+
+int TasksModel::number()
+{
+  // return number of tasks in plan excluding null tasks
+  int  count = 0;
+  foreach( Task* t, m_tasks )
+    if ( !t->isNull() ) count++;
+
+  return count;
+}
+
 /******************************************* schedule ********************************************/
 
 void TasksModel::schedule()
@@ -61,7 +85,7 @@ void TasksModel::schedule()
   scheduleList.reserve( m_tasks.size() );
 
   foreach( Task* t, m_tasks )
-    if ( !t->isBlank() ) scheduleList.append( t );
+    if ( !t->isNull() ) scheduleList.append( t );
   //---------qDebug("Tasks to schedule = %i",scheduleList.size());
   qSort( scheduleList.begin(), scheduleList.end(), Task::scheduleOrder );
 
@@ -164,15 +188,16 @@ QVariant TasksModel::headerData( int section, Qt::Orientation orientation, int r
 
 Qt::ItemFlags TasksModel::flags( const QModelIndex& index ) const
 {
-  // if task is blank, then only title is enabled, selectable, editable
-  if ( m_tasks.at(index.row())->isBlank() &&
-       index.column() != Task::SECTION_TITLE )
+  // if task is null (blank), then only title is editable, others are not
+  int row = index.row();
+  int col = index.column();
+  if ( m_tasks.at(row)->isNull() &&  col != Task::SECTION_TITLE )
     return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 
   // if task is summary, then some cells not editable
-  if ( m_tasks.at(index.row())->isSummary() &&
-       index.column() != Task::SECTION_TITLE &&
-       index.column() != Task::SECTION_COMMENT )
+  if ( m_tasks.at(row)->isSummary() &&
+       col != Task::SECTION_TITLE &&
+       col != Task::SECTION_COMMENT )
     return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 
   // otherwise cell is enabled, selectable, editable

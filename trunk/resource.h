@@ -33,12 +33,15 @@ class Calendar;
 class Resource
 {
 public:
-  Resource();                                                   // constructor
+  Resource();                                                        // constructor (normal)
+  Resource( bool );                                                  // constructor (unassigned)
 
-  static QVariant   headerData( int );                          // return column header data
-  QVariant          data( int, int );                           // return data for column & role
-
-  QString           initials() const { return m_initials; }     // return initials
+  static QVariant   headerData( int );                               // return column header data
+  QVariant          data( int, int );                                // return data for column & role
+  bool              setData( int, int, const QVariant& );            // attempt to set value via undostack
+  void              setDataDirect( int, const QVariant& );           // set value directly
+  bool              isNull() const { return m_initials.isNull(); }   // is the task null (blank)
+  QString           initials() const { return m_initials; }          // return initials
 
   enum sections                            // sections to be displayed by view
   {
@@ -47,14 +50,16 @@ public:
     SECTION_NAME     = 1,
     SECTION_ORG      = 2,
     SECTION_GROUP    = 3,
-    SECTION_START    = 4,
-    SECTION_END      = 5,
-    SECTION_AVAIL    = 6,
-    SECTION_ABILITY  = 7,
-    SECTION_COST     = 8,
-    SECTION_CALENDAR = 9,
-    SECTION_COMMENT  = 10,
-    SECTION_MAXIMUM  = 10
+    SECTION_ROLE     = 4,
+    SECTION_ALIAS    = 5,
+    SECTION_START    = 6,
+    SECTION_END      = 7,
+    SECTION_AVAIL    = 8,
+    SECTION_ABILITY  = 9,
+    SECTION_COST     = 10,
+    SECTION_CALENDAR = 11,
+    SECTION_COMMENT  = 12,
+    SECTION_MAXIMUM  = 12
   };
 
 private:
@@ -62,6 +67,8 @@ private:
   QString            m_name;               // free text
   QString            m_org;                // free text
   QString            m_group;              // free text
+  QString            m_role;               // free text
+  QString            m_alias;              // free text
   QDate              m_start;              // date availability starts
   QDate              m_end;                // date availability end
   float              m_availability;       // number available

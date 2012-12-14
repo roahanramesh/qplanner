@@ -19,7 +19,6 @@
  ***************************************************************************/
 
 #include <QVariant>
-#include <QColor>
 #include <QFont>
 
 #include "plan.h"
@@ -95,30 +94,30 @@ void  Task::schedule()
 QVariant  Task::dataBackgroundColorRole( int col ) const
 {
   // if task is blank grey out all but title
-  if ( isBlank() && col != SECTION_TITLE ) return QColor( "#F0F0E0" );
+  if ( isNull() && col != SECTION_TITLE ) return plan->nullCellColour();
 
   // return appropriate background colour for summary calculated cells
   if ( isSummary() &&
        col != SECTION_TITLE &&
-       col != SECTION_COMMENT ) return QColor( "#F0F0E0" );
+       col != SECTION_COMMENT ) return plan->nullCellColour();
 
   // return appropriate background colour from plan cell
   if ( col    == SECTION_WORK &&
        m_type != TYPE_ASAP_FWORK &&
-       m_type != TYPE_SON_FWORK ) return QColor( "#F0F0E0" );
+       m_type != TYPE_SON_FWORK ) return plan->nullCellColour();
 
   if ( col    == SECTION_DURATION &&
        m_type != TYPE_ASAP_FDUR &&
-       m_type != TYPE_SON_FDUR ) return QColor( "#F0F0E0" );
+       m_type != TYPE_SON_FDUR ) return plan->nullCellColour();
 
   if ( col    == SECTION_START &&
        m_type != TYPE_SON_FWORK &&
-       m_type != TYPE_SON_FDUR ) return QColor( "#F0F0E0" );
+       m_type != TYPE_SON_FDUR ) return plan->nullCellColour();
 
   if ( col    == SECTION_END &&
-       m_type != TYPE_FIXED_PERIOD ) return QColor( "#F0F0E0" );
+       m_type != TYPE_FIXED_PERIOD ) return plan->nullCellColour();
 
-  if ( col    == SECTION_COST ) return QColor( "#F0F0E0" );
+  if ( col    == SECTION_COST ) return plan->nullCellColour();
 
   return QVariant();
 }
@@ -225,8 +224,8 @@ QVariant  Task::dataFontRole( int col ) const
 
 QVariant  Task::dataDisplayRole( int col ) const
 {
-  // negative indent means blank task
-  if ( isBlank() ) return QVariant();
+  // if task is null don't display anything
+  if ( isNull() ) return QVariant();
 
   // if summary return appropriate display text for summary calculated cells
   if ( isSummary() )

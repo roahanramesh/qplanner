@@ -19,11 +19,11 @@
  ***************************************************************************/
 
 #include <QVariant>
-#include <QColor>
 
 #include "plan.h"
 #include "resource.h"
 #include "calendar.h"
+#include "commandresourcesetdata.h"
 
 /*************************************************************************************************/
 /************************************* Single plan resource **************************************/
@@ -40,6 +40,19 @@ Resource::Resource()
   m_ability      = 1.0;
 }
 
+/****************************************** constructor ******************************************/
+
+Resource::Resource( bool unassigned )
+{
+  Q_UNUSED( unassigned )
+
+  // set resource variables for unassigned resource
+  m_availability = 1e10;
+  m_cost         = 0.0;
+  m_calendar     = plan->calendar();
+  m_ability      = 1.0;
+}
+
 /****************************************** headerData *******************************************/
 
 QVariant  Resource::headerData( int column )
@@ -49,6 +62,8 @@ QVariant  Resource::headerData( int column )
   if ( column == SECTION_NAME )       return "Name";
   if ( column == SECTION_ORG )        return "Organisation";
   if ( column == SECTION_GROUP )      return "Group";
+  if ( column == SECTION_ROLE )       return "Role";
+  if ( column == SECTION_ALIAS )      return "Alias";
   if ( column == SECTION_START )      return "Start";
   if ( column == SECTION_END )        return "End";
   if ( column == SECTION_AVAIL )      return "Available";
@@ -66,12 +81,12 @@ QVariant  Resource::data( int column, int role )
   // if initials are blank, other sections are grayed (as not editable)
   if ( role == Qt::BackgroundRole )
   {
-    if ( column != SECTION_INITIALS  &&  m_initials.isEmpty() )
-      return QColor( "#F0F0E0" );
+    if ( column != SECTION_INITIALS && isNull() )
+      return plan->nullCellColour();
   }
 
   // if initials are blank don't show anything
-  if ( m_initials.isEmpty() ) return QVariant();
+  if ( isNull() ) return QVariant();
 
   // if role is EditRole, return appropriate edit value
   if ( role == Qt::EditRole )
@@ -81,6 +96,7 @@ QVariant  Resource::data( int column, int role )
     if ( column == SECTION_AVAIL )    return m_availability;
     if ( column == SECTION_ABILITY )  return m_ability;
     if ( column == SECTION_COST )     return m_cost;
+    if ( column == SECTION_CALENDAR ) return plan->index( m_calendar );
 
     // for all other columns return the DisplayRole for EditRole
     role = Qt::DisplayRole;
@@ -93,8 +109,10 @@ QVariant  Resource::data( int column, int role )
     if ( column == SECTION_NAME )     return m_name;
     if ( column == SECTION_ORG )      return m_org;
     if ( column == SECTION_GROUP )    return m_group;
-    if ( column == SECTION_START )    return m_start.toString( plan->datetimeFormat() );
-    if ( column == SECTION_END )      return m_end.toString( plan->datetimeFormat() );
+    if ( column == SECTION_ROLE )     return m_role;
+    if ( column == SECTION_ALIAS )    return m_alias;
+    if ( column == SECTION_START )    return m_start.toString( "dd/MM/yyyy" );
+    if ( column == SECTION_END )      return m_end.toString( "dd/MM/yyyy" );
     if ( column == SECTION_AVAIL )    return QString("%1").arg( m_availability, 0, 'f', 1 );
     if ( column == SECTION_ABILITY )  return QString("%1").arg( m_ability, 0, 'f', 1 );
     if ( column == SECTION_COST )     return QString("%1").arg( m_cost, 0, 'f', 1 );;
@@ -115,4 +133,39 @@ QVariant  Resource::data( int column, int role )
 
   // otherwise return null QVariant
   return QVariant();
+}
+
+/******************************************** setData ********************************************/
+
+bool  Resource::setData( int row, int col, const QVariant& new_value )
+{
+  // TODO some checks that set data will be allowed, return false if not allowed
+
+  // if value hasn't changed, don't proceed
+  QVariant old_value = data( col, Qt::EditRole );
+  if ( new_value == old_value ) return false;
+
+  // set data via undo/redo command
+  plan->undostack()->push( new CommandResourceSetData( row, col, new_value, old_value ) );
+  return true;
+}
+
+/***************************************** setDataDirect *****************************************/
+
+void  Resource::setDataDirect( int col, const QVariant& value )
+{
+  // update resource (should only be called by undostack)
+  if ( col == SECTION_INITIALS ) m_initials     = value.toString();
+  if ( col == SECTION_NAME )     m_name         = value.toString();
+  if ( col == SECTION_ORG )      m_org          = value.toString();
+  if ( col == SECTION_GROUP )    m_group        = value.toString();
+  if ( col == SECTION_ROLE )     m_role         = value.toString();
+  if ( col == SECTION_ALIAS )    m_alias        = value.toString();
+  if ( col == SECTION_AVAIL )    m_availability = value.toFloat();
+  if ( col == SECTION_ABILITY )  m_ability      = value.toFloat();
+  if ( col == SECTION_CALENDAR ) m_calendar     = plan->calendar( value.toInt() );
+  if ( col == SECTION_START )    m_start        = value.toDate();
+  if ( col == SECTION_END )      m_end          = value.toDate();
+  if ( col == SECTION_COST )     m_cost         = value.toFloat();
+  if ( col == SECTION_COMMENT )  m_comment      = value.toString();
 }
