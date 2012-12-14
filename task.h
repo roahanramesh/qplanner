@@ -47,8 +47,9 @@ public:
   void              setDataDirect( int, const QVariant& );        // set value directly
 
   QString           name() const { return m_title; }              // return name of task (i.e. title)
+  QDateTime         end() const { return m_end; }                 // return task end date-time
   bool              isSummary() const { return m_summary; }       // is the task a summary
-  bool              isBlank() const { return m_title.isNull(); }  // is the task blank
+  bool              isNull() const { return m_title.isNull(); }   // is the task null (blank)
   GanttData*        ganttData() { return &m_gantt; }              // return pointer to gantt data
   static QString    typeToString( int );                          // return type string equivalent
   static bool       scheduleOrder( Task*, Task* );                // less than function for qSort

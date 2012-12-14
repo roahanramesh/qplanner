@@ -19,8 +19,7 @@
  ***************************************************************************/
 
 #include "day.h"
-
-#include <QColor>
+#include "plan.h"
 
 /*************************************************************************************************/
 /**************************** Single day type used in plan calendars *****************************/
@@ -147,7 +146,7 @@ QVariant  Day::data( int column, int role )
   // if role is BackgroundRole, return appropriate background colour
   if ( role == Qt::BackgroundRole )
   {
-    if ( column >= m_periods*2+SECTION_START ) return QColor( "#F0F0E0" );
+    if ( column >= m_periods*2+SECTION_START ) return plan->nullCellColour();
     return QVariant();
   }
 

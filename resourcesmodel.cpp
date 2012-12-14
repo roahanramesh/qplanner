@@ -39,6 +39,25 @@ void ResourcesModel::initialise()
 {
   // create initial blank resource
   m_resources.append( new Resource() );
+  m_resources.append( new Resource() );
+  m_resources.append( new Resource() );
+  m_resources.append( new Resource() );
+  m_resources.append( new Resource() );
+
+  // create unassigned resource
+  m_unassigned = new Resource( TRUE );
+}
+
+/******************************************** number *********************************************/
+
+int ResourcesModel::number()
+{
+  // return number of resources in plan excluding null resources
+  int  count = 0;
+  foreach( Resource* res, m_resources )
+    if ( !res->isNull() ) count++;
+
+  return count;
 }
 
 /**************************************** setColumnWidths ****************************************/
@@ -46,7 +65,7 @@ void ResourcesModel::initialise()
 void ResourcesModel::setColumnWidths( QTableView* table )
 {
   // set initial column widths
-  table->setColumnWidth( Resource::SECTION_INITIALS,  50 );
+  table->setColumnWidth( Resource::SECTION_INITIALS,  60 );
   table->setColumnWidth( Resource::SECTION_NAME,     150 );
   table->setColumnWidth( Resource::SECTION_ORG,      150 );
   table->setColumnWidth( Resource::SECTION_GROUP,    150 );
@@ -83,7 +102,7 @@ QVariant ResourcesModel::data( const QModelIndex& index, int role  = Qt::Display
   int row = index.row();
   if ( row<0 || row>=m_resources.size() ) return QVariant();
 
-  return m_resources.at(row)->data( index.column(), role );
+  return m_resources.at( row )->data( index.column(), role );
 }
 
 /******************************************** setData ********************************************/
@@ -96,9 +115,10 @@ bool ResourcesModel::setData( const QModelIndex& index, const QVariant& value, i
   // if role is not Qt::EditRole, return false - can't set data
   if ( role != Qt::EditRole ) return false;
 
-
-  // TODO
-  return false;
+  // try to set data
+  int row = index.row();
+  int col = index.column();
+  return m_resources.at( row )->setData( row, col, value );
 }
 
 /****************************************** headerData *******************************************/
@@ -117,10 +137,10 @@ QVariant ResourcesModel::headerData( int section, Qt::Orientation orientation, i
 
 Qt::ItemFlags ResourcesModel::flags( const QModelIndex& index ) const
 {
-  // if initials are blank, other sections are not editable
+  // if resource is null (blank), then only initials is editable, others are not
   int row = index.row();
   int col = index.column();
-  if ( col != Resource::SECTION_INITIALS  &&  m_resources.at(row)->initials().isEmpty() )
+  if ( m_resources.at(row)->isNull() &&  col != Resource::SECTION_INITIALS )
     return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 
   // otherwise item is selectable/enabled/editable

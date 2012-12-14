@@ -38,10 +38,14 @@ public:
 
   void           initialise();                                            // create initial default contents
   void           setColumnWidths( QTableView* );                          // set initial column widths
+  int            number();                                                // return number of resources in plan
 
   Resource*      resource( int n ) { return m_resources.at(n); }          // return the n'th resource
   int            index( Resource* r ) { return m_resources.indexOf(r); }  // return index of task
-  int            number() { return m_resources.size(); }                  // return number of resources in plan
+
+  void           emitDataChangedRow( int row )                            // emit data changed signal for row
+                   { emit dataChanged( QAbstractTableModel::index( row, 0 ),
+                                       QAbstractTableModel::index( row, columnCount() ) ); }
 
   /********************* methods to support QAbstractTableModel ************************/
 
@@ -53,6 +57,7 @@ public:
   Qt::ItemFlags  flags( const QModelIndex& ) const;                               // implement virtual return flags
 
 private:
+  Resource*         m_unassigned;      // special resource for tasks with no assigned resources
   QList<Resource*>  m_resources;       // list of resources available to plan
 
 };

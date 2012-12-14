@@ -40,11 +40,11 @@ public:
   void           initialise();                                    // create initial default contents
   void           schedule();                                      // re-schedule tasks
   void           setColumnWidths( QTableView* );                  // set initial column widths
+  QDateTime      end();                                           // return plan end
+  int            number();                                        // return number of tasks in plan
 
   Task*          task( int n ) { return m_tasks.at(n); }          // return the n'th day type
   int            index( Task* t ) { return m_tasks.indexOf(t); }  // return index of task
-  QDateTime      end() { return QDateTime::currentDateTime(); }   // return plan end *** TODO ***
-  int            number() { return m_tasks.size(); }              // return number of tasks in plan
 
   void           emitDataChangedRow( int row )                    // emit data changed signal for row
                    { emit dataChanged( QAbstractTableModel::index( row, 0 ),

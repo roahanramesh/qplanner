@@ -43,7 +43,10 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   // initialise private variables
   m_undoview = NULL;
 
-  // setup ui for main window
+  // setup palette & ui for main window
+  QPalette  pal = palette();
+  pal.setBrush( QPalette::Inactive, QPalette::Highlight, QColor("#E0E0E0") );
+  setPalette( pal );
   ui->setupUi( this );
   resize( 900, 450 );
 
@@ -53,6 +56,7 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   ui->resourcesView->setModel( (QAbstractItemModel*)plan->resources() );
   ui->calendarsView->setModel( (QAbstractItemModel*)plan->calendars() );
   ui->daysView->setModel( (QAbstractItemModel*)plan->days() );
+
 
   // set smaller row height for table views
   int height = ui->tasksView->fontMetrics().lineSpacing() + 3;
@@ -190,11 +194,11 @@ void MainWindow::slotUpdatePropertiesWidgets()
   ui->title->setCursorPosition( 0 );
 
   ui->planStart->setDateTime( plan->start() );
-  ui->planStart->setToolTip( plan->start().toString(ui->dateTimeFormat->text()) );
+  ui->planStart->setToolTip( plan->start().toString( plan->datetimeFormat() ) );
 
   ui->planEnd->setText( plan->end().toString("dd/MM/yyyy hh:mm:ss") );
   ui->planEnd->setCursorPosition( 0 );
-  ui->planEnd->setToolTip( plan->end().toString(ui->dateTimeFormat->text()) );
+  ui->planEnd->setToolTip( plan->end().toString( plan->datetimeFormat() ) );
 
   ui->defaultCal->clear();
   ui->defaultCal->addItems( plan->calendars()->namesList() );
@@ -202,7 +206,7 @@ void MainWindow::slotUpdatePropertiesWidgets()
 
   ui->dateTimeFormat->setText( plan->datetimeFormat() );
   ui->dateTimeFormat->setCursorPosition( 0 );
-  ui->dateTimeFormat->setToolTip( QDateTime::currentDateTime().toString(ui->dateTimeFormat->text()));
+  ui->dateTimeFormat->setToolTip( QDateTime::currentDateTime().toString( plan->datetimeFormat() ));
 
   ui->fileName->setText( plan->filename() );
   ui->fileName->setCursorPosition( 0 );
@@ -216,12 +220,12 @@ void MainWindow::slotUpdatePropertiesWidgets()
 
   ui->savedWhen->setText( plan->savedWhen().toString("dd/MM/yyyy hh:mm:ss") );
   ui->savedWhen->setCursorPosition( 0 );
-  ui->savedWhen->setToolTip( plan->savedWhen().toString(ui->dateTimeFormat->text()) );
+  ui->savedWhen->setToolTip( plan->savedWhen().toString( plan->datetimeFormat() ) );
 
-  ui->numTasks->setText( QString(": %1").arg(plan->numTasks()) );
-  ui->numResources->setText( QString(": %1").arg(plan->numResources()) );
-  ui->numCalendars->setText( QString(": %1").arg(plan->numCalendars()) );
-  ui->numDays->setText( QString(": %1").arg(plan->numDays()) );
+  ui->numTasks->setText( QString(": %1").arg( plan->numTasks() ) );
+  ui->numResources->setText( QString(": %1").arg( plan->numResources() ) );
+  ui->numCalendars->setText( QString(": %1").arg( plan->numCalendars() ) );
+  ui->numDays->setText( QString(": %1").arg( plan->numDays() ) );
 
   ui->notesEdit->setPlainText( plan->notes() );
 }
