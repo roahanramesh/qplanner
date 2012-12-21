@@ -21,6 +21,8 @@
 #include "plan.h"
 #include "tasksmodel.h"
 #include "task.h"
+#include "commandtaskindent.h"
+#include "commandtaskoutdent.h"
 
 #include <QTableView>
 
@@ -49,6 +51,132 @@ void TasksModel::initialise()
   m_tasks.append( new Task() );
   m_tasks.append( new Task() );
   m_tasks.append( new Task() );
+}
+
+/****************************************** canIndent ********************************************/
+
+bool  TasksModel::canIndent( int row )
+{
+  // return true if task can be indented
+  if ( task(row)->isNull() ) return false;
+
+  // non-null above is same or higher indent
+  int r = row - 1;
+  while ( r > 0 && task(r)->isNull() ) r--;
+  if ( task(r)->isNull() ) return false;
+  if ( task(r)->indent() < task(row)->indent() ) return false;
+  return true;
+}
+
+/****************************************** canOutdent *******************************************/
+
+bool  TasksModel::canOutdent( int row )
+{
+  // return true if task can be outdented
+  if ( task(row)->isNull() ) return false;
+  if ( task(row)->indent() == 0 ) return false;
+  return true;
+}
+
+/***************************************** setSummaries ******************************************/
+
+void  TasksModel::setSummaries()
+{
+  // set summaries for all tasks, starting at top
+  int above = 0;
+
+  // find non-null task
+  while ( above < m_tasks.size() && m_tasks.at(above)->isNull() ) above++;
+
+  // if null exit
+  if ( above >= m_tasks.size() ) return;
+
+  do
+  {
+    // find non-null below
+    int below = above + 1;
+    while ( below < m_tasks.size() && m_tasks.at(below)->isNull() ) below++;
+
+    // if null exit
+    if ( below >= m_tasks.size() ) return;
+
+    // check if task above should be summary or not
+    if ( m_tasks.at(above)->indent() < m_tasks.at(below)->indent() )
+    {
+      if ( !m_tasks.at(above)->isSummary() )
+      {
+        m_tasks.at(above)->setSummary( true );
+        emitDataChangedRow( above );
+      }
+    }
+    else
+    {
+      if ( m_tasks.at(above)->isSummary() )
+      {
+        m_tasks.at(above)->setSummary( false );
+        emitDataChangedRow( above );
+      }
+    }
+
+    above = below;
+  }
+  while ( true );
+}
+
+/******************************************* indentRows ******************************************/
+
+bool  TasksModel::indentRows( QSet<int> rows )
+{
+  // only allow rows that can be intended
+  foreach( int row, rows )
+    if ( !canIndent(row) ) rows.remove(row);
+
+  // if summary being indented, ensure all subtasks also included
+  foreach( int row, rows )
+    if ( task(row)->isSummary() )
+    {
+      int level = task(row)->indent();
+      for( int r=row+1 ; r < m_tasks.size() ; r++ )
+      {
+        if ( task(r)->isNull() ) continue;
+        if ( task(r)->indent() <= level ) break;
+        rows.insert(r);
+      }
+    }
+
+  // do indenting via undo/redo command
+  plan->undostack()->push( new CommandTaskIndent( rows ) );
+
+  // return true to say successful indenting
+  return true;
+}
+
+/******************************************* outdentRows *****************************************/
+
+bool  TasksModel::outdentRows( QSet<int> rows )
+{
+  // only allow rows that can be intended
+  foreach( int row, rows )
+    if ( !canOutdent(row) ) rows.remove(row);
+
+  // if summary being outdented, ensure all subtasks also included
+  foreach( int row, rows )
+    if ( task(row)->isSummary() )
+    {
+      int level = task(row)->indent();
+      for( int r=row+1 ; r < m_tasks.size() ; r++ )
+      {
+        if ( task(r)->isNull() ) continue;
+        if ( task(r)->indent() <= level ) break;
+        rows.insert(r);
+      }
+    }
+
+  // do outdenting via undo/redo command
+  plan->undostack()->push( new CommandTaskOutdent( rows ) );
+
+  // return true to say successful outdenting
+  return true;
 }
 
 /********************************************** end **********************************************/

@@ -230,8 +230,7 @@ QVariant  Task::dataDisplayRole( int col ) const
   // if summary return appropriate display text for summary calculated cells
   if ( isSummary() )
   {
-    // TODO
-      return QVariant();
+    // TODO return QVariant();
   }
 
   // return appropriate display text from plan data

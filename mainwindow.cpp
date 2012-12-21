@@ -57,7 +57,6 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   ui->calendarsView->setModel( (QAbstractItemModel*)plan->calendars() );
   ui->daysView->setModel( (QAbstractItemModel*)plan->days() );
 
-
   // set smaller row height for table views
   int height = ui->tasksView->fontMetrics().lineSpacing() + 3;
   ui->tasksView->verticalHeader()->setDefaultSectionSize( height );
@@ -117,6 +116,68 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   ui->menuEdit->addSeparator();
   ui->menuEdit->addAction( ui->actionFindReplace );
   delete ui->menuEditTemp;
+
+  // connect signal for tasks selection & data change to slots
+  connect( ui->tasksView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+           this, SLOT(slotTaskSelectionChanged(QItemSelection,QItemSelection)) );
+  connect ( plan->tasks(), SIGNAL(dataChanged(QModelIndex,QModelIndex)),
+            this, SLOT(slotTaskDataChanged(QModelIndex,QModelIndex)) );
+}
+
+/************************************** slotTaskDataChanged **************************************/
+
+void MainWindow::slotTaskDataChanged( const QModelIndex& index, const QModelIndex& )
+{
+  // check if data change affects indent/outdent
+  if ( index.column() == Task::SECTION_TITLE )
+    slotTaskSelectionChanged( QItemSelection(), QItemSelection() );
+}
+
+/*********************************** slotTaskSelectionChanged ************************************/
+
+void MainWindow::slotTaskSelectionChanged( const QItemSelection&, const QItemSelection& )
+{
+  // task selection has changed, determine unique rows selected
+  QSet<int>  rows;
+  foreach( QModelIndex index, ui->tasksView->selectionModel()->selection().indexes() )
+    rows.insert( index.row() );
+
+  // ensure indent & outdent actions only enabled is action possible
+  bool inEnable  = false;
+  bool outEnable = false;
+
+  foreach( int row, rows )
+  {
+    if ( plan->tasks()->canIndent( row ) )  inEnable = true;
+    if ( plan->tasks()->canOutdent( row ) ) outEnable = true;
+  }
+
+  ui->actionIndent->setEnabled( inEnable );
+  ui->actionOutdent->setEnabled( outEnable );
+}
+
+/******************************************* slotIndent ******************************************/
+
+void MainWindow::slotIndent()
+{
+  // indent task(s) - determine unique rows selected
+  QSet<int>  rows;
+  foreach( QModelIndex index, ui->tasksView->selectionModel()->selection().indexes() )
+    rows.insert( index.row() );
+
+  plan->tasks()->indentRows( rows );
+}
+
+/****************************************** slotOutdent ******************************************/
+
+void MainWindow::slotOutdent()
+{
+  // outdent task(s) - determine unique rows selected
+  QSet<int>  rows;
+  foreach( QModelIndex index, ui->tasksView->selectionModel()->selection().indexes() )
+    rows.insert( index.row() );
+
+  plan->tasks()->outdentRows( rows );
 }
 
 /**************************************** slotSchedulePlan ***************************************/

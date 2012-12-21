@@ -18,44 +18,56 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef COMMANDTASKOUTDENT_H
+#define COMMANDTASKOUTDENT_H
 
-#include <QMainWindow>
+#include <QUndoCommand>
+#include <QSet>
 
-class QUndoView;
-class QItemSelection;
-class QModelIndex;
+#include "plan.h"
+#include "tasksmodel.h"
+#include "task.h"
 
 /*************************************************************************************************/
-/********************* Main application window showing tabbed main screens ***********************/
+/************************* Command for outdenting Tasks via QUndoStack ***************************/
 /*************************************************************************************************/
 
-namespace Ui { class MainWindow; }
-
-class MainWindow : public QMainWindow
+class CommandTaskOutdent : public QUndoCommand
 {
-  Q_OBJECT
 public:
-  explicit MainWindow( QWidget *parent = 0 );               // constructor
+  CommandTaskOutdent( QSet<int> rows )
+  {
+    // set private variables
+    m_rows  = rows;
 
-public slots:
-  void slotUndoStackView( bool );              // slot for actionUndoStackView triggered signal
-  void slotUndoStackViewDestroyed();           // slot for undo stack view destroyed signal
-  void slotTabChange( int );                   // slot for mainTabWidget current changed signal
-  void slotUpdatePropertiesWidgets();          // slot for ensuring 'Properties' tab widgets are up-to-date
-  void slotSchedulePlan();                     // slot for schedule plan action
-  void slotIndent();                           // slot for indent task(s) action
-  void slotOutdent();                          // slot for outdent task(s) action
+    // construct command description
+    setText( "Outdent" );
+  }
 
-  void slotTaskSelectionChanged( const QItemSelection&,
-                                 const QItemSelection& );   // slot for task selection change
-  void slotTaskDataChanged( const QModelIndex&,
-                            const QModelIndex& );           // slot for task data change
+  void  redo()
+  {
+    // outdent tasks
+    foreach( int row, m_rows )
+      plan->task(row)->setIndent( plan->task(row)->indent() - 1 );
+
+    plan->tasks()->setSummaries();
+    plan->tasks()->emitDataChangedColumn( Task::SECTION_TITLE );
+    plan->tasks()->schedule();
+  }
+
+  void  undo()
+  {
+    // revert by indenting tasks
+    foreach( int row, m_rows )
+      plan->task(row)->setIndent( plan->task(row)->indent() + 1 );
+
+    plan->tasks()->setSummaries();
+    plan->tasks()->emitDataChangedColumn( Task::SECTION_TITLE );
+    plan->tasks()->schedule();
+  }
 
 private:
-  Ui::MainWindow*  ui;                         // user interface created using qt designer
-  QUndoView*       m_undoview;                 // window to display contents of undostack
+  QSet<int>     m_rows;
 };
 
-#endif // MAINWINDOW_H
+#endif // COMMANDTASKOUTDENT_H
