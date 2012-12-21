@@ -46,10 +46,14 @@ public:
   bool              setData( int, int, const QVariant& );         // attempt to set value via undostack
   void              setDataDirect( int, const QVariant& );        // set value directly
 
+  bool              isNull() const { return m_title.isNull(); }   // is the task null (blank)
   QString           name() const { return m_title; }              // return name of task (i.e. title)
   QDateTime         end() const { return m_end; }                 // return task end date-time
   bool              isSummary() const { return m_summary; }       // is the task a summary
-  bool              isNull() const { return m_title.isNull(); }   // is the task null (blank)
+  void              setSummary( bool s ) { m_summary = s; }       // set task summary status
+  int               indent() const { return m_indent; }           // return current indent level
+  void              setIndent( short i ) { m_indent = i; }        // set task indent level
+
   GanttData*        ganttData() { return &m_gantt; }              // return pointer to gantt data
   static QString    typeToString( int );                          // return type string equivalent
   static bool       scheduleOrder( Task*, Task* );                // less than function for qSort

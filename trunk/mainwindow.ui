@@ -166,7 +166,7 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>223</width>
+              <width>98</width>
               <height>359</height>
              </rect>
             </property>
@@ -444,9 +444,17 @@
      <string>&amp;Edit</string>
     </property>
    </widget>
+   <widget class="QMenu" name="menuTask">
+    <property name="title">
+     <string>Task</string>
+    </property>
+    <addaction name="actionIndent"/>
+    <addaction name="actionOutdent"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuEditTemp"/>
+   <addaction name="menuTask"/>
    <addaction name="menuReport"/>
    <addaction name="menuView"/>
    <addaction name="menuHelp"/>
@@ -460,6 +468,8 @@
    </attribute>
    <addaction name="actionOpen"/>
    <addaction name="actionSchedule"/>
+   <addaction name="actionIndent"/>
+   <addaction name="actionOutdent"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOpen">
@@ -704,6 +714,34 @@
     <string>Calculate project schedule</string>
    </property>
   </action>
+  <action name="actionIndent">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Indent</string>
+   </property>
+   <property name="toolTip">
+    <string>Indent task(s)</string>
+   </property>
+   <property name="statusTip">
+    <string>Indent task(s)</string>
+   </property>
+  </action>
+  <action name="actionOutdent">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Outdent</string>
+   </property>
+   <property name="toolTip">
+    <string>Outdent task(s)</string>
+   </property>
+   <property name="statusTip">
+    <string>Outdent task(s)</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -754,9 +792,43 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionIndent</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slotIndent()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>266</x>
+     <y>144</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionOutdent</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slotOutdent()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>266</x>
+     <y>144</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>slotUndoStackView(bool)</slot>
   <slot>slotSchedulePlan()</slot>
+  <slot>slotIndent()</slot>
+  <slot>slotOutdent()</slot>
  </slots>
 </ui>

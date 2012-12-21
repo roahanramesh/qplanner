@@ -54,6 +54,8 @@ HEADERS  += mainwindow.h \
     ganttchart.h \
     xdatetime.h \
     ganttdata.h \
-    commandresourcesetdata.h
+    commandresourcesetdata.h \
+    commandtaskindent.h \
+    commandtaskoutdent.h
 
 FORMS    += mainwindow.ui

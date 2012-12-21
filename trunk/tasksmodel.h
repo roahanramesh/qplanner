@@ -43,6 +43,12 @@ public:
   QDateTime      end();                                           // return plan end
   int            number();                                        // return number of tasks in plan
 
+  bool           canIndent( int );                                // return true if task can be indented
+  bool           canOutdent( int );                               // return true if task can be outdented
+  bool           indentRows( QSet<int> );                         // indent selected rows
+  bool           outdentRows( QSet<int> );                        // outdent selected rows
+  void           setSummaries();                                  // set summaries for all tasks
+
   Task*          task( int n ) { return m_tasks.at(n); }          // return the n'th day type
   int            index( Task* t ) { return m_tasks.indexOf(t); }  // return index of task
 
