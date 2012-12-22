@@ -40,6 +40,13 @@ public:
   void     setModelData( QWidget*,
                          QAbstractItemModel*,
                          const QModelIndex& ) const;        // update the model from editor data
+  void     paint( QPainter*,
+                  const QStyleOptionViewItem&,
+                  const QModelIndex& ) const;               // paint the show/hide subtasks symbol
+
+protected:
+  void     initStyleOption( QStyleOptionViewItem*,
+                            const QModelIndex& ) const;     // indent the title
 };
 
 #endif // TASKSDELEGATE_H

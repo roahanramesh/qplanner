@@ -207,8 +207,9 @@ QDateTime  Calendar::addMonths( QDateTime start, float months )
   // return date-time moved by months
   int   whole    = floor(months);
   float fraction = months - whole;
+  start = start.addMonths( whole );
 
-  if ( fraction == 0.0 ) return start.addMonths( whole );
+  if ( fraction == 0.0 ) return start;
   QDate date1 = start.date();
   QDate date2 = date1.addMonths(1);
   int   diff  = date2.toJulianDay() - date1.toJulianDay();

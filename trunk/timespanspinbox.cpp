@@ -67,7 +67,7 @@ QValidator::State  TimeSpanSpinBox::validate( QString& text, int& pos ) const
   // if pos less than one then couldn't have just entered new units
   if ( pos < 1 ) return QDoubleSpinBox::validate( text, pos );
 
-  // if new units entered, emit signal to announce
+  // if new units entered, emit signal to announce (to get around const issue)
   char  units = text.at(pos-1).toAscii();
 
   if ( units == 'h' ) units = TimeSpan::UNIT_HOURS;
@@ -80,6 +80,9 @@ QValidator::State  TimeSpanSpinBox::validate( QString& text, int& pos ) const
        units == TimeSpan::UNIT_WEEKS   ||
        units == TimeSpan::UNIT_MONTHS  ||
        units == TimeSpan::UNIT_YEARS ) emit unitsChanged( units );
+
+  // suppress minus sign as TimeSpanSpinBox doesn't accept negative durations
+  if ( units == '-' ) return QValidator::Invalid;
 
   // return QDoubleSpinBox validator state
   return QDoubleSpinBox::validate( text, pos );

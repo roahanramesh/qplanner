@@ -85,7 +85,9 @@ void  Task::schedule()
 
   // determine task end - TODO currently assumes no resources
   QDateTime end = plan->calendar()->addTimeSpan( m_start, m_duration );
-  m_end = plan->calendar()->workDown( end );
+  end = plan->calendar()->workDown( end );
+  if ( end < m_start ) m_end = m_start;
+  else                 m_end = end;
   m_gantt.setTask( m_start, m_end );
 }
 
@@ -234,7 +236,7 @@ QVariant  Task::dataDisplayRole( int col ) const
   }
 
   // return appropriate display text from plan data
-  if ( col == SECTION_TITLE ) return QString( 2*abs(m_indent), QChar::Nbsp ) + m_title;
+  if ( col == SECTION_TITLE ) return m_title;
 
   if ( col == SECTION_DURATION ) return m_duration.toString();
 

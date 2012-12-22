@@ -58,6 +58,7 @@ void TasksModel::initialise()
 bool  TasksModel::canIndent( int row )
 {
   // return true if task can be indented
+  if ( row == 0 ) return false;
   if ( task(row)->isNull() ) return false;
 
   // non-null above is same or higher indent
