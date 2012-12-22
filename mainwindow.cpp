@@ -65,7 +65,7 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   ui->daysView->verticalHeader()->setDefaultSectionSize( height );
 
   // set initial column widths for tables views
-  ui->tasksView->horizontalHeader()->setDefaultSectionSize( 150 );
+  ui->tasksView->horizontalHeader()->setDefaultSectionSize( 155 );
   ui->daysView->horizontalHeader()->setDefaultSectionSize( 70 );
   ui->calendarsView->horizontalHeader()->setDefaultSectionSize( 150 );
   plan->tasks()->setColumnWidths( ui->tasksView );
