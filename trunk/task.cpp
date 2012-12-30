@@ -252,7 +252,7 @@ QVariant  Task::dataDisplayRole( int col ) const
 
   if ( col == SECTION_DEADLINE ) return m_deadline.toString( plan->datetimeFormat() );
 
-  if ( col == SECTION_RES ) return "";
+  if ( col == SECTION_RES ) return m_resources.toString();
 
   if ( col == SECTION_COST ) return QString("$ %1").arg( m_cost );
 
@@ -294,14 +294,22 @@ bool  Task::setData( int row, int col, const QVariant& value )
 
 void  Task::setDataDirect( int col, const QVariant& value )
 {
+  // if the task was null determine a suitable default indent
+  if ( isNull() )
+  {
+    Task* above = plan->tasks()->nonNullTaskAbove( this );
+    if ( above && above->isSummary() ) m_indent = above->indent() + 1;
+    if ( above && !above->isSummary() ) m_indent = above->indent();
+  }
+
   // update task (should only be called by undostack)
   if ( col == SECTION_TITLE )    m_title        = value.toString();
-  if ( col == SECTION_DURATION ) m_duration     = TimeSpan( value.toString() );
-  if ( col == SECTION_WORK )     m_work         = TimeSpan( value.toString() );
+  if ( col == SECTION_DURATION ) m_duration     = value.toString();
+  if ( col == SECTION_WORK )     m_work         = value.toString();
   if ( col == SECTION_TYPE )     m_type         = value.toInt();
   if ( col == SECTION_START )    m_start        = value.toDateTime();
   if ( col == SECTION_END )      m_end          = value.toDateTime();
-  if ( col == SECTION_PREDS )    m_predecessors = Predecessors( value.toString() );
+  if ( col == SECTION_PREDS )    m_predecessors = value.toString();
   if ( col == SECTION_DEADLINE ) m_deadline     = value.toDateTime();
   if ( col == SECTION_RES )      m_resources    = value.toString();
   if ( col == SECTION_COST )     m_cost         = value.toReal();

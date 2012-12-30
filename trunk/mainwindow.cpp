@@ -82,15 +82,15 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
 
   // setup properties tab
   ui->planEnd->setReadOnly( true );
-  ui->planEnd->setPalette( const_cast<const QPalette&>(*palette) );
+  ui->planEnd->setPalette( *palette );
   ui->fileName->setReadOnly( true );
-  ui->fileName->setPalette( const_cast<const QPalette&>(*palette) );
+  ui->fileName->setPalette( *palette );
   ui->fileLocation->setReadOnly( true );
-  ui->fileLocation->setPalette( const_cast<const QPalette&>(*palette) );
+  ui->fileLocation->setPalette( *palette );
   ui->savedBy->setReadOnly( true );
-  ui->savedBy->setPalette( const_cast<const QPalette&>(*palette) );
+  ui->savedBy->setPalette( *palette );
   ui->savedWhen->setReadOnly( true );
-  ui->savedWhen->setPalette( const_cast<const QPalette&>(*palette) );
+  ui->savedWhen->setPalette( *palette );
 
   // ensure properties widget and plan variables are kept up-to-date
   slotUpdatePropertiesWidgets();

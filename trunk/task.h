@@ -25,6 +25,7 @@
 #include <QDateTime>
 
 #include "predecessors.h"
+#include "taskres.h"
 #include "ganttdata.h"
 
 /*************************************************************************************************/
@@ -101,7 +102,7 @@ private:
   QDateTime     m_end;             // end date-time of task
   TimeSpan      m_work;            // work effort for task
   Predecessors  m_predecessors;    // task predecessors
-  QString       m_resources;       // resources allocated to task
+  TaskRes       m_resources;       // resources allocated to task
   char          m_type;            // see enumerator task_type
   int           m_priority;        // overall task priority (0 to 999 times 1 million)
   QDateTime     m_deadline;        // task warning deadline

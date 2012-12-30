@@ -30,7 +30,8 @@ SOURCES += main.cpp\
     ganttscale.cpp \
     ganttchart.cpp \
     xdatetime.cpp \
-    ganttdata.cpp
+    ganttdata.cpp \
+    taskres.cpp
 
 HEADERS  += mainwindow.h \
     plan.h \
@@ -56,6 +57,7 @@ HEADERS  += mainwindow.h \
     ganttdata.h \
     commandresourcesetdata.h \
     commandtaskindent.h \
-    commandtaskoutdent.h
+    commandtaskoutdent.h \
+    taskres.h
 
 FORMS    += mainwindow.ui

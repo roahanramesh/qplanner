@@ -22,6 +22,7 @@
 #define RESOURCESMODEL_H
 
 #include <QAbstractTableModel>
+#include <QSet>
 
 class Resource;
 class QTableView;
@@ -39,6 +40,7 @@ public:
   void           initialise();                                            // create initial default contents
   void           setColumnWidths( QTableView* );                          // set initial column widths
   int            number();                                                // return number of resources in plan
+  void           updateAssignable();                                      // determine assignable list
 
   Resource*      resource( int n ) { return m_resources.at(n); }          // return the n'th resource
   int            index( Resource* r ) { return m_resources.indexOf(r); }  // return index of task
@@ -59,7 +61,7 @@ public:
 private:
   Resource*         m_unassigned;      // special resource for tasks with no assigned resources
   QList<Resource*>  m_resources;       // list of resources available to plan
-
+  QSet<QString>     m_assignable;      // set of assignable resource(s)
 };
 
 #endif // RESOURCESMODEL_H

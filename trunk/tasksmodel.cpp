@@ -53,6 +53,19 @@ void TasksModel::initialise()
   m_tasks.append( new Task() );
 }
 
+/****************************************** nonNullTaskAbove ********************************************/
+
+Task*  TasksModel::nonNullTaskAbove( Task* t )
+{
+  // returns task id or -1 if none
+  if ( index(t) == 0 ) return NULL;
+
+  int r = index(t) - 1;
+  while ( r > 0 && task(r)->isNull() ) r--;
+  if ( task(r)->isNull() ) return NULL;
+  return task(r);
+}
+
 /****************************************** canIndent ********************************************/
 
 bool  TasksModel::canIndent( int row )

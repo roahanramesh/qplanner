@@ -42,6 +42,7 @@ public:
   void              setDataDirect( int, const QVariant& );           // set value directly
   bool              isNull() const { return m_initials.isNull(); }   // is the task null (blank)
   QString           initials() const { return m_initials; }          // return initials
+  QList<QString>    assignable() const;                              // return assignable names
 
   enum sections                            // sections to be displayed by view
   {

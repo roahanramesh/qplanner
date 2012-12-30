@@ -83,8 +83,8 @@ void  TasksDelegate::initStyleOption( QStyleOptionViewItem* option,
 /***************************************** createEditor ******************************************/
 
 QWidget*  TasksDelegate::createEditor( QWidget *parent,
-                                      const QStyleOptionViewItem& option,
-                                      const QModelIndex& index ) const
+                                       const QStyleOptionViewItem& option,
+                                       const QModelIndex& index ) const
 {
   // create different editors based on the column
   switch ( index.column() )
@@ -132,7 +132,7 @@ void  TasksDelegate::setEditorData( QWidget* editor, const QModelIndex& index) c
       QString           value = index.model()->data( index, Qt::EditRole ).toString();
       TimeSpan          ts    = TimeSpan( value );
       spin->setValue( ts.number() );
-      spin->slotSetUnits( ts.units() );
+      spin->setUnits( ts.units() );
       return;
     }
 
@@ -145,8 +145,8 @@ void  TasksDelegate::setEditorData( QWidget* editor, const QModelIndex& index) c
 /***************************************** setModelData ******************************************/
 
 void  TasksDelegate::setModelData( QWidget* editor,
-                                  QAbstractItemModel* model,
-                                  const QModelIndex& index ) const
+                                   QAbstractItemModel* model,
+                                   const QModelIndex& index ) const
 {
   // update the model value, method depends on editor which depends on column
   switch ( index.column() )
