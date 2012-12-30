@@ -155,12 +155,12 @@ bool  Resource::setData( int row, int col, const QVariant& new_value )
 void  Resource::setDataDirect( int col, const QVariant& value )
 {
   // update resource (should only be called by undostack)
-  if ( col == SECTION_INITIALS ) m_initials     = value.toString();
-  if ( col == SECTION_NAME )     m_name         = value.toString();
-  if ( col == SECTION_ORG )      m_org          = value.toString();
-  if ( col == SECTION_GROUP )    m_group        = value.toString();
-  if ( col == SECTION_ROLE )     m_role         = value.toString();
-  if ( col == SECTION_ALIAS )    m_alias        = value.toString();
+  if ( col == SECTION_INITIALS ) m_initials     = value.toString().simplified();
+  if ( col == SECTION_NAME )     m_name         = value.toString().simplified();
+  if ( col == SECTION_ORG )      m_org          = value.toString().simplified();
+  if ( col == SECTION_GROUP )    m_group        = value.toString().simplified();
+  if ( col == SECTION_ROLE )     m_role         = value.toString().simplified();
+  if ( col == SECTION_ALIAS )    m_alias        = value.toString().simplified();
   if ( col == SECTION_AVAIL )    m_availability = value.toFloat();
   if ( col == SECTION_ABILITY )  m_ability      = value.toFloat();
   if ( col == SECTION_CALENDAR ) m_calendar     = plan->calendar( value.toInt() );
@@ -168,4 +168,30 @@ void  Resource::setDataDirect( int col, const QVariant& value )
   if ( col == SECTION_END )      m_end          = value.toDate();
   if ( col == SECTION_COST )     m_cost         = value.toFloat();
   if ( col == SECTION_COMMENT )  m_comment      = value.toString();
+
+  plan->resources()->updateAssignable();
+}
+
+/******************************************** setData ********************************************/
+
+QList<QString>  Resource::assignable() const
+{
+  // return assignable names
+  QList<QString>  list;
+  QString         temp;
+
+  temp = m_initials;
+  if ( !temp.isEmpty() ) list << temp.remove(' ');
+  temp = m_name;
+  if ( !temp.isEmpty() ) list << temp.remove(' ');
+  temp = m_org;
+  if ( !temp.isEmpty() ) list << temp.remove(' ');
+  temp = m_group;
+  if ( !temp.isEmpty() ) list << temp.remove(' ');
+  temp = m_role;
+  if ( !temp.isEmpty() ) list << temp.remove(' ');
+  temp = m_alias;
+  if ( !temp.isEmpty() ) list << temp.remove(' ');
+
+  return list;
 }

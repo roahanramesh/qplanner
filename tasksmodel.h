@@ -47,6 +47,7 @@ public:
   bool           canOutdent( int );                               // return true if task can be outdented
   bool           indentRows( QSet<int> );                         // indent selected rows
   bool           outdentRows( QSet<int> );                        // outdent selected rows
+  Task*          nonNullTaskAbove( Task* );                       // returns task ptr or NULL if none
   void           setSummaries();                                  // set summaries for all tasks
 
   Task*          task( int n ) { return m_tasks.at(n); }          // return the n'th day type

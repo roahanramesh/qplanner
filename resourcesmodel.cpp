@@ -60,6 +60,24 @@ int ResourcesModel::number()
   return count;
 }
 
+/**************************************** updateAssignable ***************************************/
+
+void ResourcesModel::updateAssignable()
+{
+  // start with an empty set
+  m_assignable.clear();
+
+  // determine assignable list
+  foreach( Resource* res, m_resources )
+    foreach( QString str, res->assignable() )
+      m_assignable.insert( str );
+
+  // DEBUG show list
+  qDebug("---------ResourcesModel::updateAssignable()-----------");
+  foreach( QString str, m_assignable )
+    qDebug("%s",qPrintable(str));
+}
+
 /**************************************** setColumnWidths ****************************************/
 
 void ResourcesModel::setColumnWidths( QTableView* table )

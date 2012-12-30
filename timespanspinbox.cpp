@@ -29,16 +29,13 @@
 
 TimeSpanSpinBox::TimeSpanSpinBox( QWidget* parent = 0 ) : QDoubleSpinBox( parent )
 {
-  // connect units changed signal to set units slot
-  connect( this, SIGNAL(unitsChanged(char)), this, SLOT(slotSetUnits(char)) );
-
   // set default characteristics
   setMaximum( 9999.0 );
 }
 
-/***************************************** slotSetUnits ******************************************/
+/******************************************* setUnits ********************************************/
 
-void  TimeSpanSpinBox::slotSetUnits( char units )
+void  TimeSpanSpinBox::setUnits( char units )
 {
   // units displayed in QDoubleSpinBox suffix
   setSuffix( QString(" %1").arg(units) );
@@ -67,7 +64,7 @@ QValidator::State  TimeSpanSpinBox::validate( QString& text, int& pos ) const
   // if pos less than one then couldn't have just entered new units
   if ( pos < 1 ) return QDoubleSpinBox::validate( text, pos );
 
-  // if new units entered, emit signal to announce (to get around const issue)
+  // check if new units entered
   char  units = text.at(pos-1).toAscii();
 
   if ( units == 'h' ) units = TimeSpan::UNIT_HOURS;
@@ -79,7 +76,7 @@ QValidator::State  TimeSpanSpinBox::validate( QString& text, int& pos ) const
        units == TimeSpan::UNIT_DAYS    ||
        units == TimeSpan::UNIT_WEEKS   ||
        units == TimeSpan::UNIT_MONTHS  ||
-       units == TimeSpan::UNIT_YEARS ) emit unitsChanged( units );
+       units == TimeSpan::UNIT_YEARS ) const_cast<TimeSpanSpinBox*>( this )->setUnits( units );
 
   // suppress minus sign as TimeSpanSpinBox doesn't accept negative durations
   if ( units == '-' ) return QValidator::Invalid;

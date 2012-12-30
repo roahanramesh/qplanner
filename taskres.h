@@ -18,23 +18,33 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef TIMESPANSPINBOX_H
-#define TIMESPANSPINBOX_H
+#ifndef TASKRES_H
+#define TASKRES_H
 
-#include <QDoubleSpinBox>
+#include <QString>
+#include <QList>
 
 /*************************************************************************************************/
-/**************************** SpinBox designed to handle TimeSpan type ***************************/
+/***************************** Resources assigned to task with plan ******************************/
 /*************************************************************************************************/
 
-class TimeSpanSpinBox : public QDoubleSpinBox
+class TaskRes
 {
 public:
-  TimeSpanSpinBox( QWidget* );                            // constructor
+  TaskRes();                                         // constructor
+  TaskRes( QString );                                // constructor
 
-  QValidator::State  validate( QString&, int& ) const;    // reimplement virtual to check for units entry
-  QString            textFromValue( double ) const;       // reimplement virtual to suppress unneeded zeros
-  void               setUnits( char );                    // update suffix with units
+  QString     toString() const;                      // return string for display in tasks view
+
+  typedef struct
+  {
+    QString   res_tag;
+    float     max;        // 0 (zero) means unlimited
+  } Assignment;
+
+private:
+  QList<Assignment>    m_res;           // list of resource assignments
+
 };
 
-#endif // TIMESPANSPINBOX_H
+#endif // TASKRES_H
