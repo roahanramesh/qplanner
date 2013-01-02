@@ -49,6 +49,8 @@ public:
   bool           outdentRows( QSet<int> );                        // outdent selected rows
   Task*          nonNullTaskAbove( Task* );                       // returns task ptr or NULL if none
   void           setSummaries();                                  // set summaries for all tasks
+  void           setOverride( QModelIndex i, QString v )
+                   { m_overrideIndex = i; m_overrideValue = v; }  // set model override values
 
   Task*          task( int n ) { return m_tasks.at(n); }          // return the n'th day type
   int            index( Task* t ) { return m_tasks.indexOf(t); }  // return index of task
@@ -73,8 +75,10 @@ signals:
   void           ganttChanged( int );            // signal task changed for gantt chart
 
 private:
-  QList<Task*>    m_tasks;      // list of tasks in plan
+  QList<Task*>    m_tasks;           // list of tasks in plan
 
+  QModelIndex     m_overrideIndex;   // with value can override model for edits in progress
+  QString         m_overrideValue;   // with index can override model for edits in progress
 };
 
 #endif // TASKSMODEL_H

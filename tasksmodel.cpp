@@ -279,6 +279,11 @@ int TasksModel::columnCount( const QModelIndex& parent ) const
 
 QVariant TasksModel::data( const QModelIndex& index, int role  = Qt::DisplayRole ) const
 {
+  // if index matches override index, return override value
+  if ( index == m_overrideIndex )
+    if ( role == Qt::DisplayRole || role == Qt::EditRole )
+      return m_overrideValue;
+
   // if index is not valid, return an invalid QVariant
   if ( !index.isValid() ) return QVariant();
 

@@ -181,17 +181,17 @@ QList<QString>  Resource::assignable() const
   QString         temp;
 
   temp = m_initials;
-  if ( !temp.isEmpty() ) list << temp.remove(' ');
+  if ( !temp.isEmpty() ) list << temp;
   temp = m_name;
-  if ( !temp.isEmpty() ) list << temp.remove(' ');
+  if ( !temp.isEmpty() ) list << temp;
   temp = m_org;
-  if ( !temp.isEmpty() ) list << temp.remove(' ');
+  if ( !temp.isEmpty() ) list << temp;
   temp = m_group;
-  if ( !temp.isEmpty() ) list << temp.remove(' ');
+  if ( !temp.isEmpty() ) list << temp;
   temp = m_role;
-  if ( !temp.isEmpty() ) list << temp.remove(' ');
+  if ( !temp.isEmpty() ) list << temp;
   temp = m_alias;
-  if ( !temp.isEmpty() ) list << temp.remove(' ');
+  if ( !temp.isEmpty() ) list << temp;
 
   return list;
 }

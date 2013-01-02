@@ -21,10 +21,12 @@
 #include "plan.h"
 #include "tasksdelegate.h"
 #include "task.h"
+#include "tasksmodel.h"
 #include "timespanspinbox.h"
 
 #include <QDateTimeEdit>
 #include <QComboBox>
+#include <QLineEdit>
 #include <QPainter>
 
 /*************************************************************************************************/
@@ -156,6 +158,23 @@ void  TasksDelegate::setModelData( QWidget* editor,
     {
       TimeSpanSpinBox*  spin  = dynamic_cast<TimeSpanSpinBox*>( editor );
       model->setData( index, spin->text() );
+      return;
+    }
+
+    case Task::SECTION_RES:
+    {
+      QLineEdit*  line  = dynamic_cast<QLineEdit*>( editor );
+      QString     value = line->text().simplified();
+
+      QString     error = TaskRes::validate( value );
+      if ( error.isEmpty() )
+        model->setData( index, value );
+      else
+      {
+        // set override so when edit re-starts it picks up what user had started to enter
+        dynamic_cast<TasksModel*>( model )->setOverride( index, value );
+        emit editTaskCell( index, error );
+      }
       return;
     }
 

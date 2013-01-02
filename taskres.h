@@ -34,17 +34,18 @@ public:
   TaskRes();                                         // constructor
   TaskRes( QString );                                // constructor
 
-  QString     toString() const;                      // return string for display in tasks view
+  QString         toString() const;                  // return string for display in tasks view
+
+  static QString  validate( const QString& );        // return any validation failures
 
   typedef struct
   {
-    QString   res_tag;
+    QString   tag;
     float     max;        // 0 (zero) means unlimited
   } Assignment;
 
 private:
   QList<Assignment>    m_res;           // list of resource assignments
-
 };
 
 #endif // TASKRES_H

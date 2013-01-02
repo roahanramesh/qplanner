@@ -52,6 +52,8 @@ public slots:
                                  const QItemSelection& );   // slot for task selection change
   void slotTaskDataChanged( const QModelIndex&,
                             const QModelIndex& );           // slot for task data change
+  void slotEditTaskCell( const QModelIndex&,
+                         const QString& );                  // slot for editing task cell
 
 private:
   Ui::MainWindow*  ui;                         // user interface created using qt designer
