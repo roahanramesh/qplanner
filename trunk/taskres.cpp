@@ -19,6 +19,8 @@
  ***************************************************************************/
 
 #include "taskres.h"
+#include "plan.h"
+#include "resourcesmodel.h"
 
 /*************************************************************************************************/
 /***************************** Resources assigned to task with plan ******************************/
@@ -32,14 +34,81 @@ TaskRes::TaskRes()
 
 /****************************************** constructor ******************************************/
 
-TaskRes::TaskRes( QString str )
+TaskRes::TaskRes( QString text )
 {
-  qDebug("TaskRes(\"%s\")",qPrintable(str));
+  // split text into individual assignments
+  m_res.clear();
+  QString tag, max;
+  foreach( QString part, text.split( ',', QString::SkipEmptyParts ) )
+  {
+    // split part into tag and max assignment
+    if ( part.contains('[') )
+    {
+      tag = part.section( '[', 0, 0 ).simplified();
+      max = part.section( '[', 1 ).remove( ']' );
+    }
+    else
+    {
+      tag = part.simplified();
+      max = "0";
+    }
+
+    Assignment ass;
+    ass.tag = tag;
+    ass.max = max.toFloat();
+    m_res.append( ass );
+  }
 }
 
 /******************************************** toString *******************************************/
 
 QString TaskRes::toString() const
 {
-  return "todo";
+  QString str;
+
+  // build up string equivalent
+  foreach( Assignment ass, m_res )
+  {
+    str += ass.tag;
+    if ( ass.max > 0.0 ) str += QString( "[%1]" ).arg( ass.max );
+    str += ", ";
+  }
+
+  // remove final ", " and return string equivalent
+  str.chop(2);
+  return str;
+}
+
+/******************************************** validate *******************************************/
+
+QString TaskRes::validate( const QString& text )
+{
+  // split text into individual assignments
+  QString error, tag, max;
+  foreach( QString part, text.split( ',', QString::SkipEmptyParts ) )
+  {
+    // split part into tag and max assignment
+    if ( part.contains( '[' ) )
+    {
+      tag = part.section( '[', 0, 0 ).simplified();
+      max = part.section( '[', 1 ).remove( ']' );
+    }
+    else
+    {
+      tag = part.simplified();
+      max = "0";
+    }
+
+    if ( !plan->resources()->isAssignable( tag ) )
+      error += QString( "'%1' is not an assignable resource.\n" ).arg( tag );
+
+    bool ok;
+    float num = max.toFloat( &ok );
+    if ( !ok || num < 0.0 )
+      error += QString( "'%1' is not a valid number for '%2'.\n" ).arg( max ).arg( tag );
+  }
+
+  // remove final '\n' and return validation error text
+  error.chop(1);
+  return error;
 }

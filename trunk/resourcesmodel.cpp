@@ -71,11 +71,6 @@ void ResourcesModel::updateAssignable()
   foreach( Resource* res, m_resources )
     foreach( QString str, res->assignable() )
       m_assignable.insert( str );
-
-  // DEBUG show list
-  qDebug("---------ResourcesModel::updateAssignable()-----------");
-  foreach( QString str, m_assignable )
-    qDebug("%s",qPrintable(str));
 }
 
 /**************************************** setColumnWidths ****************************************/
@@ -111,7 +106,8 @@ int ResourcesModel::columnCount( const QModelIndex& parent ) const
 
 /********************************************** data *********************************************/
 
-QVariant ResourcesModel::data( const QModelIndex& index, int role  = Qt::DisplayRole ) const
+QVariant ResourcesModel::data( const QModelIndex& index,
+                               int role  = Qt::DisplayRole ) const
 {
   // if index is not valid, return an invalid QVariant
   if ( !index.isValid() ) return QVariant();
@@ -125,7 +121,9 @@ QVariant ResourcesModel::data( const QModelIndex& index, int role  = Qt::Display
 
 /******************************************** setData ********************************************/
 
-bool ResourcesModel::setData( const QModelIndex& index, const QVariant& value, int role = Qt::EditRole )
+bool ResourcesModel::setData( const QModelIndex& index,
+                              const QVariant& value,
+                              int role = Qt::EditRole )
 {
   // if index is not valid, return false - can't set data
   if ( !index.isValid() ) return false;
@@ -141,7 +139,9 @@ bool ResourcesModel::setData( const QModelIndex& index, const QVariant& value, i
 
 /****************************************** headerData *******************************************/
 
-QVariant ResourcesModel::headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const
+QVariant ResourcesModel::headerData( int section,
+                                     Qt::Orientation orientation,
+                                     int role = Qt::DisplayRole ) const
 {
   // if role is not DisplayRole, return an invalid QVariant
   if ( role != Qt::DisplayRole ) return QVariant();

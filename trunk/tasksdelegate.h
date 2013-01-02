@@ -29,6 +29,7 @@
 
 class TasksDelegate : public QStyledItemDelegate
 {
+  Q_OBJECT
 public:
   TasksDelegate();                                          // constructor
 
@@ -43,6 +44,10 @@ public:
   void     paint( QPainter*,
                   const QStyleOptionViewItem&,
                   const QModelIndex& ) const;               // paint the show/hide subtasks symbol
+
+signals:
+  void     editTaskCell( const QModelIndex&,
+                         const QString& ) const;            // signal that cell editing needs to continue
 
 protected:
   void     initStyleOption( QStyleOptionViewItem*,

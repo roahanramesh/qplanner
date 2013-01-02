@@ -31,6 +31,7 @@
 #include "commandpropertieschange.h"
 
 #include <QUndoView>
+#include <QMessageBox>
 
 /*************************************************************************************************/
 /********************* Main application window showing tabbed main screens ***********************/
@@ -52,10 +53,14 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
 
   // set models & delegates for table views
   ui->tasksView->setModel( (QAbstractItemModel*)plan->tasks() );
-  ui->tasksView->setItemDelegate( new TasksDelegate() );
+  TasksDelegate*  td = new TasksDelegate();
+  ui->tasksView->setItemDelegate( td );
   ui->resourcesView->setModel( (QAbstractItemModel*)plan->resources() );
   ui->calendarsView->setModel( (QAbstractItemModel*)plan->calendars() );
   ui->daysView->setModel( (QAbstractItemModel*)plan->days() );
+
+  // connect task delegate edit task cell to slot, queued so any earlier edit is finished and closed
+  connect( td, SIGNAL(editTaskCell(QModelIndex,QString)), this, SLOT(slotEditTaskCell(QModelIndex,QString)), Qt::QueuedConnection );
 
   // set smaller row height for table views
   int height = ui->tasksView->fontMetrics().lineSpacing() + 3;
@@ -122,6 +127,20 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
            this, SLOT(slotTaskSelectionChanged(QItemSelection,QItemSelection)) );
   connect ( plan->tasks(), SIGNAL(dataChanged(QModelIndex,QModelIndex)),
             this, SLOT(slotTaskDataChanged(QModelIndex,QModelIndex)) );
+}
+
+/*************************************** slotEditTaskCell ****************************************/
+
+void MainWindow::slotEditTaskCell( const QModelIndex& index, const QString& warning )
+{
+  // slot to enable task cell edit to be automatically re-started after validation failure
+  ui->mainTabWidget->setCurrentWidget( ui->tasksGanttTab );
+  ui->tasksView->setCurrentIndex( index );
+  QMessageBox::warning( ui->tasksView, "QPlanner", warning );
+  ui->tasksView->edit( index );
+
+  // clear override
+  plan->tasks()->setOverride( QModelIndex(), QString() );
 }
 
 /************************************** slotTaskDataChanged **************************************/

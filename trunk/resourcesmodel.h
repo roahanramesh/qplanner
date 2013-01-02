@@ -38,9 +38,12 @@ public:
   ResourcesModel();                                                       // constructor
 
   void           initialise();                                            // create initial default contents
-  void           setColumnWidths( QTableView* );                          // set initial column widths
   int            number();                                                // return number of resources in plan
+  void           setColumnWidths( QTableView* );                          // set initial column widths
+
   void           updateAssignable();                                      // determine assignable list
+  bool           isAssignable( const QString& tag ) const
+                   { return m_assignable.contains( tag ); }               // is tag assignable?
 
   Resource*      resource( int n ) { return m_resources.at(n); }          // return the n'th resource
   int            index( Resource* r ) { return m_resources.indexOf(r); }  // return index of task
