@@ -38,14 +38,16 @@ public:
   Predecessors();                                    // constructor
   Predecessors( QString );                           // constructor
 
-  QString     toString() const;                      // return string for display in tasks view
+  QString         toString() const;                  // return string for display in tasks view
+
+  static QString  validate( const QString& );        // return any validation failures
 
   enum pred_type
   {
     TYPE_FINISH_START  = 0,     // Finish (other task) to start (this start)
     TYPE_START_START   = 1,     // Start to start
     TYPE_START_FINISH  = 2,     // Start to finish
-    TYPE_FINISH_FINSIH = 3,     // Finish to finish
+    TYPE_FINISH_FINISH = 3,     // Finish to finish
     TYPE_DEFAULT       = 0
   };
 
@@ -58,7 +60,6 @@ public:
 
 private:
   QList<Predecessor>    m_preds;      // list of task predecessors
-
 };
 
 #endif // PREDECESSORS_H
