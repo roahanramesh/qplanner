@@ -161,6 +161,23 @@ void  TasksDelegate::setModelData( QWidget* editor,
       return;
     }
 
+    case Task::SECTION_PREDS:
+    {
+      QLineEdit*  line  = dynamic_cast<QLineEdit*>( editor );
+      QString     value = line->text().simplified();
+
+      QString     error = Predecessors::validate( value );
+      if ( error.isEmpty() )
+        model->setData( index, value );
+      else
+      {
+        // set override so when edit re-starts it picks up what user had started to enter
+        dynamic_cast<TasksModel*>( model )->setOverride( index, value );
+        emit editTaskCell( index, error );
+      }
+      return;
+    }
+
     case Task::SECTION_RES:
     {
       QLineEdit*  line  = dynamic_cast<QLineEdit*>( editor );

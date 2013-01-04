@@ -41,7 +41,7 @@ public:
   void           schedule();                                      // re-schedule tasks
   void           setColumnWidths( QTableView* );                  // set initial column widths
   QDateTime      end();                                           // return plan end
-  int            number();                                        // return number of tasks in plan
+  int            number();                                        // return number of non-null tasks in plan
 
   bool           canIndent( int );                                // return true if task can be indented
   bool           canOutdent( int );                               // return true if task can be outdented
