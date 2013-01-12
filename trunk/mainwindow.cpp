@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2012 by Richard Crook                                   *
+ *   Copyright (C) 2013 by Richard Crook                                   *
  *   http://code.google.com/p/qplanner                                     *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -27,6 +27,7 @@
 #include "daysmodel.h"
 #include "task.h"
 #include "tasksdelegate.h"
+#include "resourcesdelegate.h"
 
 #include "commandpropertieschange.h"
 
@@ -56,6 +57,8 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   TasksDelegate*  td = new TasksDelegate();
   ui->tasksView->setItemDelegate( td );
   ui->resourcesView->setModel( (QAbstractItemModel*)plan->resources() );
+  ResourcesDelegate*  rd = new ResourcesDelegate();
+  ui->resourcesView->setItemDelegate( rd );
   ui->calendarsView->setModel( (QAbstractItemModel*)plan->calendars() );
   ui->daysView->setModel( (QAbstractItemModel*)plan->days() );
 

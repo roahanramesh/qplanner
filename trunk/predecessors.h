@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2012 by Richard Crook                                   *
+ *   Copyright (C) 2013 by Richard Crook                                   *
  *   http://code.google.com/p/qplanner                                     *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -39,8 +39,9 @@ public:
   Predecessors( QString );                           // constructor
 
   QString         toString() const;                  // return string for display in tasks view
+  bool            hasPredecessor( Task* ) const;     // return true if task is a predecessor
 
-  static QString  validate( const QString& );        // return any validation failures
+  static QString  validate( const QString&, int );   // return any validation failures
 
   enum pred_type
   {

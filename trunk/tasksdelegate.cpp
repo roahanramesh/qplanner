@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2012 by Richard Crook                                   *
+ *   Copyright (C) 2013 by Richard Crook                                   *
  *   http://code.google.com/p/qplanner                                     *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -99,7 +99,7 @@ QWidget*  TasksDelegate::createEditor( QWidget *parent,
     case Task::SECTION_END:
     case Task::SECTION_DEADLINE:
     {
-      QDateTimeEdit* editor = new QDateTimeEdit( parent );
+      QDateTimeEdit* editor = dynamic_cast<QDateTimeEdit*>( QStyledItemDelegate::createEditor( parent, option, index ) );
       editor->setCalendarPopup( TRUE );
       return editor;
     }
@@ -166,7 +166,7 @@ void  TasksDelegate::setModelData( QWidget* editor,
       QLineEdit*  line  = dynamic_cast<QLineEdit*>( editor );
       QString     value = line->text().simplified();
 
-      QString     error = Predecessors::validate( value );
+      QString     error = Predecessors::validate( value, index.row() );
       if ( error.isEmpty() )
         model->setData( index, value );
       else
