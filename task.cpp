@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2012 by Richard Crook                                   *
+ *   Copyright (C) 2013 by Richard Crook                                   *
  *   http://code.google.com/p/qplanner                                     *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -65,15 +65,23 @@ QVariant  Task::headerData( int column )
   return QVariant();
 }
 
+/**************************************** hasPredecessor *****************************************/
+
+bool  Task::hasPredecessor( Task* task ) const
+{
+  // return true if task is predecessor
+  return m_predecessors.hasPredecessor( task );
+}
+
 /**************************************** scheduleOrder ******************************************/
 
 bool  Task::scheduleOrder( Task* t1, Task* t2 )
 {
   // less than function for qSort - firstly if predecessor
-  //if ( t1->hasPredecessor(t2) ) return true;
+  if ( t1->hasPredecessor( t2 ) ) return true;
 
   // otherwise, by priority and index
-  return (t1->m_priority - plan->index(t1)) > (t2->m_priority - plan->index(t2));
+  return ( t1->m_priority - plan->index(t1) ) > ( t2->m_priority - plan->index(t2) );
 }
 
 /******************************************* schedule ********************************************/

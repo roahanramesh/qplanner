@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2012 by Richard Crook                                   *
+ *   Copyright (C) 2013 by Richard Crook                                   *
  *   http://code.google.com/p/qplanner                                     *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -70,8 +70,8 @@ private:
   QString            m_group;              // free text
   QString            m_role;               // free text
   QString            m_alias;              // free text
-  QDate              m_start;              // date availability starts
-  QDate              m_end;                // date availability end
+  QDate              m_start;              // date availability starts (at 00:00:00)
+  QDate              m_end;                // date availability end (at 23:59:59)
   float              m_availability;       // number available
   float              m_ability;            // ability factor - typical 1.0
   float              m_cost;               // cost TODO

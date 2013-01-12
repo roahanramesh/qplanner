@@ -18,34 +18,26 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef TASKRES_H
-#define TASKRES_H
+#ifndef RESOURCESDELEGATE_H
+#define RESOURCESDELEGATE_H
 
-#include <QString>
-#include <QList>
+#include <QStyledItemDelegate>
 
 /*************************************************************************************************/
-/***************************** Resources assigned to task with plan ******************************/
+/********************* Delegate for displaying & editing resource data items *********************/
 /*************************************************************************************************/
 
-class TaskRes
+class ResourcesDelegate : public QStyledItemDelegate
 {
 public:
-  TaskRes();                                         // constructor
-  TaskRes( QString );                                // constructor
+  ResourcesDelegate();                                          // constructor
 
-  QString         toString() const;                  // return string for display in tasks view
-
-  static QString  validate( const QString& );        // return any validation failures
-
-  typedef struct
-  {
-    QString   tag;
-    float     max;        // 0 (zero) means unlimited
-  } Assignment;
-
+  QWidget*     createEditor( QWidget*,
+                             const QStyleOptionViewItem&,
+                             const QModelIndex& ) const;        // create the editor
 private:
-  QList<Assignment>    m_res;           // list of resource assignments
+  QValidator*  m_validator_initials;                            // validator for initials
+  QValidator*  m_validator_name;                                // validator for name/org/group/role/alias
 };
 
-#endif // TASKRES_H
+#endif // RESOURCESDELEGATE_H

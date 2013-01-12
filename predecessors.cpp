@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2012 by Richard Crook                                   *
+ *   Copyright (C) 2013 by Richard Crook                                   *
  *   http://code.google.com/p/qplanner                                     *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -46,7 +46,7 @@ Predecessors::Predecessors( QString text )
     int digit = 0;
     while ( part.length() > digit && part.at(digit).isDigit() ) digit++;
 
-    int       task = part.left(digit).toInt();
+    int       task = part.left(digit).toInt() - 1;
     char      type = Predecessors::TYPE_DEFAULT;
     TimeSpan  lag  = QString("0");
 
@@ -81,7 +81,7 @@ QString Predecessors::toString() const
   // build up string equivalent
   foreach( Predecessor pred, m_preds )
   {
-    str += QString("%1").arg( plan->index( pred.task ) );
+    str += QString("%1").arg( plan->index( pred.task ) + 1 );
 
     if ( pred.type != Predecessors::TYPE_DEFAULT ||
          pred.lag.number() != 0.0 )
@@ -102,9 +102,23 @@ QString Predecessors::toString() const
   return str;
 }
 
+/**************************************** hasPredecessor *****************************************/
+
+bool  Predecessors::hasPredecessor( Task* task ) const
+{
+  // return true if task is a predecessor
+  foreach( Predecessor pred, m_preds )
+  {
+    if ( pred.task == task ) return true;
+    if ( pred.task->hasPredecessor( task ) ) return true;
+  }
+
+  return false;
+}
+
 /******************************************** validate *******************************************/
 
-QString Predecessors::validate( const QString& text )
+QString Predecessors::validate( const QString& text, int thisTaskNum )
 {
   // split text into individual predecessors
   QString error;
@@ -113,7 +127,7 @@ QString Predecessors::validate( const QString& text )
     // split part into task, predecessor type and lag
     part = part.trimmed();
     int digit = 0;
-    while ( part.length() > digit && part.at(digit).isDigit() ) digit++;
+    while ( part.length() > digit && part.at( digit ).isDigit() ) digit++;
 
     // check start is number
     if ( digit == 0 )
@@ -123,11 +137,25 @@ QString Predecessors::validate( const QString& text )
     }
 
     // check number is non-null task
-    int task = part.left(digit).toInt();
-    if ( task >= plan->tasks()->rowCount( QModelIndex() ) ||
-         plan->task(task-1)->isNull() )
+    int taskNum = part.left( digit ).toInt() - 1;
+    if ( taskNum >= plan->tasks()->rowCount( QModelIndex() ) ||
+         plan->task( taskNum )->isNull() )
     {
-      error += QString( "'%1' is a null task.\n" ).arg( task );
+      error += QString( "'%1' is a null task.\n" ).arg( taskNum + 1 );
+      continue;
+    }
+
+    // check number is not this task
+    if ( taskNum == thisTaskNum )
+    {
+      error += QString( "'%1' is a reference to this task.\n" ).arg( taskNum + 1 );
+      continue;
+    }
+
+    // check number is does not cause circular reference
+    if ( plan->task( taskNum )->hasPredecessor( plan->task( thisTaskNum ) ) )
+    {
+      error += QString( "'%1' gives a circular reference to this task.\n" ).arg( taskNum + 1 );
       continue;
     }
 

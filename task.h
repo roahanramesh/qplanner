@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2012 by Richard Crook                                   *
+ *   Copyright (C) 2013 by Richard Crook                                   *
  *   http://code.google.com/p/qplanner                                     *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -56,6 +56,7 @@ public:
   void              setSummary( bool s ) { m_summary = s; }       // set task summary status
   int               indent() const { return m_indent; }           // return current indent level
   void              setIndent( short i ) { m_indent = i; }        // set task indent level
+  bool              hasPredecessor( Task* ) const;                // return true if task is predecessor
 
   GanttData*        ganttData() { return &m_gantt; }              // return pointer to gantt data
   static QString    typeToString( int );                          // return type string equivalent
