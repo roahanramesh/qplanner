@@ -32,7 +32,10 @@ SOURCES += main.cpp\
     xdatetime.cpp \
     ganttdata.cpp \
     taskres.cpp \
-    resourcesdelegate.cpp
+    resourcesdelegate.cpp \
+    scheduledata.cpp \
+    schedulethread.cpp \
+    scheduleresult.cpp
 
 HEADERS  += mainwindow.h \
     plan.h \
@@ -60,6 +63,9 @@ HEADERS  += mainwindow.h \
     commandtaskindent.h \
     commandtaskoutdent.h \
     taskres.h \
-    resourcesdelegate.h
+    resourcesdelegate.h \
+    scheduledata.h \
+    schedulethread.h \
+    scheduleresult.h
 
 FORMS    += mainwindow.ui
