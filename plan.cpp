@@ -24,7 +24,6 @@
 #include "calendarsmodel.h"
 #include "daysmodel.h"
 #include "calendar.h"
-#include "scheduledata.h"
 
 /*************************************************************************************************/
 /************************** Holds the complete data model for the plan ***************************/
@@ -60,11 +59,6 @@ Plan::Plan()
 
   m_datetime_format = "ddd dd/MM/yyyy hh:mm:ss";
   m_calendar        = NULL;
-
-  // connect schedule thread update to receiving slot
-  qRegisterMetaType<ScheduleResult>("ScheduleResult");
-  connect( &m_scheduleThread, SIGNAL(scheduleUpdate(ScheduleResult)),
-           this,              SLOT(slotScheduleUpdate(ScheduleResult)) );
 }
 
 /****************************************** destructor *******************************************/
@@ -93,27 +87,3 @@ void Plan::initialise()
   m_resources->initialise();
   m_tasks->initialise();
 }
-
-/******************************************* schedule ********************************************/
-
-void Plan::schedule()
-{
-  // prepare data to be used by schedule thread
-  ScheduleData  data;
-  data.collect();
-
-  // schedule result comes back in instance of ScheduleResult via signal
-  m_scheduleThread.schedule( data );
-}
-
-/************************************** slotScheduleUpdate ***************************************/
-
-void Plan::slotScheduleUpdate( ScheduleResult result )
-{
-  qDebug("Plan::slotScheduleUpdate");
-  // receives schedule result from schedule thread
-
-  Q_UNUSED( result );
-  // TODO
-}
-

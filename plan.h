@@ -36,8 +36,6 @@ class Resource;
 class Calendar;
 class Day;
 
-#include "schedulethread.h"
-
 /*************************************************************************************************/
 /************************** Holds the complete data model for the plan ***************************/
 /*************************************************************************************************/
@@ -91,7 +89,6 @@ public:
   void             setCalendar( int c )
                      { m_calendar = calendar(c); }                  // set plan default calendar
   void             setNotes( QString n ) { m_notes = n; }           // set notes text
-  void             schedule();                                      // update plan schedule
 
   void             emitPropertiesUpdated()
                      { emit signalPropertiesUpdated(); }            // emit signalPropertiesUpdated
@@ -99,10 +96,7 @@ public:
   QColor           nullCellColour() { return QColor( "#F0F0F0" ); } // colour for null table cell
 
 signals:
-  void  signalPropertiesUpdated();                  // signal to say plan properties updated
-
-public slots:
-  void  slotScheduleUpdate( ScheduleResult );       // slot for receiving schedule updates
+  void  signalPropertiesUpdated();      // signal to say plan properties updated
 
 private:
   TasksModel*      m_tasks;             // model of plan tasks
@@ -121,8 +115,6 @@ private:
   QString          m_saved_by;          // username of who last saved
   QDateTime        m_saved_when;        // datetime when last saved
   QString          m_notes;             // plan notes as in properties
-
-  ScheduleThread   m_scheduleThread;    // thread to processes schedule data
 };
 
 extern Plan*  plan;

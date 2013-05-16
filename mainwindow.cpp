@@ -207,7 +207,7 @@ void MainWindow::slotOutdent()
 void MainWindow::slotSchedulePlan()
 {
   // get plan to reschedule all the tasks
-  plan->schedule();
+  plan->tasks()->schedule();
 }
 
 /*************************************** slotViewUndoStack ***************************************/
