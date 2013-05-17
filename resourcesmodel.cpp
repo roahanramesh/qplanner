@@ -45,7 +45,7 @@ void ResourcesModel::initialise()
   m_resources.append( new Resource() );
 
   // create unassigned resource
-  m_unassigned = new Resource( TRUE );
+  m_unassigned = new Resource( true );
 }
 
 /******************************************** number *********************************************/

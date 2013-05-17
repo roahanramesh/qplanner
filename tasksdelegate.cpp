@@ -100,7 +100,7 @@ QWidget*  TasksDelegate::createEditor( QWidget *parent,
     case Task::SECTION_DEADLINE:
     {
       QDateTimeEdit* editor = dynamic_cast<QDateTimeEdit*>( QStyledItemDelegate::createEditor( parent, option, index ) );
-      editor->setCalendarPopup( TRUE );
+      editor->setCalendarPopup( true );
       return editor;
     }
 

@@ -58,7 +58,7 @@ Plan::Plan()
   m_undostack = new QUndoStack();
 
   m_datetime_format = "ddd dd/MM/yyyy hh:mm:ss";
-  m_calendar        = NULL;
+  m_calendar        = nullptr;
 }
 
 /****************************************** destructor *******************************************/

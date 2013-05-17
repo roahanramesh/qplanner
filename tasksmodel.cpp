@@ -57,12 +57,12 @@ void TasksModel::initialise()
 
 Task*  TasksModel::nonNullTaskAbove( Task* t )
 {
-  // returns task id or -1 if none
-  if ( index(t) == 0 ) return NULL;
+  // returns pointer to first non-null task above, or nullptr if none
+  if ( index(t) <= 0 ) return nullptr;
 
   int r = index(t) - 1;
   while ( r > 0 && task(r)->isNull() ) r--;
-  if ( task(r)->isNull() ) return NULL;
+  if ( task(r)->isNull() ) return nullptr;
   return task(r);
 }
 

@@ -33,6 +33,7 @@
 // IDEA - Resourcing tasks can use special pseudo-resource 'All' & Organisations/Groups/Types
 // Progress 2012-10-10 started again using Qt 4.8.0 using QtCreator 2.5.83
 // Progress 2012-12-16 default days and calendars, user can enter tasks and resources with undo
+// Progress 2013-05-16 updated to use Qt 5.0.2, QtCreator 2.7.0 and C++11
 /*************************************************************************************************/
 
 Plan*  plan;     // global variable
