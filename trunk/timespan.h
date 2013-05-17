@@ -67,7 +67,7 @@ public:
     {
       if ( QString("SMHdwmy").contains(lastchr) )   // check if valid units
       {
-        m_units = lastchr.at(0).toAscii();
+        m_units = lastchr.at(0).toLatin1();
         str.chop(1);
       }
       else

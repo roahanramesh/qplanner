@@ -47,7 +47,7 @@ public:
   bool           canOutdent( int );                               // return true if task can be outdented
   bool           indentRows( QSet<int> );                         // indent selected rows
   bool           outdentRows( QSet<int> );                        // outdent selected rows
-  Task*          nonNullTaskAbove( Task* );                       // returns task ptr or NULL if none
+  Task*          nonNullTaskAbove( Task* );                       // returns task ptr or nullptr if none
   void           setSummaries();                                  // set summaries for all tasks
   void           setOverride( QModelIndex i, QString v )
                    { m_overrideIndex = i; m_overrideValue = v; }  // set model override values

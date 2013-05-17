@@ -43,7 +43,7 @@
 MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::MainWindow )
 {
   // initialise private variables
-  m_undoview = NULL;
+  m_undoview = nullptr;
 
   // setup palette & ui for main window
   QPalette  pal = palette();
@@ -217,7 +217,7 @@ void MainWindow::slotUndoStackView( bool checked )
   // show undo stack view window if checked, otherwise hide
   if ( checked )
   {
-    if ( m_undoview == NULL )
+    if ( m_undoview == nullptr )
     {
       m_undoview = new QUndoView( plan->undostack() );
       m_undoview->setWindowTitle( "Undo stack" );
@@ -238,7 +238,7 @@ void MainWindow::slotUndoStackView( bool checked )
 void MainWindow::slotUndoStackViewDestroyed()
 {
   // undo stack view window closed and destroyed so reset pointer and uncheck action
-  m_undoview = 0;
+  m_undoview = nullptr;
   ui->actionUndoStackView->setChecked( false );
 }
 

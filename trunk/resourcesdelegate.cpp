@@ -71,7 +71,7 @@ QWidget*  ResourcesDelegate::createEditor( QWidget *parent,
     case Resource::SECTION_END:
     {
       QDateEdit* editor = dynamic_cast<QDateEdit*>( QStyledItemDelegate::createEditor( parent, option, index ) );
-      editor->setCalendarPopup( TRUE );
+      editor->setCalendarPopup( true );
       return editor;
     }
 

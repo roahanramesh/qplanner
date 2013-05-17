@@ -43,7 +43,7 @@ GanttScale::GanttScale( QWidget* parent ) : QWidget( parent )
   // set private veriables default values
   m_secsPP  = 100.0;
   m_stretch = 100;
-  m_menu    = 0;
+  m_menu    = nullptr;
 }
 
 /******************************************* paintEvent ******************************************/
@@ -147,7 +147,7 @@ void   GanttScale::setLabelFormat( QString format )
 QMenu*   GanttScale::menu()
 {
   // if menu not already created, create now
-  if ( m_menu == 0 )
+  if ( m_menu == nullptr )
   {
     m_menu = new QMenu( this );
     m_menu->addAction("Year");

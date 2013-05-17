@@ -42,7 +42,7 @@ GanttChart::GanttChart( QWidget* parent ) : QWidget( parent )
 
   // set private veriables default values
   m_secsPP   = 100.0;
-  m_table    = NULL;
+  m_table    = nullptr;
 }
 
 /****************************************** chartWidth *******************************************/

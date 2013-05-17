@@ -27,7 +27,7 @@
 
 /****************************************** constructor ******************************************/
 
-TimeSpanSpinBox::TimeSpanSpinBox( QWidget* parent = 0 ) : QDoubleSpinBox( parent )
+TimeSpanSpinBox::TimeSpanSpinBox( QWidget* parent = nullptr ) : QDoubleSpinBox( parent )
 {
   // set default characteristics
   setMaximum( 9999.0 );
@@ -65,7 +65,7 @@ QValidator::State  TimeSpanSpinBox::validate( QString& text, int& pos ) const
   if ( pos < 1 ) return QDoubleSpinBox::validate( text, pos );
 
   // check if new units entered
-  char  units = text.at(pos-1).toAscii();
+  char  units = text.at(pos-1).toLatin1();
 
   if ( units == 'h' ) units = TimeSpan::UNIT_HOURS;
   if ( units == 's' ) units = TimeSpan::UNIT_SECONDS;

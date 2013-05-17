@@ -37,7 +37,7 @@ class MainWindow : public QMainWindow
 {
   Q_OBJECT
 public:
-  explicit MainWindow( QWidget *parent = 0 );               // constructor
+  explicit MainWindow( QWidget *parent = nullptr );         // constructor
 
 public slots:
   void slotUndoStackView( bool );              // slot for actionUndoStackView triggered signal
