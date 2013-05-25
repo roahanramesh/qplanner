@@ -193,14 +193,32 @@ bool  TasksModel::outdentRows( QSet<int> rows )
   return true;
 }
 
-/********************************************** end **********************************************/
+/***************************************** planBeginning *****************************************/
 
-QDateTime TasksModel::end()
+QDateTime TasksModel::planBeginning()
 {
-  // return plan end, i.e. latest end of all tasks
-  QDateTime  end = plan->start();
+  // return start of earliest starting task
+  QDateTime  first;
   foreach( Task* t, m_tasks )
+  {
+    if ( !t->isNull() && !first.isValid()   ) first = t->start();
+    if ( !t->isNull() && t->start() < first ) first = t->start();
+  }
+
+  return first;
+}
+
+/******************************************** planEnd ********************************************/
+
+QDateTime TasksModel::planEnd()
+{
+  // return finish of latest finishing task
+  QDateTime  end;
+  foreach( Task* t, m_tasks )
+  {
+    if ( !t->isNull() && !end.isValid() ) end = t->end();
     if ( !t->isNull() && t->end() > end ) end = t->end();
+  }
 
   return end;
 }

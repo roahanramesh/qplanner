@@ -55,10 +55,10 @@ public:
   DaysModel*       days() { return m_days; }                        // return days model pointer
   QUndoStack*      undostack() { return m_undostack; }              // return undo stack pointer
 
-  Task*            task( int );                                     // return the n'th task
-  Resource*        resource( int );                                 // return the n'th resource
-  Calendar*        calendar( int );                                 // return the n'th calendar
-  Day*             day( int );                                      // return the n'th day type
+  Task*            task( int );                                     // return the n'th task pointer
+  Resource*        resource( int );                                 // return the n'th resource pointer
+  Calendar*        calendar( int );                                 // return the n'th calendar pointer
+  Day*             day( int );                                      // return the n'th day type pointer
 
   int              index( Task* );                                  // return index of task
   int              index( Resource* );                              // return index of resource
@@ -71,9 +71,10 @@ public:
   int              numDays();                                       // return number of day types in plan
 
   QString          title() { return m_title; }                      // return title of plan
-  QDateTime        start() { return m_start; }                      // return start of plan
-  QDateTime        end();                                           // return end of plan
-  Calendar*        calendar() { return m_calendar; }                // return default calendar
+  QDateTime        start() { return m_start; }                      // return nominal start of plan (T0)
+  QDateTime        beginning();                                     // return start of earliest starting task
+  QDateTime        end();                                           // return finish of latest finishing task
+  Calendar*        calendar() { return m_calendar; }                // return default calendar pointer
   QString          datetimeFormat() { return m_datetime_format; }   // return datetime format
   QString          filename() {return m_filename; }                 // return filename
   QString          fileLocation() { return m_file_location; }       // return file location
@@ -108,7 +109,7 @@ private:
 
   QString          m_title;             // plan title as set in properties
   QDateTime        m_start;             // plan start as set in properties
-  Calendar*        m_calendar;          // plan default calendar
+  Calendar*        m_calendar;          // plan default calendar pointer
   QString          m_datetime_format;   // plan datetime format as set in properties
   QString          m_filename;          // filename when last opened/saved
   QString          m_file_location;     // file location when last opened/saved

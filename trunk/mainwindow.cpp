@@ -89,6 +89,8 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   palette->setColor( QPalette::Base, palette->window().color() );
 
   // setup properties tab
+  ui->planBeginning->setReadOnly( true );
+  ui->planBeginning->setPalette( *palette );
   ui->planEnd->setReadOnly( true );
   ui->planEnd->setPalette( *palette );
   ui->fileName->setReadOnly( true );
@@ -246,19 +248,20 @@ void MainWindow::slotUndoStackViewDestroyed()
 
 void MainWindow::slotTabChange( int index )
 {
+  Q_UNUSED(index)
   // check if we need to update plan from 'Properties' tab widgets
-  if ( ui->title->text()              != plan->title()          ||
-       ui->planStart->dateTime()      != plan->start()          ||
-       ui->defaultCal->currentIndex() != plan->index( plan->calendar() ) ||
-       ui->dateTimeFormat->text()     != plan->datetimeFormat() ||
-       ui->notesEdit->toPlainText()   != plan->notes() )
+  if ( ui->title->text()                   != plan->title()          ||
+       ui->planStart->dateTime()           != plan->start()          ||
+       ui->defaultCalendar->currentIndex() != plan->index( plan->calendar() ) ||
+       ui->dateTimeFormat->text()          != plan->datetimeFormat() ||
+       ui->notesEdit->toPlainText()        != plan->notes() )
   {
     plan->undostack()->push( new CommandPropertiesChange(
-                               ui->title->text(),              plan->title(),
-                               ui->planStart->dateTime(),      plan->start(),
-                               ui->defaultCal->currentIndex(), plan->index( plan->calendar() ),
-                               ui->dateTimeFormat->text(),     plan->datetimeFormat(),
-                               ui->notesEdit->toPlainText(),   plan->notes()) );
+                               ui->title->text(),                   plan->title(),
+                               ui->planStart->dateTime(),           plan->start(),
+                               ui->defaultCalendar->currentIndex(), plan->index( plan->calendar() ),
+                               ui->dateTimeFormat->text(),          plan->datetimeFormat(),
+                               ui->notesEdit->toPlainText(),        plan->notes()) );
 
 
     return;
@@ -276,6 +279,10 @@ void MainWindow::slotUpdatePropertiesWidgets()
   ui->title->setText( plan->title() );
   ui->title->setCursorPosition( 0 );
 
+  ui->planBeginning->setText( plan->beginning().toString("dd/MM/yyyy hh:mm:ss") );
+  ui->planBeginning->setCursorPosition( 0 );
+  ui->planBeginning->setToolTip( plan->beginning().toString( plan->datetimeFormat() ) );
+
   ui->planStart->setDateTime( plan->start() );
   ui->planStart->setToolTip( plan->start().toString( plan->datetimeFormat() ) );
 
@@ -283,9 +290,9 @@ void MainWindow::slotUpdatePropertiesWidgets()
   ui->planEnd->setCursorPosition( 0 );
   ui->planEnd->setToolTip( plan->end().toString( plan->datetimeFormat() ) );
 
-  ui->defaultCal->clear();
-  ui->defaultCal->addItems( plan->calendars()->namesList() );
-  ui->defaultCal->setCurrentIndex( plan->index( plan->calendar() ) );
+  ui->defaultCalendar->clear();
+  ui->defaultCalendar->addItems( plan->calendars()->namesList() );
+  ui->defaultCalendar->setCurrentIndex( plan->index( plan->calendar() ) );
 
   ui->dateTimeFormat->setText( plan->datetimeFormat() );
   ui->dateTimeFormat->setCursorPosition( 0 );
