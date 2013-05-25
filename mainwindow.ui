@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>533</width>
-    <height>289</height>
+    <width>734</width>
+    <height>481</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,7 +15,16 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout_5">
-    <property name="margin">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
      <number>0</number>
     </property>
     <item>
@@ -23,127 +32,21 @@
       <property name="currentIndex">
        <number>0</number>
       </property>
-      <widget class="QWidget" name="tasksGanttTab">
+      <widget class="QWidget" name="planTab">
        <attribute name="title">
-        <string>Tasks &amp;&amp; Gantt</string>
-       </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <property name="margin">
-         <number>0</number>
-        </property>
-        <item>
-         <widget class="QSplitter" name="tasksGanttSplitter">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <widget class="QTableView" name="tasksView">
-           <property name="frameShape">
-            <enum>QFrame::NoFrame</enum>
-           </property>
-           <property name="dragEnabled">
-            <bool>true</bool>
-           </property>
-           <property name="alternatingRowColors">
-            <bool>false</bool>
-           </property>
-          </widget>
-          <widget class="GanttView" name="ganttView">
-           <property name="frameShape">
-            <enum>QFrame::NoFrame</enum>
-           </property>
-           <property name="widgetResizable">
-            <bool>true</bool>
-           </property>
-           <widget class="QWidget" name="ganttWidget">
-            <property name="geometry">
-             <rect>
-              <x>0</x>
-              <y>0</y>
-              <width>147</width>
-              <height>199</height>
-             </rect>
-            </property>
-           </widget>
-          </widget>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="resourcesTab">
-       <attribute name="title">
-        <string>Resources</string>
-       </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <property name="margin">
-         <number>0</number>
-        </property>
-        <item>
-         <widget class="QTableView" name="resourcesView">
-          <property name="frameShape">
-           <enum>QFrame::NoFrame</enum>
-          </property>
-          <property name="dragEnabled">
-           <bool>true</bool>
-          </property>
-          <property name="alternatingRowColors">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="calendarsTab">
-       <attribute name="title">
-        <string>Calendars</string>
-       </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
-        <property name="margin">
-         <number>0</number>
-        </property>
-        <item>
-         <widget class="QTableView" name="calendarsView">
-          <property name="frameShape">
-           <enum>QFrame::NoFrame</enum>
-          </property>
-          <property name="dragEnabled">
-           <bool>true</bool>
-          </property>
-          <property name="alternatingRowColors">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="daysTab">
-       <attribute name="title">
-        <string>Days</string>
-       </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout_4">
-        <property name="margin">
-         <number>0</number>
-        </property>
-        <item>
-         <widget class="QTableView" name="daysView">
-          <property name="frameShape">
-           <enum>QFrame::NoFrame</enum>
-          </property>
-          <property name="dragEnabled">
-           <bool>true</bool>
-          </property>
-          <property name="alternatingRowColors">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="propertiesTab">
-       <attribute name="title">
-        <string>Properties</string>
+        <string>Plan</string>
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout_6">
-        <property name="margin">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
          <number>0</number>
         </property>
         <item>
@@ -166,8 +69,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>98</width>
-              <height>359</height>
+              <width>240</width>
+              <height>391</height>
              </rect>
             </property>
             <property name="sizePolicy">
@@ -192,10 +95,83 @@
                <item row="0" column="1">
                 <widget class="QLineEdit" name="title"/>
                </item>
+               <item row="2" column="0">
+                <widget class="QLabel" name="labelPlanBeginning">
+                 <property name="text">
+                  <string>Beginning</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QLineEdit" name="planBeginning"/>
+               </item>
+               <item row="4" column="1">
+                <widget class="QLineEdit" name="planEnd"/>
+               </item>
+               <item row="5" column="0">
+                <widget class="QLabel" name="labelDefaultCalendar">
+                 <property name="text">
+                  <string>Default Calendar</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="1">
+                <widget class="QComboBox" name="defaultCalendar"/>
+               </item>
+               <item row="6" column="0">
+                <widget class="QLabel" name="labelDateTimeFormat">
+                 <property name="text">
+                  <string>Date time format</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="6" column="1">
+                <widget class="QLineEdit" name="dateTimeFormat"/>
+               </item>
+               <item row="7" column="0">
+                <widget class="QLabel" name="labelFileName">
+                 <property name="text">
+                  <string>File name</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="7" column="1">
+                <widget class="QLineEdit" name="fileName"/>
+               </item>
+               <item row="8" column="0">
+                <widget class="QLabel" name="labelFileLocation">
+                 <property name="text">
+                  <string>File location</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="8" column="1">
+                <widget class="QLineEdit" name="fileLocation"/>
+               </item>
+               <item row="9" column="0">
+                <widget class="QLabel" name="labelSavedBy">
+                 <property name="text">
+                  <string>Saved by</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="9" column="1">
+                <widget class="QLineEdit" name="savedBy"/>
+               </item>
+               <item row="10" column="0">
+                <widget class="QLabel" name="labelSavedWhen">
+                 <property name="text">
+                  <string>Saved when</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="10" column="1">
+                <widget class="QLineEdit" name="savedWhen"/>
+               </item>
                <item row="1" column="0">
                 <widget class="QLabel" name="labelPlanStart">
                  <property name="text">
-                  <string>Plan start</string>
+                  <string>Start</string>
                  </property>
                 </widget>
                </item>
@@ -206,75 +182,12 @@
                  </property>
                 </widget>
                </item>
-               <item row="2" column="0">
+               <item row="4" column="0">
                 <widget class="QLabel" name="labelPlanEnd">
                  <property name="text">
-                  <string>Plan end</string>
+                  <string>End</string>
                  </property>
                 </widget>
-               </item>
-               <item row="2" column="1">
-                <widget class="QLineEdit" name="planEnd"/>
-               </item>
-               <item row="3" column="0">
-                <widget class="QLabel" name="labelDefaultCal">
-                 <property name="text">
-                  <string>Default Calendar</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="1">
-                <widget class="QComboBox" name="defaultCal"/>
-               </item>
-               <item row="4" column="0">
-                <widget class="QLabel" name="labelDateTimeFormat">
-                 <property name="text">
-                  <string>Date time format</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="1">
-                <widget class="QLineEdit" name="dateTimeFormat"/>
-               </item>
-               <item row="5" column="0">
-                <widget class="QLabel" name="labelFileName">
-                 <property name="text">
-                  <string>File name</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="1">
-                <widget class="QLineEdit" name="fileName"/>
-               </item>
-               <item row="6" column="0">
-                <widget class="QLabel" name="labelFileLocation">
-                 <property name="text">
-                  <string>File location</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="6" column="1">
-                <widget class="QLineEdit" name="fileLocation"/>
-               </item>
-               <item row="7" column="0">
-                <widget class="QLabel" name="labelSavedBy">
-                 <property name="text">
-                  <string>Saved by</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="7" column="1">
-                <widget class="QLineEdit" name="savedBy"/>
-               </item>
-               <item row="8" column="0">
-                <widget class="QLabel" name="labelSavedWhen">
-                 <property name="text">
-                  <string>Saved when</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="8" column="1">
-                <widget class="QLineEdit" name="savedWhen"/>
                </item>
               </layout>
              </item>
@@ -358,7 +271,16 @@
             </sizepolicy>
            </property>
            <layout class="QVBoxLayout" name="notesLayout">
-            <property name="margin">
+            <property name="leftMargin">
+             <number>9</number>
+            </property>
+            <property name="topMargin">
+             <number>9</number>
+            </property>
+            <property name="rightMargin">
+             <number>9</number>
+            </property>
+            <property name="bottomMargin">
              <number>9</number>
             </property>
             <item>
@@ -377,6 +299,157 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="tasksGanttTab">
+       <attribute name="title">
+        <string>Tasks &amp;&amp; Gantt</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QSplitter" name="tasksGanttSplitter">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <widget class="QTableView" name="tasksView">
+           <property name="frameShape">
+            <enum>QFrame::NoFrame</enum>
+           </property>
+           <property name="dragEnabled">
+            <bool>true</bool>
+           </property>
+           <property name="alternatingRowColors">
+            <bool>false</bool>
+           </property>
+          </widget>
+          <widget class="GanttView" name="ganttView">
+           <property name="frameShape">
+            <enum>QFrame::NoFrame</enum>
+           </property>
+           <property name="widgetResizable">
+            <bool>true</bool>
+           </property>
+           <widget class="QWidget" name="ganttWidget">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>47</width>
+              <height>30</height>
+             </rect>
+            </property>
+           </widget>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="resourcesTab">
+       <attribute name="title">
+        <string>Resources</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QTableView" name="resourcesView">
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
+          </property>
+          <property name="dragEnabled">
+           <bool>true</bool>
+          </property>
+          <property name="alternatingRowColors">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="calendarsTab">
+       <attribute name="title">
+        <string>Calendars</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QTableView" name="calendarsView">
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
+          </property>
+          <property name="dragEnabled">
+           <bool>true</bool>
+          </property>
+          <property name="alternatingRowColors">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="daysTab">
+       <attribute name="title">
+        <string>Days</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QTableView" name="daysView">
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
+          </property>
+          <property name="dragEnabled">
+           <bool>true</bool>
+          </property>
+          <property name="alternatingRowColors">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -386,7 +459,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>533</width>
+     <width>734</width>
      <height>21</height>
     </rect>
    </property>

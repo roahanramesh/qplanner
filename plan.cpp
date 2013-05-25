@@ -29,10 +29,10 @@
 /************************** Holds the complete data model for the plan ***************************/
 /*************************************************************************************************/
 
-Task*      Plan::task( int n ) { return m_tasks->task(n); }               // return the n'th task
-Resource*  Plan::resource( int n ) { return m_resources->resource(n); }   // return the n'th resource
-Calendar*  Plan::calendar( int n ) { return m_calendars->calendar(n); }   // return the n'th calendar
-Day*       Plan::day( int n ) { return m_days->day(n); }                  // return the n'th day type
+Task*      Plan::task( int n ) { return m_tasks->task(n); }               // return the n'th task pointer
+Resource*  Plan::resource( int n ) { return m_resources->resource(n); }   // return the n'th resource pointer
+Calendar*  Plan::calendar( int n ) { return m_calendars->calendar(n); }   // return the n'th calendar pointer
+Day*       Plan::day( int n ) { return m_days->day(n); }                  // return the n'th day-type pointer
 
 int        Plan::index( Task* t ) { return m_tasks->index(t); }           // return index of task
 int        Plan::index( Resource* r ) { return m_resources->index(r); }   // return index of resource
@@ -44,7 +44,8 @@ int        Plan::numResources() { return m_resources->number(); }         // ret
 int        Plan::numCalendars() { return m_calendars->number(); }         // return number of calendars in plan
 int        Plan::numDays() { return m_days->number(); }                   // return number of day types in plan
 
-QDateTime  Plan::end() { return m_tasks->end(); }                         // return end
+QDateTime  Plan::beginning() { return m_tasks->planBeginning(); }         // return start of earliest starting task
+QDateTime  Plan::end() { return m_tasks->planEnd(); }                     // return finish of latest finishing task
 
 /****************************************** constructor ******************************************/
 

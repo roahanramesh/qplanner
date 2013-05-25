@@ -100,6 +100,7 @@ bool DaysModel::setData( const QModelIndex& index, const QVariant& value, int ro
 
 
   // TODO
+  Q_UNUSED(value)
   return false;
 }
 

@@ -92,6 +92,7 @@ bool CalendarsModel::setData( const QModelIndex& index, const QVariant& value, i
 
 
   // TODO
+  Q_UNUSED(value)
   return false;
 }
 
