@@ -56,6 +56,7 @@ public:
   int        seconds() const;                          // return length of working day in seconds
   QTime      doWork( QTime, float ) const;             // return time after doing some working day
   QTime      doSecs( QTime, int ) const;               // return time after doing some working seconds
+  QTime      stretch( QTime ) const;                   // return time as if whole 24 hrs is working (for gantt drawing)
 
   enum DefaultDayTypes
   {

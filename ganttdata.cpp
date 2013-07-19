@@ -19,6 +19,8 @@
  ***************************************************************************/
 
 #include "ganttdata.h"
+#include "plan.h"
+#include "calendar.h"
 
 #include <QPainter>
 
@@ -41,9 +43,9 @@ void GanttData::setTask( QDateTime start, QDateTime end )
   else
   {
     // set task data to simple gantt bar
-    m_start    = start;
     m_end.resize(1);
     m_value.resize(1);
+    m_start    = start;
     m_end[0]   = end;
     m_value[0] = 1.0;
   }
@@ -97,7 +99,7 @@ void GanttData::drawTask( QPainter* p, int y, QDateTime start, double secsPP )
 void GanttData::drawMilestone( QPainter* p, int y, QDateTime start, double secsPP )
 {
   // calc x position of milestone & height
-  int x = int(start.secsTo( m_start ) / secsPP);
+  int x = int( start.secsTo( m_start ) / secsPP );
   int h = height( p ) / 3;
 
   // populate points array to draw the milestone
@@ -118,8 +120,8 @@ void GanttData::drawMilestone( QPainter* p, int y, QDateTime start, double secsP
 void GanttData::drawSummary( QPainter* p, int y, QDateTime start, double secsPP )
 {
   // calc x positions of summary & height
-  int xs = int(start.secsTo( m_start ) / secsPP);
-  int xe = int(start.secsTo( m_end[0] ) / secsPP);
+  int xs = int( start.secsTo( m_start ) / secsPP );
+  int xe = int( start.secsTo( m_end[0] ) / secsPP );
   int h  = height( p ) / 3;
 
   // populate points array to draw the summary
@@ -150,12 +152,12 @@ void GanttData::drawTaskBar( QPainter* p, int ty, QDateTime start, double secsPP
   scale *= height( p ) / 2;
 
   // set pen and fill colours
-  p->setPen( QColor(Qt::blue) );
-  QBrush fill = QColor(Qt::yellow);
+  p->setPen( QColor( Qt::blue ) );
+  QBrush fill = QColor( Qt::yellow );
 
   // calc start position of task bar
-  int tx     = int(start.secsTo( m_start ) / secsPP);
-  int offset = int(m_value[0] * scale);
+  int tx     = int( start.secsTo( stretch(m_start) ) / secsPP );
+  int offset = int( m_value[0] * scale );
 
   // draw front edge
   p->drawLine( tx, ty+offset, tx, ty-offset );
@@ -164,8 +166,8 @@ void GanttData::drawTaskBar( QPainter* p, int ty, QDateTime start, double secsPP
   int newX, newOffset;
   for( int period=1 ; period<m_value.size() ; period++ )
   {
-    newX = int(start.secsTo( m_end[period-1] ) / secsPP);
-    newOffset = int(m_value[period] * scale);
+    newX = int( start.secsTo( stretch(m_end[period-1]) ) / secsPP );
+    newOffset = int( m_value[period] * scale );
     if ( offset > 0 && newX > tx )
     {
       p->fillRect( tx+1, ty-offset+1, newX-tx, offset+offset-1, fill );
@@ -180,7 +182,7 @@ void GanttData::drawTaskBar( QPainter* p, int ty, QDateTime start, double secsPP
   }
 
   // calc end position and draw edges and fill
-  newX = int(start.secsTo( m_end.last() ) / secsPP);
+  newX = int( start.secsTo( stretch(m_end.last()) ) / secsPP );
   if ( offset > 0 && newX > tx )
   {
     p->fillRect( tx+1, ty-offset+1, newX-tx-1, offset+offset-1, fill );
@@ -189,4 +191,19 @@ void GanttData::drawTaskBar( QPainter* p, int ty, QDateTime start, double secsPP
   }
   p->drawLine( tx, ty-offset, newX, ty-offset );
 
+}
+
+/********************************************* stretch *******************************************/
+
+QDateTime  GanttData::stretch( QDateTime dt )
+{
+  // return date-time stretched across full 24 hrs if plan stretchTasks flag is true
+  if ( plan->stretchTasks )
+  {
+    QTime time = plan->calendar()->getDay( dt.date() )->stretch( dt.time() );
+    return QDateTime( dt.date(), time );
+  }
+
+  // plan stretchTasks flag not true, so return original date-time
+  return dt;
 }

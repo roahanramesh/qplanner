@@ -33,17 +33,18 @@ class QPainter;
 class GanttData
 {
 public:
-  GanttData();                                     // constructor
+  GanttData();                                           // constructor
 
-  void  setMilestone( QDateTime );                 // set task data to milestone
-  void  setTask( QDateTime, QDateTime );           // set task data to simple gantt bar
-  void  setSummary( QDateTime, QDateTime );        // set task data to summary gantt bar
+  void        setMilestone( QDateTime );                 // set task data to milestone
+  void        setTask( QDateTime, QDateTime );           // set task data to simple gantt bar
+  void        setSummary( QDateTime, QDateTime );        // set task data to summary gantt bar
 
-  int   height( QPainter* );                                  // max height of task on gantt
-  void  drawTask( QPainter*, int, QDateTime, double );        // draw task data on gantt
-  void  drawTaskBar( QPainter*, int, QDateTime, double );     // draw task bar on gantt
-  void  drawMilestone( QPainter*, int, QDateTime, double );   // draw milestone on gantt
-  void  drawSummary( QPainter*, int, QDateTime, double );     // draw milestone on gantt
+  int         height( QPainter* );                                  // max height of task on gantt
+  void        drawTask( QPainter*, int, QDateTime, double );        // draw task data on gantt
+  void        drawTaskBar( QPainter*, int, QDateTime, double );     // draw task bar on gantt
+  void        drawMilestone( QPainter*, int, QDateTime, double );   // draw milestone on gantt
+  void        drawSummary( QPainter*, int, QDateTime, double );     // draw milestone on gantt
+  QDateTime   stretch( QDateTime dt );                              // return date-time stretched if necessary
 
 private:
   QDateTime            m_start;    // start of gantt task

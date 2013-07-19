@@ -60,6 +60,7 @@ Plan::Plan()
 
   m_datetime_format = "ddd dd/MM/yyyy hh:mm:ss";
   m_calendar        = nullptr;
+  stretchTasks      = true;
 }
 
 /****************************************** destructor *******************************************/

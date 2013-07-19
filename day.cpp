@@ -258,3 +258,23 @@ QTime  Day::doSecs( QTime time, int secs ) const
   qDebug("Day::doSecs - ERROR asked to do more work than remains!!!");
   return QTime();
 }
+
+/******************************************** stretch ********************************************/
+
+QTime  Day::stretch( QTime now ) const
+{
+  // if no working times return orginal date-time
+  if ( m_periods == 0 ) return now;
+
+  // calculate in seconds now time, day start, and day end
+  int nowSecs   = QTime(0,0).secsTo( now );
+  int startSecs = QTime(0,0).secsTo( start() );
+  int endSecs   = QTime(0,0).secsTo( end() );
+
+  if ( nowSecs <= startSecs ) return QTime( 0, 0 );
+  if ( nowSecs >= endSecs   ) return QTime( 23, 59, 59, 999 );
+
+  // stretch time component so it uses whole 24 hours
+  double scale = 86400.0 / ( endSecs - startSecs );
+  return QTime(0,0).addSecs( int( scale * ( nowSecs - startSecs ) ) );
+}

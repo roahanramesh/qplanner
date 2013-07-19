@@ -47,6 +47,7 @@ public slots:
   void slotSchedulePlan();                     // slot for schedule plan action
   void slotIndent();                           // slot for indent task(s) action
   void slotOutdent();                          // slot for outdent task(s) action
+  void slotStretchTasks( bool );               // slot for stretch tasks action
 
   void slotTaskSelectionChanged( const QItemSelection&,
                                  const QItemSelection& );   // slot for task selection change

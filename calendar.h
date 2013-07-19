@@ -82,6 +82,4 @@ private:
   QHash<QDate, Day*>  m_exceptions;      // exceptions override normal days
 };
 
-inline uint qHash( QDate key ) { return key.toJulianDay(); }
-
 #endif // CALENDAR_H
