@@ -344,7 +344,7 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>47</width>
+              <width>100</width>
               <height>30</height>
              </rect>
             </property>
@@ -511,6 +511,8 @@
      <string>&amp;View</string>
     </property>
     <addaction name="actionUndoStackView"/>
+    <addaction name="separator"/>
+    <addaction name="actionStretchTasks"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -815,6 +817,23 @@
     <string>Outdent task(s)</string>
    </property>
   </action>
+  <action name="actionStretchTasks">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Stretch tasks</string>
+   </property>
+   <property name="toolTip">
+    <string>Stretch gantt task bars to use full 24h day</string>
+   </property>
+   <property name="statusTip">
+    <string>Stretch gantt task bars to use full 24h day</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -897,11 +916,28 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionStretchTasks</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slotStretchTasks(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>366</x>
+     <y>240</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>slotUndoStackView(bool)</slot>
   <slot>slotSchedulePlan()</slot>
   <slot>slotIndent()</slot>
   <slot>slotOutdent()</slot>
+  <slot>slotStretchTasks(bool)</slot>
  </slots>
 </ui>

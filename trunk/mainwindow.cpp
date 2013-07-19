@@ -66,11 +66,15 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   connect( td, SIGNAL(editTaskCell(QModelIndex,QString)), this, SLOT(slotEditTaskCell(QModelIndex,QString)), Qt::QueuedConnection );
 
   // set smaller row height for table views
-  int height = ui->tasksView->fontMetrics().lineSpacing() + 3;
+  int height = ui->tasksView->fontMetrics().lineSpacing() + 4;
   ui->tasksView->verticalHeader()->setDefaultSectionSize( height );
+  ui->tasksView->verticalHeader()->setMinimumSectionSize( height );
   ui->resourcesView->verticalHeader()->setDefaultSectionSize( height );
+  ui->resourcesView->verticalHeader()->setMinimumSectionSize( height );
   ui->calendarsView->verticalHeader()->setDefaultSectionSize( height );
+  ui->calendarsView->verticalHeader()->setMinimumSectionSize( height );
   ui->daysView->verticalHeader()->setDefaultSectionSize( height );
+  ui->daysView->verticalHeader()->setMinimumSectionSize( height );
 
   // set initial column widths for tables views
   ui->tasksView->horizontalHeader()->setDefaultSectionSize( 155 );
@@ -79,6 +83,16 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   plan->tasks()->setColumnWidths( ui->tasksView );
   plan->resources()->setColumnWidths( ui->resourcesView );
   plan->days()->setColumnWidths( ui->daysView );
+
+  // set tasks view splitter behaviour & default position
+  ui->tasksGanttSplitter->setStretchFactor( 1, 1 );
+  QList<int> sizes = ui->tasksGanttSplitter->sizes();
+  sizes[0] = ui->tasksView->horizontalHeader()->sectionSize( 0 ) +
+             ui->tasksView->horizontalHeader()->sectionSize( 1 ) +
+             ui->tasksView->horizontalHeader()->sectionSize( 2 ) +
+             ui->tasksView->verticalHeader()->width();
+  sizes[1] = sizes[0];
+  ui->tasksGanttSplitter->setSizes( sizes );
 
   // setup tasks gantt
   ui->ganttView->createGantt( ui->ganttWidget );
@@ -210,6 +224,18 @@ void MainWindow::slotSchedulePlan()
 {
   // get plan to reschedule all the tasks
   plan->tasks()->schedule();
+}
+
+/*************************************** slotStretchTasks ****************************************/
+
+void MainWindow::slotStretchTasks( bool checked )
+{
+  // if stretch tasks flag is changed, trigger redraw of gantt
+  if ( plan->stretchTasks != checked )
+  {
+    plan->stretchTasks = checked;
+    ui->ganttWidget->update();
+  }
 }
 
 /*************************************** slotViewUndoStack ***************************************/
