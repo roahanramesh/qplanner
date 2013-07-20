@@ -22,6 +22,7 @@
 #include "day.h"
 
 #include <QTableView>
+#include <QHeaderView>
 
 /*************************************************************************************************/
 /************************ Table model containing all calendar day types **************************/
@@ -47,6 +48,7 @@ void DaysModel::initialise()
 void DaysModel::setColumnWidths( QTableView* table )
 {
   // set initial column widths
+  table->horizontalHeader()->setDefaultSectionSize( 70 );
   table->setColumnWidth( Day::SECTION_NAME, 150 );
   table->setColumnWidth( Day::SECTION_WORK,  50 );
   table->setColumnWidth( Day::SECTION_PARTS, 50 );

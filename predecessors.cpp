@@ -22,6 +22,7 @@
 #include "plan.h"
 #include "tasksmodel.h"
 #include "task.h"
+#include "calendar.h"
 
 /*************************************************************************************************/
 /********************** Task predecessors shows dependencies on other tasks **********************/
@@ -184,4 +185,31 @@ QString Predecessors::validate( const QString& text, int thisTaskNum )
   // remove final '\n' and return validation error text
   error.chop(1);
   return error;
+}
+
+/********************************************* start *********************************************/
+
+QDateTime  Predecessors::start() const
+{
+  // return task start based on predecessors
+  QDateTime start = QDateTime( QDate::fromJulianDay( -784350574800 ) );
+  foreach( Predecessor pred, m_preds )
+  {
+    if ( pred.type == TYPE_FINISH_START )
+    {
+      QDateTime check = plan->calendar()->addTimeSpan( pred.task->end(), pred.lag );
+      if ( check > start ) start = check;
+    }
+
+    if ( pred.type == TYPE_START_START )
+    {
+      QDateTime check = plan->calendar()->addTimeSpan( pred.task->start(), pred.lag );
+      if ( check > start ) start = check;
+    }
+  }
+
+  // if not set by predecessors, task start is plan start
+  if ( start == QDateTime( QDate::fromJulianDay( -784350574800 ) ) ) return plan->start();
+
+  return start;
 }

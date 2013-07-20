@@ -60,6 +60,7 @@ HEADERS  += mainwindow.h \
     commandtaskindent.h \
     commandtaskoutdent.h \
     taskres.h \
-    resourcesdelegate.h
+    resourcesdelegate.h \
+    task_schedule.h
 
 FORMS    += mainwindow.ui

@@ -40,6 +40,7 @@ public:
 
   QString         toString() const;                  // return string for display in tasks view
   bool            hasPredecessor( Task* ) const;     // return true if task is a predecessor
+  QDateTime       start() const;                     // return task start based on predecessors
 
   static QString  validate( const QString&, int );   // return any validation failures
 

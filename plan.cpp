@@ -34,10 +34,13 @@ Resource*  Plan::resource( int n ) { return m_resources->resource(n); }   // ret
 Calendar*  Plan::calendar( int n ) { return m_calendars->calendar(n); }   // return the n'th calendar pointer
 Day*       Plan::day( int n ) { return m_days->day(n); }                  // return the n'th day-type pointer
 
-int        Plan::index( Task* t ) { return m_tasks->index(t); }           // return index of task
-int        Plan::index( Resource* r ) { return m_resources->index(r); }   // return index of resource
-int        Plan::index( Calendar* c ) { return m_calendars->index(c); }   // return index of calendar
-int        Plan::index( Day* d ) { return m_days->index(d); }             // return index of day
+int        Plan::id( Task* t ) { return m_tasks->index(t)+1; }            // return display id of task
+int        Plan::id( Resource* r ) { return m_resources->index(r)+1; }    // return display id of resource
+
+int        Plan::index( Task* t ) { return m_tasks->index(t); }           // return internal index of task
+int        Plan::index( Resource* r ) { return m_resources->index(r); }   // return internal index of resource
+int        Plan::index( Calendar* c ) { return m_calendars->index(c); }   // return internal index of calendar
+int        Plan::index( Day* d ) { return m_days->index(d); }             // return internal index of day
 
 int        Plan::numTasks() { return m_tasks->number(); }                 // return number of tasks in plan
 int        Plan::numResources() { return m_resources->number(); }         // return number of resources in plan
