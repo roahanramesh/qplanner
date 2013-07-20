@@ -61,7 +61,9 @@ public:
   GanttData*        ganttData() { return &m_gantt; }              // return pointer to gantt data
   static QString    typeToString( int );                          // return type string equivalent
   static bool       scheduleOrder( Task*, Task* );                // less than function for qSort
+
   void              schedule();                                   // schedule task
+  void              schedule_ASAP_FDUR();                         // schedule ASAP fixed duration
 
   enum sections                 // sections to be displayed by view
   {

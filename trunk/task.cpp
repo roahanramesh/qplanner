@@ -25,6 +25,7 @@
 #include "task.h"
 #include "calendar.h"
 #include "commandtasksetdata.h"
+#include "task_schedule.h"
 
 /*************************************************************************************************/
 /*************************************** Single plan task ****************************************/
@@ -78,25 +79,10 @@ bool  Task::hasPredecessor( Task* task ) const
 bool  Task::scheduleOrder( Task* t1, Task* t2 )
 {
   // less than function for qSort - firstly if predecessor
-  if ( t1->hasPredecessor( t2 ) ) return true;
+  if ( t2->hasPredecessor( t1 ) ) return true;
 
   // otherwise, by priority and index
   return ( t1->m_priority - plan->index(t1) ) > ( t2->m_priority - plan->index(t2) );
-}
-
-/******************************************* schedule ********************************************/
-
-void  Task::schedule()
-{
-  // schedule individual task, ensure start is valid
-  if ( !m_start.isValid() ) m_start = plan->start();
-
-  // determine task end - TODO currently assumes no resources
-  QDateTime end = plan->calendar()->addTimeSpan( m_start, m_duration );
-  end = plan->calendar()->workDown( end );
-  if ( end < m_start ) m_end = m_start;
-  else                 m_end = end;
-  m_gantt.setTask( m_start, m_end );
 }
 
 /************************************* dataBackgroundColorRole ***********************************/

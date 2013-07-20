@@ -77,11 +77,9 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   ui->daysView->verticalHeader()->setMinimumSectionSize( height );
 
   // set initial column widths for tables views
-  ui->tasksView->horizontalHeader()->setDefaultSectionSize( 155 );
-  ui->daysView->horizontalHeader()->setDefaultSectionSize( 70 );
-  ui->calendarsView->horizontalHeader()->setDefaultSectionSize( 150 );
   plan->tasks()->setColumnWidths( ui->tasksView );
   plan->resources()->setColumnWidths( ui->resourcesView );
+  ui->calendarsView->horizontalHeader()->setDefaultSectionSize( 150 );
   plan->days()->setColumnWidths( ui->daysView );
 
   // set tasks view splitter behaviour & default position

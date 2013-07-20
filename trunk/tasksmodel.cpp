@@ -25,6 +25,7 @@
 #include "commandtaskoutdent.h"
 
 #include <QTableView>
+#include <QHeaderView>
 
 /*************************************************************************************************/
 /**************************** Table model containing all plan tasks ******************************/
@@ -240,7 +241,7 @@ int TasksModel::number()
 void TasksModel::schedule()
 {
   // re-schedule tasks - first construct list of tasks in correct order
-  //---------qDebug("TasksModel::schedule()");
+  qDebug("TasksModel::schedule() -------------------- cycle started ----------------------");
   QList<Task*>   scheduleList;
   scheduleList.reserve( m_tasks.size() );
 
@@ -268,9 +269,11 @@ void TasksModel::schedule()
 void TasksModel::setColumnWidths( QTableView* table )
 {
   // set initial column widths
-  table->setColumnWidth( Task::SECTION_TITLE,    200 );
+  table->horizontalHeader()->setDefaultSectionSize( 140 );
+  table->setColumnWidth( Task::SECTION_TITLE,    150 );
   table->setColumnWidth( Task::SECTION_DURATION,  60 );
   table->setColumnWidth( Task::SECTION_WORK,      60 );
+  table->setColumnWidth( Task::SECTION_PREDS,     80 );
   table->setColumnWidth( Task::SECTION_TYPE,     150 );
   table->setColumnWidth( Task::SECTION_PRIORITY,  50 );
   table->setColumnWidth( Task::SECTION_COST,      50 );

@@ -60,10 +60,13 @@ public:
   Calendar*        calendar( int );                                 // return the n'th calendar pointer
   Day*             day( int );                                      // return the n'th day type pointer
 
-  int              index( Task* );                                  // return index of task
-  int              index( Resource* );                              // return index of resource
-  int              index( Calendar* );                              // return index of calendar
-  int              index( Day* );                                   // return index of day
+  int              id( Task* );                                     // return display id of task
+  int              id( Resource* );                                 // return display id of resource
+
+  int              index( Task* );                                  // return internal index of task
+  int              index( Resource* );                              // return internal index of resource
+  int              index( Calendar* );                              // return internal index of calendar
+  int              index( Day* );                                   // return internal index of day
 
   int              numTasks();                                      // return number of tasks in plan
   int              numResources();                                  // return number of resources in plan
