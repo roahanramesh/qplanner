@@ -21,6 +21,8 @@
 #include "day.h"
 #include "plan.h"
 
+#include <QXmlStreamWriter>
+
 /*************************************************************************************************/
 /**************************** Single day type used in plan calendars *****************************/
 /*************************************************************************************************/
@@ -90,6 +92,23 @@ Day::Day( int type )
     m_name    = "Non working";
     m_work    = 0.0;
     m_periods = 0;
+  }
+}
+
+/***************************************** saveToStream ******************************************/
+
+void  Day::saveToStream( QXmlStreamWriter* stream )
+{
+  // write day data to xml stream
+  stream->writeAttribute( "name", m_name );
+  stream->writeAttribute( "work", QString("%1").arg(m_work) );
+
+  for( int p=0 ; p<m_periods ; p++ )
+  {
+    stream->writeEmptyElement( "period" );
+    stream->writeAttribute( "id", QString("%1").arg(p) );
+    stream->writeAttribute( "start", m_start[p].toString(Qt::ISODate) );
+    stream->writeAttribute( "end", m_end[p].toString(Qt::ISODate) );
   }
 }
 

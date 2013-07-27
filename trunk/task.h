@@ -28,6 +28,8 @@
 #include "taskres.h"
 #include "ganttdata.h"
 
+class QXmlStreamWriter;
+
 /*************************************************************************************************/
 /*************************************** Single plan task ****************************************/
 /*************************************************************************************************/
@@ -37,6 +39,7 @@ class Task
 public:
   Task();                                                         // constructor
 
+  void              saveToStream( QXmlStreamWriter* );            // write task data to xml stream
   static QVariant   headerData( int );                            // return column header data
   QVariant          dataDisplayRole( int ) const;                 // return display text for cell
   QVariant          dataEditRole( int ) const;                    // return cell data ready for editor

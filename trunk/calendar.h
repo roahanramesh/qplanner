@@ -30,6 +30,7 @@
 
 class Day;
 class DaysModel;
+class QXmlStreamWriter;
 
 /*************************************************************************************************/
 /********************************* Single calendar for planning **********************************/
@@ -41,6 +42,7 @@ public:
   Calendar();                                   // constructor
   Calendar( int );                              // constructor for initial default calendars
 
+  void          saveToStream( QXmlStreamWriter* );             // write calendar data to xml stream
   QVariant      data( int, int ) const;                        // return data for row & role
   QDateTime     workUp( QDateTime ) const;                     // return first work date-time at or after
   QDateTime     workDown( QDateTime ) const;                   // return first work date-time at or before

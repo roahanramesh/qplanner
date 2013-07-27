@@ -27,6 +27,8 @@
 #include "commandtasksetdata.h"
 #include "task_schedule.h"
 
+#include <QXmlStreamWriter>
+
 /*************************************************************************************************/
 /*************************************** Single plan task ****************************************/
 /*************************************************************************************************/
@@ -44,6 +46,27 @@ Task::Task()
   m_priority = 100 * 1000000;
   m_duration = TimeSpan("1d");
   m_work     = TimeSpan("1d");
+}
+
+/***************************************** saveToStream ******************************************/
+
+void  Task::saveToStream( QXmlStreamWriter* stream )
+{
+  // write task data to xml stream
+  stream->writeAttribute( "indent", QString("%1").arg(m_indent) );
+  stream->writeAttribute( "summary", QString("%1").arg(m_summary) );
+  stream->writeAttribute( "expanded", QString("%1").arg(m_expanded) );
+  stream->writeAttribute( "title", m_title );
+  stream->writeAttribute( "duration", m_duration.toString() );
+  stream->writeAttribute( "start", m_start.toString(Qt::ISODate) );
+  stream->writeAttribute( "end", m_end.toString(Qt::ISODate) );
+  stream->writeAttribute( "work", m_work.toString() );
+  stream->writeAttribute( "predecessors", m_predecessors.toString() );
+  stream->writeAttribute( "resources", m_resources.toString() );
+  stream->writeAttribute( "type", QString("%1").arg(int(m_type)) );
+  stream->writeAttribute( "priority", QString("%1").arg(m_priority/1e6) );
+  stream->writeAttribute( "cost", "TODO" );
+  stream->writeAttribute( "comment", m_comment );
 }
 
 /****************************************** headerData *******************************************/

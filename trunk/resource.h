@@ -25,6 +25,7 @@
 #include <QDate>
 
 class Calendar;
+class QXmlStreamWriter;
 
 /*************************************************************************************************/
 /************************************* Single plan resource **************************************/
@@ -36,6 +37,7 @@ public:
   Resource();                                                        // constructor (normal)
   Resource( bool );                                                  // constructor (unassigned)
 
+  void              saveToStream( QXmlStreamWriter* );               // write resource data to xml stream
   static QVariant   headerData( int );                               // return column header data
   QVariant          data( int, int );                                // return data for column & role
   bool              setData( int, int, const QVariant& );            // attempt to set value via undostack
@@ -75,7 +77,7 @@ private:
   float              m_availability;       // number available
   float              m_ability;            // ability factor - typical 1.0
   float              m_cost;               // cost TODO
-  Calendar*          m_calendar;           // base calendar for resource
+  Calendar*          m_calendar;           // calendar for resource
   QString            m_comment;            // free text
 };
 

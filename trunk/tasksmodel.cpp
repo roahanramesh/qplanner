@@ -26,6 +26,7 @@
 
 #include <QTableView>
 #include <QHeaderView>
+#include <QXmlStreamWriter>
 
 /*************************************************************************************************/
 /**************************** Table model containing all plan tasks ******************************/
@@ -52,6 +53,26 @@ void TasksModel::initialise()
   m_tasks.append( new Task() );
   m_tasks.append( new Task() );
   m_tasks.append( new Task() );
+}
+
+/***************************************** saveToStream ******************************************/
+
+void  TasksModel::saveToStream( QXmlStreamWriter* stream )
+{
+  // write tasks data to xml stream
+  stream->writeStartElement( "tasks-data" );
+
+  int id = 0;
+  foreach( Task* t, m_tasks )
+  {
+    stream->writeStartElement( "task" );
+    stream->writeAttribute( "id", QString("%1").arg(id++) );
+    if ( !t->isNull() ) t->saveToStream( stream );
+    stream->writeEndElement();
+  }
+
+  // close tasks-data element
+  stream->writeEndElement();
 }
 
 /****************************************** nonNullTaskAbove ********************************************/

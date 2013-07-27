@@ -25,6 +25,8 @@
 #include <QVector>
 #include <QTime>
 
+class QXmlStreamWriter;
+
 /*************************************************************************************************/
 /**************************** Single day type used in plan calendars *****************************/
 /*************************************************************************************************/
@@ -32,11 +34,12 @@
 class Day
 {
 public:
-  Day();                                        // constructor
-  Day( int );                                   // constructor
+  Day();                                               // constructor
+  Day( int );                                          // constructor
 
-  static QVariant   headerData( int );          // return column header data
-  QVariant          data( int, int );           // return data for column & role
+  void              saveToStream( QXmlStreamWriter* ); // write day data to xml stream
+  static QVariant   headerData( int );                 // return column header data
+  QVariant          data( int, int );                  // return data for column & role
 
   QString    name() { return m_name; }                 // return day name
   float      work() { return m_work; }                 // return work days equivalent

@@ -23,6 +23,7 @@
 
 #include <QTableView>
 #include <QHeaderView>
+#include <QXmlStreamWriter>
 
 /*************************************************************************************************/
 /************************ Table model containing all calendar day types **************************/
@@ -41,6 +42,26 @@ void DaysModel::initialise()
   // create initial default day types
   for ( int day=0 ; day<=Day::DEFAULT_MAX ; day++ )
     m_days.append( new Day(day) );
+}
+
+/***************************************** saveToStream ******************************************/
+
+void  DaysModel::saveToStream( QXmlStreamWriter* stream )
+{
+  // write days data to xml stream
+  stream->writeStartElement( "days-data" );
+
+  int id = 0;
+  foreach( Day* d, m_days )
+  {
+    stream->writeStartElement( "day" );
+    stream->writeAttribute( "id", QString("%1").arg(id++) );
+    d->saveToStream( stream );
+    stream->writeEndElement();
+  }
+
+  // close days-data element
+  stream->writeEndElement();
 }
 
 /**************************************** setColumnWidths ****************************************/

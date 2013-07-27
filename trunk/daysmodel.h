@@ -25,6 +25,7 @@
 
 class Day;
 class QTableView;
+class QXmlStreamWriter;
 
 /*************************************************************************************************/
 /************************ Table model containing all calendar day types **************************/
@@ -37,6 +38,7 @@ public:
   DaysModel();                                                     // constructor
 
   void         initialise();                                       // create initial default contents
+  void         saveToStream( QXmlStreamWriter* );                  // write days data to xml stream
   void         setColumnWidths( QTableView* );                     // set initial column widths
 
   Day*         day( int n ) { return m_days.at(n); }               // return the n'th day type
