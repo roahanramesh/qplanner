@@ -79,7 +79,9 @@ bool  Task::hasPredecessor( Task* task ) const
 bool  Task::scheduleOrder( Task* t1, Task* t2 )
 {
   // less than function for qSort - firstly if predecessor
-  if ( t2->hasPredecessor( t1 ) ) return true;
+  bool pred12 = t1->hasPredecessor( t2 );
+  bool pred21 = t2->hasPredecessor( t1 );
+  if ( pred12 || pred21 ) return pred21;
 
   // otherwise, by priority and index
   return ( t1->m_priority - plan->index(t1) ) > ( t2->m_priority - plan->index(t2) );

@@ -216,6 +216,70 @@ void MainWindow::slotOutdent()
   plan->tasks()->outdentRows( rows );
 }
 
+/****************************************** slotFileNew ******************************************/
+
+void MainWindow::slotFileNew()
+{
+  // slot for file new plan action
+  qDebug("MainWindow::slotFileNew() - TODO !!!!");
+}
+
+/****************************************** slotFileOpen *****************************************/
+
+void MainWindow::slotFileOpen()
+{
+  // slot for file open plan action
+  qDebug("MainWindow::slotFileOpen() - TODO !!!!");
+}
+
+/****************************************** slotFileSave *****************************************/
+
+void MainWindow::slotFileSave()
+{
+  // slot for file save plan action
+  qDebug("MainWindow::slotFileSave() - TODO !!!!");
+}
+
+/***************************************** slotFileSaveAs ****************************************/
+
+void MainWindow::slotFileSaveAs()
+{
+  // slot for file saveAs plan action
+  qDebug("MainWindow::slotFileSaveAs() - TODO !!!!");
+}
+
+/***************************************** slotFilePrint *****************************************/
+
+void MainWindow::slotFilePrint()
+{
+  // slot for file saveAs plan action
+  qDebug("MainWindow::slotFilePrint() - TODO !!!!");
+}
+
+/************************************** slotFilePrintPreview *************************************/
+
+void MainWindow::slotFilePrintPreview()
+{
+  // slot for file saveAs plan action
+  qDebug("MainWindow::slotFilePrintPreview() - TODO !!!!");
+}
+
+/****************************************** slotFileExit *****************************************/
+
+void MainWindow::slotFileExit()
+{
+  // slot for file saveAs plan action
+  qDebug("MainWindow::slotFileExit() - TODO !!!!");
+}
+
+/*************************************** slotAboutQPlanner ***************************************/
+
+void MainWindow::slotAboutQPlanner()
+{
+  // slot for file saveAs plan action
+  qDebug("MainWindow::slotAboutQPlanner() - TODO !!!!");
+}
+
 /**************************************** slotSchedulePlan ***************************************/
 
 void MainWindow::slotSchedulePlan()
