@@ -49,6 +49,15 @@ public slots:
   void slotOutdent();                          // slot for outdent task(s) action
   void slotStretchTasks( bool );               // slot for stretch tasks action
 
+  void slotFileNew();                          // slot for file new plan action
+  void slotFileOpen();                         // slot for file open plan action
+  void slotFileSave();                         // slot for file save plan action
+  void slotFileSaveAs();                       // slot for file saveAs plan action
+  void slotFilePrint();                        // slot for file print action
+  void slotFilePrintPreview();                 // slot for file print preview action
+  void slotFileExit();                         // slot for file exit application action
+  void slotAboutQPlanner();                    // slot for about qplanner action
+
   void slotTaskSelectionChanged( const QItemSelection&,
                                  const QItemSelection& );   // slot for task selection change
   void slotTaskDataChanged( const QModelIndex&,

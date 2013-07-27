@@ -123,6 +123,9 @@ Day*  Calendar::getDay( QDate date ) const
 
 QDateTime  Calendar::addTimeSpan( QDateTime start, TimeSpan ts )
 {
+  // if timespan is zero length return original start
+  if ( ts.number() == 0.0 ) return start;
+
   // return date-time moved by TimeSpan
   if ( ts.units() == TimeSpan::UNIT_SECONDS ) return addSeconds( start, ts.number() );
   if ( ts.units() == TimeSpan::UNIT_MINUTES ) return addSeconds( start, ts.number()*60.0 );
@@ -131,6 +134,9 @@ QDateTime  Calendar::addTimeSpan( QDateTime start, TimeSpan ts )
   if ( ts.units() == TimeSpan::UNIT_WEEKS )   return addWeeks(   start, ts.number() );
   if ( ts.units() == TimeSpan::UNIT_MONTHS )  return addMonths(  start, ts.number() );
   if ( ts.units() == TimeSpan::UNIT_YEARS )   return addYears(   start, ts.number() );
+
+  // unknown timespace units - should never happen!
+  qWarning("Calendar::addTimeSpan - unknown timespace units '%c'",ts.units());
   return start;
 }
 
