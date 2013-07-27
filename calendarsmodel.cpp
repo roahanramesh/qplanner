@@ -22,6 +22,7 @@
 #include "calendar.h"
 
 #include <QStringList>
+#include <QXmlStreamWriter>
 
 /*************************************************************************************************/
 /************************** Table model containing all base calendars ****************************/
@@ -40,6 +41,26 @@ void CalendarsModel::initialise()
   // create initial default calendars
   for ( int cal=0 ; cal<=Calendar::DEFAULT_MAX ; cal++ )
     m_calendars.append( new Calendar(cal) );
+}
+
+/***************************************** saveToStream ******************************************/
+
+void  CalendarsModel::saveToStream( QXmlStreamWriter* stream )
+{
+  // write calendars data to xml stream
+  stream->writeStartElement( "calendars-data" );
+
+  int id = 0;
+  foreach( Calendar* c, m_calendars )
+  {
+    stream->writeStartElement( "calendar" );
+    stream->writeAttribute( "id", QString("%1").arg(id++) );
+    c->saveToStream( stream );
+    stream->writeEndElement();
+  }
+
+  // close calendars-data element
+  stream->writeEndElement();
 }
 
 /******************************************** rowCount *******************************************/

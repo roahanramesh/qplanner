@@ -26,6 +26,7 @@
 
 class Task;
 class QTableView;
+class QXmlStreamWriter;
 
 /*************************************************************************************************/
 /**************************** Table model containing all plan tasks ******************************/
@@ -38,6 +39,7 @@ public:
   TasksModel();                                                   // constructor
 
   void           initialise();                                    // create initial default contents
+  void           saveToStream( QXmlStreamWriter* );               // write tasks data to xml stream
   void           schedule();                                      // re-schedule tasks
   void           setColumnWidths( QTableView* );                  // set initial column widths
   QDateTime      planBeginning();                                 // return start of earliest starting task

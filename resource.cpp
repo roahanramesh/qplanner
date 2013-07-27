@@ -25,6 +25,8 @@
 #include "calendar.h"
 #include "commandresourcesetdata.h"
 
+#include <QXmlStreamWriter>
+
 /*************************************************************************************************/
 /************************************* Single plan resource **************************************/
 /*************************************************************************************************/
@@ -53,6 +55,26 @@ Resource::Resource( bool unassigned )
   m_ability      = 1.0;
 }
 
+/***************************************** saveToStream ******************************************/
+
+void  Resource::saveToStream( QXmlStreamWriter* stream )
+{
+  // write resource data to xml stream
+  stream->writeAttribute( "initials", m_initials );
+  stream->writeAttribute( "name", m_name );
+  stream->writeAttribute( "org", m_org );
+  stream->writeAttribute( "group", m_group );
+  stream->writeAttribute( "role", m_role );
+  stream->writeAttribute( "alias", m_alias );
+  stream->writeAttribute( "start", m_start.toString(Qt::ISODate) );
+  stream->writeAttribute( "end", m_end.toString(Qt::ISODate) );
+  stream->writeAttribute( "availability", QString("%1").arg(m_availability) );
+  stream->writeAttribute( "ability", QString("%1").arg(m_ability) );
+  stream->writeAttribute( "cost", "TODO" );
+  stream->writeAttribute( "calendar", QString("%1").arg(plan->index(m_calendar)) );
+  stream->writeAttribute( "comment", m_comment );
+}
+
 /****************************************** headerData *******************************************/
 
 QVariant  Resource::headerData( int column )
@@ -69,7 +91,7 @@ QVariant  Resource::headerData( int column )
   if ( column == SECTION_AVAIL )      return "Available";
   if ( column == SECTION_ABILITY )    return "Ability";
   if ( column == SECTION_COST )       return "Cost";
-  if ( column == SECTION_CALENDAR )   return "Base Calendar";
+  if ( column == SECTION_CALENDAR )   return "Calendar";
   if ( column == SECTION_COMMENT )    return "Comment";
   return QVariant();
 }

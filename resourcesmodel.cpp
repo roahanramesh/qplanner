@@ -22,6 +22,7 @@
 #include "resource.h"
 
 #include <QTableView>
+#include <QXmlStreamWriter>
 
 /*************************************************************************************************/
 /**************************** Table model containing all resources *******************************/
@@ -46,6 +47,26 @@ void ResourcesModel::initialise()
 
   // create unassigned resource
   m_unassigned = new Resource( true );
+}
+
+/***************************************** saveToStream ******************************************/
+
+void  ResourcesModel::saveToStream( QXmlStreamWriter* stream )
+{
+  // write resources data to xml stream
+  stream->writeStartElement( "resources-data" );
+
+  int id = 0;
+  foreach( Resource* r, m_resources )
+  {
+    stream->writeStartElement( "resource" );
+    stream->writeAttribute( "id", QString("%1").arg(id++) );
+    if ( !r->isNull() ) r->saveToStream( stream );
+    stream->writeEndElement();
+  }
+
+  // close resources-data element
+  stream->writeEndElement();
 }
 
 /******************************************** number *********************************************/

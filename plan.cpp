@@ -25,6 +25,8 @@
 #include "daysmodel.h"
 #include "calendar.h"
 
+#include <QXmlStreamWriter>
+
 /*************************************************************************************************/
 /************************** Holds the complete data model for the plan ***************************/
 /*************************************************************************************************/
@@ -91,4 +93,22 @@ void Plan::initialise()
 
   m_resources->initialise();
   m_tasks->initialise();
+}
+
+/***************************************** saveToStream ******************************************/
+
+void  Plan::saveToStream( QXmlStreamWriter* stream )
+{
+  // write plan data to xml stream
+  m_days->saveToStream( stream );
+  m_calendars->saveToStream( stream );
+  m_resources->saveToStream( stream );
+  m_tasks->saveToStream( stream );
+
+  stream->writeStartElement( "plan-data" );
+  stream->writeAttribute( "title", m_title );
+  stream->writeAttribute( "start", m_start.toString(Qt::ISODate) );
+  stream->writeAttribute( "calendar", QString("%1").arg(plan->index(m_calendar)) );
+  stream->writeAttribute( "datetime-format", m_datetime_format );
+  stream->writeAttribute( "notes", m_notes );
 }

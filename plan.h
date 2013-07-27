@@ -36,6 +36,8 @@ class Resource;
 class Calendar;
 class Day;
 
+class QXmlStreamWriter;
+
 /*************************************************************************************************/
 /************************** Holds the complete data model for the plan ***************************/
 /*************************************************************************************************/
@@ -48,6 +50,7 @@ public:
   ~Plan();                      // destructor
 
   void             initialise();                                    // create initial default contents
+  void             saveToStream( QXmlStreamWriter* );               // write plan data to xml stream
 
   TasksModel*      tasks() { return m_tasks; }                      // return tasks model pointer
   ResourcesModel*  resources() { return m_resources; }              // return resources model pointer

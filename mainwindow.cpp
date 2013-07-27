@@ -33,6 +33,8 @@
 
 #include <QUndoView>
 #include <QMessageBox>
+#include <QFileDialog>
+#include <QXmlStreamWriter>
 
 /*************************************************************************************************/
 /********************* Main application window showing tabbed main screens ***********************/
@@ -242,10 +244,39 @@ void MainWindow::slotFileSave()
 
 /***************************************** slotFileSaveAs ****************************************/
 
-void MainWindow::slotFileSaveAs()
+bool MainWindow::slotFileSaveAs()
 {
-  // slot for file saveAs plan action
-  qDebug("MainWindow::slotFileSaveAs() - TODO !!!!");
+  // slot for file saveAs plan action - get user to select filename and location
+  QString filename = QFileDialog::getSaveFileName();
+  if ( filename.isEmpty() ) return false;
+
+  // open the file and check we can write to it
+  QFile file( filename );
+  if ( !file.open( QIODevice::WriteOnly ) )
+  {
+    ui->statusBar->showMessage( QString("Failed to write to '%1'").arg(filename) );
+    return false;
+  }
+
+  // call slotTabChange to ensure plan is up to date with 'Properties' tab widgets
+  slotTabChange(0);
+
+  // open an xml stream writer and write simulation data
+  QXmlStreamWriter  stream( &file );
+  stream.setAutoFormatting( true );
+  stream.writeStartDocument();
+  stream.writeStartElement( "qplanner" );
+  stream.writeAttribute( "version", "2013-07" );
+  stream.writeAttribute( "user", QString(getenv("USERNAME")) );
+  stream.writeAttribute( "when", QDateTime::currentDateTime().toString(Qt::ISODate) );
+  plan->saveToStream( &stream );
+  stream.writeEndDocument();
+
+  // close the file and display useful message
+  file.close();
+  ui->statusBar->showMessage( QString("Plan saved to '%1'").arg(filename) );
+  return true;
+
 }
 
 /***************************************** slotFilePrint *****************************************/

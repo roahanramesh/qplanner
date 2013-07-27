@@ -23,6 +23,8 @@
 #include "calendar.h"
 #include "day.h"
 
+#include <QXmlStreamWriter>
+
 /*************************************************************************************************/
 /********************************* Single calendar for planning **********************************/
 /*************************************************************************************************/
@@ -49,7 +51,7 @@ Calendar::Calendar( int type )
   if ( type == DEFAULT_CALENDAR )
   {
     // create default base calendar
-    m_name        = "Default";
+    m_name        = "Standard";
     m_cycleAnchor = QDate(2000,1,1);   // Saturday 1st Jan 2000
     m_cycleLength = 7;                 // 7 day week
     m_normal.resize( m_cycleLength );
@@ -106,6 +108,31 @@ Calendar::Calendar( int type )
     m_normal.resize( m_cycleLength );
 
     m_normal[0] = plan->day( Day::DEFAULT_TWENTYFOURHOURS );
+  }
+}
+
+/***************************************** saveToStream ******************************************/
+
+void  Calendar::saveToStream( QXmlStreamWriter* stream )
+{
+  // write calendar data to xml stream
+  stream->writeAttribute( "name", m_name );
+  stream->writeAttribute( "anchor", m_cycleAnchor.toString(Qt::ISODate) );
+
+  for( int n=0 ; n<m_cycleLength ; n++ )
+  {
+    stream->writeEmptyElement( "normal" );
+    stream->writeAttribute( "id", QString("%1").arg(n) );
+    stream->writeAttribute( "day", QString("%1").arg(plan->index(m_normal[n])) );
+  }
+
+  QHashIterator<QDate, Day*> e( m_exceptions );
+  while ( e.hasNext() )
+  {
+      e.next();
+      stream->writeEmptyElement( "exception" );
+      stream->writeAttribute( "date", e.key().toString(Qt::ISODate) );
+      stream->writeAttribute( "day", QString("%1").arg(plan->index(e.value())) );
   }
 }
 
