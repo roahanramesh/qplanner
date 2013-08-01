@@ -50,7 +50,7 @@ public slots:
   void slotStretchTasks( bool );               // slot for stretch tasks action
 
   void slotFileNew();                          // slot for file new plan action
-  void slotFileOpen();                         // slot for file open plan action
+  bool slotFileOpen();                         // slot for file open plan action
   void slotFileSave();                         // slot for file save plan action
   bool slotFileSaveAs();                       // slot for file saveAs plan action
   void slotFilePrint();                        // slot for file print action

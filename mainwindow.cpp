@@ -228,10 +228,63 @@ void MainWindow::slotFileNew()
 
 /****************************************** slotFileOpen *****************************************/
 
-void MainWindow::slotFileOpen()
+bool MainWindow::slotFileOpen()
 {
-  // slot for file open plan action
-  qDebug("MainWindow::slotFileOpen() - TODO !!!!");
+  // slot for file open plan action - get user to select filename and location
+  QString filename = QFileDialog::getOpenFileName();
+  if ( filename.isEmpty() ) return false;
+
+  // open the file and check we can read from it
+  QFile file( filename );
+  if ( !file.open( QIODevice::ReadOnly ) )
+  {
+    ui->statusBar->showMessage( QString("Failed to open '%1'").arg(filename) );
+    return false;
+  }
+
+  // open an xml stream reader and try to load plan data
+  QXmlStreamReader  stream( &file );
+  Plan*             newPlan = new Plan();
+
+  while ( !stream.atEnd() && !stream.isStartElement() )
+    stream.readNext();
+
+  if ( stream.isStartElement() )
+  {
+    if ( stream.name() == "qplanner" )
+      newPlan->loadFromStream( &stream, filename );
+    else
+      stream.raiseError( QString("Unrecognised element '%1'").arg(stream.name().toString()) );
+  }
+
+  // check if error occured
+  if ( stream.hasError() )
+  {
+    file.close();
+    ui->statusBar->showMessage( QString("Failed to load '%1' (%2)").arg(filename).arg(stream.errorString()) );
+    delete newPlan;
+    return false;
+  }
+
+  // close file, and if ok delete old plan and replace with new plan
+  file.close();
+  if ( newPlan->isOK() )
+  {
+    delete plan;
+    plan = newPlan;
+
+    // set models for table views
+    ui->tasksView->setModel( (QAbstractItemModel*)plan->tasks() );
+    ui->resourcesView->setModel( (QAbstractItemModel*)plan->resources() );
+    ui->calendarsView->setModel( (QAbstractItemModel*)plan->calendars() );
+    ui->daysView->setModel( (QAbstractItemModel*)plan->days() );
+
+    ui->statusBar->showMessage( QString("Loaded '%1'").arg(filename) );
+    return true;
+  }
+
+  ui->statusBar->showMessage( QString("Failed to load '%1'").arg(filename) );
+  return false;
 }
 
 /****************************************** slotFileSave *****************************************/
@@ -263,20 +316,25 @@ bool MainWindow::slotFileSaveAs()
 
   // open an xml stream writer and write simulation data
   QXmlStreamWriter  stream( &file );
+  QString           who  = getenv("USERNAME");
+  QDateTime         when = QDateTime::currentDateTime();
   stream.setAutoFormatting( true );
   stream.writeStartDocument();
   stream.writeStartElement( "qplanner" );
   stream.writeAttribute( "version", "2013-07" );
-  stream.writeAttribute( "user", QString(getenv("USERNAME")) );
-  stream.writeAttribute( "when", QDateTime::currentDateTime().toString(Qt::ISODate) );
+  stream.writeAttribute( "user", who );
+  stream.writeAttribute( "when", when.toString(Qt::ISODate) );
   plan->saveToStream( &stream );
   stream.writeEndDocument();
 
   // close the file and display useful message
   file.close();
   ui->statusBar->showMessage( QString("Plan saved to '%1'").arg(filename) );
-  return true;
 
+  // update plan properties
+  plan->setFileInfo( filename, when, who );
+  slotUpdatePropertiesWidgets();
+  return true;
 }
 
 /***************************************** slotFilePrint *****************************************/
