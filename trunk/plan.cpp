@@ -26,6 +26,7 @@
 #include "calendar.h"
 
 #include <QXmlStreamWriter>
+#include <QFileInfo>
 
 /*************************************************************************************************/
 /************************** Holds the complete data model for the plan ***************************/
@@ -82,7 +83,7 @@ Plan::~Plan()
 
 /****************************************** initialise *******************************************/
 
-void Plan::initialise()
+void  Plan::initialise()
 {
   // initialise the models
   m_days->initialise();
@@ -93,6 +94,31 @@ void Plan::initialise()
 
   m_resources->initialise();
   m_tasks->initialise();
+}
+
+/********************************************* isOK **********************************************/
+
+bool  Plan::isOK()
+{
+  // return if plan appears ok
+  if ( numDays()          > 0  &&
+       numCalendars()     > 0  &&
+       index( calendar()) >= 0 )
+    return true;
+
+  return false;
+}
+
+/***************************************** setFileInfo *******************************************/
+
+void  Plan::setFileInfo( QString filename, QDateTime when, QString who )
+{
+  // set plan file, when, who properties
+  QFileInfo  file = filename;
+  m_filename      = file.fileName();
+  m_file_location = file.path();
+  m_saved_by      = who;
+  m_saved_when    = when;
 }
 
 /***************************************** saveToStream ******************************************/
@@ -111,4 +137,13 @@ void  Plan::saveToStream( QXmlStreamWriter* stream )
   stream->writeAttribute( "calendar", QString("%1").arg(plan->index(m_calendar)) );
   stream->writeAttribute( "datetime-format", m_datetime_format );
   stream->writeAttribute( "notes", m_notes );
+}
+
+/**************************************** loadFromStream *****************************************/
+
+void  Plan::loadFromStream( QXmlStreamReader* stream, QString file )
+{
+  // load plan data from xml stream
+  qDebug("Plan::loadFromStream");
+
 }
