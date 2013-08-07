@@ -111,6 +111,56 @@ Calendar::Calendar( int type )
   }
 }
 
+/****************************************** constructor ******************************************/
+
+Calendar::Calendar( QXmlStreamReader* stream ) : Calendar()
+{
+  // create calendar from stream
+  foreach( QXmlStreamAttribute attribute, stream->attributes() )
+  {
+    if ( attribute.name() == "name" )
+      m_name = attribute.value().toString();
+
+    if ( attribute.name() == "anchor" )
+      m_cycleAnchor = QDate::fromString( attribute.value().toString(), "yyyy-MM-dd" );
+  }
+
+  while ( !stream->atEnd() )
+  {
+    stream->readNext();
+
+    // if normal element append new day
+    if ( stream->isStartElement() && stream->name() == "normal" )
+      foreach( QXmlStreamAttribute attribute, stream->attributes() )
+      {
+        if ( attribute.name() == "day" )
+        {
+          m_normal.append( plan->day( attribute.value().toString().toInt() ) );
+          m_cycleLength = m_normal.size();
+        }
+      }
+
+    // if exception element append new exception
+    if ( stream->isStartElement() && stream->name() == "exception" )
+    {
+      QDate  date;
+      Day*   day = nullptr;
+      foreach( QXmlStreamAttribute attribute, stream->attributes() )
+      {
+        if ( attribute.name() == "date" )
+          date = QDate::fromString( attribute.value().toString(), "yyyy-MM-dd" );
+
+        if ( attribute.name() == "day" )
+          day = plan->day( attribute.value().toString().toInt() );
+      }
+      m_exceptions[ date ] = day;
+    }
+
+    // when reached end of calendar return
+    if ( stream->isEndElement() && stream->name() == "calendar" ) return;
+  }
+}
+
 /***************************************** saveToStream ******************************************/
 
 void  Calendar::saveToStream( QXmlStreamWriter* stream )

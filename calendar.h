@@ -28,9 +28,8 @@
 #include "timespan.h"
 #include "day.h"
 
-class Day;
-class DaysModel;
 class QXmlStreamWriter;
+class QXmlStreamReader;
 
 /*************************************************************************************************/
 /********************************* Single calendar for planning **********************************/
@@ -41,6 +40,7 @@ class Calendar
 public:
   Calendar();                                   // constructor
   Calendar( int );                              // constructor for initial default calendars
+  Calendar( QXmlStreamReader* );                // constructor
 
   void          saveToStream( QXmlStreamWriter* );             // write calendar data to xml stream
   QVariant      data( int, int ) const;                        // return data for row & role

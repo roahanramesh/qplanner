@@ -280,6 +280,7 @@ bool MainWindow::slotFileOpen()
     ui->daysView->setModel( (QAbstractItemModel*)plan->days() );
 
     ui->statusBar->showMessage( QString("Loaded '%1'").arg(filename) );
+    slotUpdatePropertiesWidgets();
     return true;
   }
 

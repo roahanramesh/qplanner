@@ -27,6 +27,7 @@
 class Resource;
 class QTableView;
 class QXmlStreamWriter;
+class QXmlStreamReader;
 
 /*************************************************************************************************/
 /**************************** Table model containing all resources *******************************/
@@ -40,6 +41,7 @@ public:
 
   void           initialise();                                            // create initial default contents
   void           saveToStream( QXmlStreamWriter* );                       // write resources data to xml stream
+  void           loadFromStream( QXmlStreamReader* );                     // load resources data from xml stream
   int            number();                                                // return number of resources in plan
   void           setColumnWidths( QTableView* );                          // set initial column widths
 

@@ -63,6 +63,24 @@ void  CalendarsModel::saveToStream( QXmlStreamWriter* stream )
   stream->writeEndElement();
 }
 
+/**************************************** loadFromStream *****************************************/
+
+void  CalendarsModel::loadFromStream( QXmlStreamReader* stream )
+{
+  // load calendars data from xml stream
+  while ( !stream->atEnd() )
+  {
+    stream->readNext();
+
+    // if calendar element create new calendar
+    if ( stream->isStartElement() && stream->name() == "calendar" )
+      m_calendars.append( new Calendar(stream) );
+
+    // when reached end of calendars data return
+    if ( stream->isEndElement() && stream->name() == "calendars-data" ) return;
+  }
+}
+
 /******************************************** rowCount *******************************************/
 
 int CalendarsModel::rowCount( const QModelIndex& parent ) const

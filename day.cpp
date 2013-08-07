@@ -22,6 +22,7 @@
 #include "plan.h"
 
 #include <QXmlStreamWriter>
+#include <QXmlStreamReader>
 
 /*************************************************************************************************/
 /**************************** Single day type used in plan calendars *****************************/
@@ -36,6 +37,8 @@ Day::Day()
   m_work    = 0.0;
   m_periods = 0;
 }
+
+/****************************************** constructor ******************************************/
 
 Day::Day( int type )
 {
@@ -92,6 +95,46 @@ Day::Day( int type )
     m_name    = "Non working";
     m_work    = 0.0;
     m_periods = 0;
+  }
+}
+
+/****************************************** constructor ******************************************/
+
+Day::Day( QXmlStreamReader* stream ) : Day()
+{
+  // create day from stream
+  foreach( QXmlStreamAttribute attribute, stream->attributes() )
+  {
+    if ( attribute.name() == "name" )
+      m_name = attribute.value().toString();
+
+    if ( attribute.name() == "work" )
+      m_work = attribute.value().toString().toFloat();
+  }
+
+  while ( !stream->atEnd() )
+  {
+    stream->readNext();
+
+    // if period element append new day period
+    if ( stream->isStartElement() && stream->name() == "period" )
+    {
+      foreach( QXmlStreamAttribute attribute, stream->attributes() )
+      {
+        if ( attribute.name() == "start" )
+          m_start.append( QTime::fromString(attribute.value().toString(),"HH:mm:ss") );
+
+        if ( attribute.name() == "end" )
+          m_end.append( QTime::fromString(attribute.value().toString(),"HH:mm:ss") );
+      }
+
+      m_periods = m_start.size();
+      if ( m_periods != m_end.size() )
+        qWarning("Day::Day( QXmlStreamReader* ) WARNING size of period starts & ends not equal!");
+    }
+
+    // when reached end of day return
+    if ( stream->isEndElement() && stream->name() == "day" ) return;
   }
 }
 

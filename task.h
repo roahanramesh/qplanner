@@ -29,6 +29,7 @@
 #include "ganttdata.h"
 
 class QXmlStreamWriter;
+class QXmlStreamReader;
 
 /*************************************************************************************************/
 /*************************************** Single plan task ****************************************/
@@ -38,6 +39,7 @@ class Task
 {
 public:
   Task();                                                         // constructor
+  Task( QXmlStreamReader* );                                      // constructor
 
   void              saveToStream( QXmlStreamWriter* );            // write task data to xml stream
   static QVariant   headerData( int );                            // return column header data

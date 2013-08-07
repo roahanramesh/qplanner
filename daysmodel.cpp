@@ -64,6 +64,24 @@ void  DaysModel::saveToStream( QXmlStreamWriter* stream )
   stream->writeEndElement();
 }
 
+/**************************************** loadFromStream *****************************************/
+
+void  DaysModel::loadFromStream( QXmlStreamReader* stream )
+{
+  // load days data from xml stream
+  while ( !stream->atEnd() )
+  {
+    stream->readNext();
+
+    // if day element create new day type
+    if ( stream->isStartElement() && stream->name() == "day" )
+      m_days.append( new Day(stream) );
+
+    // when reached end of days data return
+    if ( stream->isEndElement() && stream->name() == "days-data" ) return;
+  }
+}
+
 /**************************************** setColumnWidths ****************************************/
 
 void DaysModel::setColumnWidths( QTableView* table )

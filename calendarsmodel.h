@@ -26,6 +26,7 @@
 class Calendar;
 class DaysModel;
 class QXmlStreamWriter;
+class QXmlStreamReader;
 
 /*************************************************************************************************/
 /************************** Table model containing all base calendars ****************************/
@@ -39,6 +40,7 @@ public:
 
   void           initialise();                                            // create initial default contents
   void           saveToStream( QXmlStreamWriter* );                       // write calendars data to xml stream
+  void           loadFromStream( QXmlStreamReader* );                     // load calendars data from xml stream
 
   Calendar*      calendar( int n ) { return m_calendars.at(n); }          // return the n'th day calendar
   int            index( Calendar* c ) { return m_calendars.indexOf(c); }  // return index of task
