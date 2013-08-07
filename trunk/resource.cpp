@@ -55,6 +55,54 @@ Resource::Resource( bool unassigned )
   m_ability      = 1.0;
 }
 
+/****************************************** constructor ******************************************/
+
+Resource::Resource( QXmlStreamReader* stream ) : Resource()
+{
+  // create resource from stream
+  foreach( QXmlStreamAttribute attribute, stream->attributes() )
+  {
+    if ( attribute.name() == "initials" )
+      m_initials = attribute.value().toString();
+
+    if ( attribute.name() == "name" )
+      m_name = attribute.value().toString();
+
+    if ( attribute.name() == "org" )
+      m_org = attribute.value().toString();
+
+    if ( attribute.name() == "group" )
+      m_group = attribute.value().toString();
+
+    if ( attribute.name() == "role" )
+      m_role = attribute.value().toString();
+
+    if ( attribute.name() == "alias" )
+      m_alias = attribute.value().toString();
+
+    if ( attribute.name() == "start" )
+      m_start = QDate::fromString( attribute.value().toString(), "yyyy-MM-dd" );
+
+    if ( attribute.name() == "end" )
+      m_end = QDate::fromString( attribute.value().toString(), "yyyy-MM-dd" );
+
+    if ( attribute.name() == "availability" )
+      m_availability = attribute.value().toString().toFloat();
+
+    if ( attribute.name() == "ability" )
+      m_ability = attribute.value().toString().toFloat();
+
+    if ( attribute.name() == "cost" )
+      m_cost = attribute.value().toString().toFloat();
+
+    if ( attribute.name() == "calendar" )
+      m_calendar = plan->calendar( attribute.value().toString().toInt() );
+
+    if ( attribute.name() == "comment" )
+      m_comment = attribute.value().toString();
+  }
+}
+
 /***************************************** saveToStream ******************************************/
 
 void  Resource::saveToStream( QXmlStreamWriter* stream )

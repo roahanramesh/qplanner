@@ -48,6 +48,56 @@ Task::Task()
   m_work     = TimeSpan("1d");
 }
 
+/****************************************** constructor ******************************************/
+
+Task::Task( QXmlStreamReader* stream ) : Task()
+{
+  // create task from stream
+  foreach( QXmlStreamAttribute attribute, stream->attributes() )
+  {
+    if ( attribute.name() == "indent" )
+      m_indent = attribute.value().toString().toShort();
+
+    if ( attribute.name() == "summary" )
+      m_summary = ( attribute.value() == "1" );
+
+    if ( attribute.name() == "expanded" )
+      m_expanded = ( attribute.value() == "1" );
+
+    if ( attribute.name() == "title" )
+      m_title = attribute.value().toString();
+
+    if ( attribute.name() == "duration" )
+      m_duration = attribute.value().toString();
+
+    if ( attribute.name() == "start" )
+      m_start = QDateTime::fromString( attribute.value().toString(), "yyyy-MM-ddTHH:mm:ss" );
+
+    if ( attribute.name() == "end" )
+      m_end = QDateTime::fromString( attribute.value().toString(), "yyyy-MM-ddTHH:mm:ss" );
+
+    if ( attribute.name() == "work" )
+      m_work = attribute.value().toString();
+
+    if ( attribute.name() == "predecessors" )
+      m_predecessors = attribute.value().toString();
+
+    if ( attribute.name() == "resources" )
+      m_resources = attribute.value().toString();
+
+    if ( attribute.name() == "type" )
+      m_type = attribute.value().toString().toInt();
+
+    if ( attribute.name() == "priority" )
+      m_priority = attribute.value().toString().toInt() * 1e6;
+
+    if ( attribute.name() == "cost" )
+      m_cost = attribute.value().toString().toFloat();
+
+    if ( attribute.name() == "comment" )
+      m_comment = attribute.value().toString();
+  }
+}
 /***************************************** saveToStream ******************************************/
 
 void  Task::saveToStream( QXmlStreamWriter* stream )

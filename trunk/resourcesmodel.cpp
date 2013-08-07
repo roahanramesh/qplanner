@@ -69,6 +69,24 @@ void  ResourcesModel::saveToStream( QXmlStreamWriter* stream )
   stream->writeEndElement();
 }
 
+/**************************************** loadFromStream *****************************************/
+
+void  ResourcesModel::loadFromStream( QXmlStreamReader* stream )
+{
+  // load resources data from xml stream
+  while ( !stream->atEnd() )
+  {
+    stream->readNext();
+
+    // if resource element create new resource
+    if ( stream->isStartElement() && stream->name() == "resource" )
+      m_resources.append( new Resource(stream) );
+
+    // when reached end of resources data return
+    if ( stream->isEndElement() && stream->name() == "resources-data" ) return;
+  }
+}
+
 /******************************************** number *********************************************/
 
 int ResourcesModel::number()

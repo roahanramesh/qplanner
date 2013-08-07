@@ -75,6 +75,24 @@ void  TasksModel::saveToStream( QXmlStreamWriter* stream )
   stream->writeEndElement();
 }
 
+/**************************************** loadFromStream *****************************************/
+
+void  TasksModel::loadFromStream( QXmlStreamReader* stream )
+{
+  // load tasks data from xml stream
+  while ( !stream->atEnd() )
+  {
+    stream->readNext();
+
+    // if task element create new task
+    if ( stream->isStartElement() && stream->name() == "task" )
+      m_tasks.append( new Task(stream) );
+
+    // when reached end of tasks data return
+    if ( stream->isEndElement() && stream->name() == "tasks-data" ) return;
+  }
+}
+
 /****************************************** nonNullTaskAbove ********************************************/
 
 Task*  TasksModel::nonNullTaskAbove( Task* t )

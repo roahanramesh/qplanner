@@ -26,6 +26,7 @@
 #include <QTime>
 
 class QXmlStreamWriter;
+class QXmlStreamReader;
 
 /*************************************************************************************************/
 /**************************** Single day type used in plan calendars *****************************/
@@ -36,6 +37,7 @@ class Day
 public:
   Day();                                               // constructor
   Day( int );                                          // constructor
+  Day( QXmlStreamReader* );                            // constructor
 
   void              saveToStream( QXmlStreamWriter* ); // write day data to xml stream
   static QVariant   headerData( int );                 // return column header data
