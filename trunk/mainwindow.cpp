@@ -242,9 +242,11 @@ bool MainWindow::slotFileOpen()
     return false;
   }
 
-  // open an xml stream reader and try to load plan data
+  // open an xml stream reader and try to load new plan data
   QXmlStreamReader  stream( &file );
   Plan*             newPlan = new Plan();
+  Plan*             oldPlan = plan;
+  plan = newPlan;   // set global plan variable so plan methods work as expected
 
   while ( !stream.atEnd() && !stream.isStartElement() )
     stream.readNext();
@@ -257,35 +259,41 @@ bool MainWindow::slotFileOpen()
       stream.raiseError( QString("Unrecognised element '%1'").arg(stream.name().toString()) );
   }
 
-  // check if error occured
+  // close file, check if error occured while loading
+  file.close();
   if ( stream.hasError() )
   {
-    file.close();
     ui->statusBar->showMessage( QString("Failed to load '%1' (%2)").arg(filename).arg(stream.errorString()) );
     delete newPlan;
+    plan = oldPlan;
     return false;
   }
 
-  // close file, and if ok delete old plan and replace with new plan
-  file.close();
-  if ( newPlan->isOK() )
+  // check if plan is ok
+  if ( !newPlan->isOK() )
   {
-    delete plan;
-    plan = newPlan;
-
-    // set models for table views
-    ui->tasksView->setModel( (QAbstractItemModel*)plan->tasks() );
-    ui->resourcesView->setModel( (QAbstractItemModel*)plan->resources() );
-    ui->calendarsView->setModel( (QAbstractItemModel*)plan->calendars() );
-    ui->daysView->setModel( (QAbstractItemModel*)plan->days() );
-
-    ui->statusBar->showMessage( QString("Loaded '%1'").arg(filename) );
-    slotUpdatePropertiesWidgets();
-    return true;
+    ui->statusBar->showMessage( QString("Invalid plan in '%1'").arg(filename) );
+    delete newPlan;
+    plan = oldPlan;
+    return false;
   }
 
-  ui->statusBar->showMessage( QString("Failed to load '%1'").arg(filename) );
-  return false;
+  delete oldPlan;
+
+  // set models for table views
+  ui->tasksView->setModel( (QAbstractItemModel*)plan->tasks() );
+  ui->resourcesView->setModel( (QAbstractItemModel*)plan->resources() );
+  ui->calendarsView->setModel( (QAbstractItemModel*)plan->calendars() );
+  ui->daysView->setModel( (QAbstractItemModel*)plan->days() );
+  if ( m_undoview != nullptr ) m_undoview->setStack( plan->undostack() );
+
+  // schedule loaded tasks
+  plan->tasks()->schedule();
+
+  // display useful message and ensure properties widget is up to date
+  ui->statusBar->showMessage( QString("Loaded '%1'").arg(filename) );
+  slotUpdatePropertiesWidgets();
+  return true;
 }
 
 /****************************************** slotFileSave *****************************************/
@@ -322,7 +330,7 @@ bool MainWindow::slotFileSaveAs()
   stream.setAutoFormatting( true );
   stream.writeStartDocument();
   stream.writeStartElement( "qplanner" );
-  stream.writeAttribute( "version", "2013-07" );
+  stream.writeAttribute( "version", "2013-08" );
   stream.writeAttribute( "user", who );
   stream.writeAttribute( "when", when.toString(Qt::ISODate) );
   plan->saveToStream( &stream );

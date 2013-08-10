@@ -79,9 +79,6 @@ Task::Task( QXmlStreamReader* stream ) : Task()
     if ( attribute.name() == "work" )
       m_work = attribute.value().toString();
 
-    if ( attribute.name() == "predecessors" )
-      m_predecessors = attribute.value().toString();
-
     if ( attribute.name() == "resources" )
       m_resources = attribute.value().toString();
 
@@ -111,7 +108,6 @@ void  Task::saveToStream( QXmlStreamWriter* stream )
   stream->writeAttribute( "start", m_start.toString(Qt::ISODate) );
   stream->writeAttribute( "end", m_end.toString(Qt::ISODate) );
   stream->writeAttribute( "work", m_work.toString() );
-  stream->writeAttribute( "predecessors", m_predecessors.toString() );
   stream->writeAttribute( "resources", m_resources.toString() );
   stream->writeAttribute( "type", QString("%1").arg(int(m_type)) );
   stream->writeAttribute( "priority", QString("%1").arg(m_priority/1e6) );

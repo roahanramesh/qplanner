@@ -62,6 +62,8 @@ public:
   int               indent() const { return m_indent; }           // return current indent level
   void              setIndent( short i ) { m_indent = i; }        // set task indent level
   bool              hasPredecessor( Task* ) const;                // return true if task is predecessor
+  QString           predecessors() const { return m_predecessors.toString(); }  // return task predecessors
+  void              setPredecessors( QString p ) { m_predecessors = p; }        // set task predecessors
 
   GanttData*        ganttData() { return &m_gantt; }              // return pointer to gantt data
   static QString    typeToString( int );                          // return type string equivalent
