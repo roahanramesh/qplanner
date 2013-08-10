@@ -49,8 +49,8 @@ public:
   bool           isAssignable( const QString& tag ) const
                    { return m_assignable.contains( tag ); }               // is tag assignable?
 
-  Resource*      resource( int n ) { return m_resources.at(n); }          // return the n'th resource
-  int            index( Resource* r ) { return m_resources.indexOf(r); }  // return index of task
+  Resource*      resource( int n );                                       // return pointer to n'th resource
+  int            index( Resource* r ) { return m_resources.indexOf(r); }  // return index of resource, or -1
 
   void           emitDataChangedRow( int row )                            // emit data changed signal for row
                    { emit dataChanged( QAbstractTableModel::index( row, 0 ),
@@ -66,7 +66,6 @@ public:
   Qt::ItemFlags  flags( const QModelIndex& ) const;                               // implement virtual return flags
 
 private:
-  Resource*         m_unassigned;      // special resource for tasks with no assigned resources
   QList<Resource*>  m_resources;       // list of resources available to plan
   QSet<QString>     m_assignable;      // set of assignable resource(s)
 };

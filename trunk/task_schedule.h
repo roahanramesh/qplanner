@@ -55,22 +55,22 @@ void  Task::schedule()
       schedule_ASAP_FDUR();
       return;
     case TYPE_ASAP_FWORK:
-      qDebug("Task::schedule() - don't know how to handle TYPE_ASAP_FWORK %i %p",plan->id(this),this);
+      qDebug("Task::schedule() - don't know how to handle TYPE_ASAP_FWORK %i %p",plan->index(this),this);
       return;
     case TYPE_FIXED_PERIOD:
-      qDebug("Task::schedule() - don't know how to handle TYPE_FIXED_PERIOD %i %p",plan->id(this),this);
+      qDebug("Task::schedule() - don't know how to handle TYPE_FIXED_PERIOD %i %p",plan->index(this),this);
       return;
     case TYPE_SON_FDUR:
-      qDebug("Task::schedule() - don't know how to handle TYPE_SON_FDUR %i %p",plan->id(this),this);
+      qDebug("Task::schedule() - don't know how to handle TYPE_SON_FDUR %i %p",plan->index(this),this);
       return;
     case TYPE_SON_FWORK:
-      qDebug("Task::schedule() - don't know how to handle TYPE_SON_FWORK %i %p",plan->id(this),this);
+      qDebug("Task::schedule() - don't know how to handle TYPE_SON_FWORK %i %p",plan->index(this),this);
       return;
     default:
-      qDebug("Task::schedule() - unknown type(%i) %i %p",m_type,plan->id(this),this);
+      qDebug("Task::schedule() - unknown type(%i) %i %p",m_type,plan->index(this),this);
   }
 
-  qDebug("Task::schedule() - UNHANDLED !!! %i %p",plan->id(this),this);
+  qDebug("Task::schedule() - UNHANDLED !!! %i %p",plan->index(this),this);
 }
 
 /************************************** schedule_ASAP_FDUR ***************************************/
@@ -90,7 +90,7 @@ void  Task::schedule_ASAP_FDUR()
   m_gantt.setTask( m_start, m_end );
 
 
-  qDebug("Task::schedule_ASAP_FDUR() UNFINISHED !!! %i %p",plan->id(this),this);
+  qDebug("Task::schedule_ASAP_FDUR() UNFINISHED !!! %i %p",plan->index(this),this);
 }
 
 #endif // TASK_SCHEDULE_H

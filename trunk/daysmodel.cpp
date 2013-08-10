@@ -20,6 +20,7 @@
 
 #include "daysmodel.h"
 #include "day.h"
+#include "plan.h"
 
 #include <QTableView>
 #include <QHeaderView>
@@ -44,6 +45,17 @@ void DaysModel::initialise()
     m_days.append( new Day(day) );
 }
 
+/********************************************* day ***********************************************/
+
+Day* DaysModel::day( int n )
+{
+  // return pointer to n'th day type, checking n is in range first
+  if ( n >=0 && n < m_days.size() ) return m_days.at(n);
+
+  qWarning("DaysModel::day - out of range '%i'",n);
+  return nullptr;
+}
+
 /***************************************** saveToStream ******************************************/
 
 void  DaysModel::saveToStream( QXmlStreamWriter* stream )
@@ -51,11 +63,10 @@ void  DaysModel::saveToStream( QXmlStreamWriter* stream )
   // write days data to xml stream
   stream->writeStartElement( "days-data" );
 
-  int id = 0;
   foreach( Day* d, m_days )
   {
     stream->writeStartElement( "day" );
-    stream->writeAttribute( "id", QString("%1").arg(id++) );
+    stream->writeAttribute( "id", QString("%1").arg(plan->index(d)) );
     d->saveToStream( stream );
     stream->writeEndElement();
   }

@@ -50,6 +50,22 @@ Task::Task()
 
 /****************************************** constructor ******************************************/
 
+Task::Task( bool planSummary )
+{
+  Q_UNUSED( planSummary )
+
+  // set task variables for plan summary task
+  m_indent   = -1;
+  m_summary  = true;
+  m_expanded = true;
+  m_type     = TYPE_DEFAULT;
+  m_cost     = 0.0;
+  m_priority = 100 * 1000000;
+  m_comment  = "Plan summary";
+}
+
+/****************************************** constructor ******************************************/
+
 Task::Task( QXmlStreamReader* stream ) : Task()
 {
   // create task from stream

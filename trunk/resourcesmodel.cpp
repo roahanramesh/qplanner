@@ -33,6 +33,8 @@
 
 ResourcesModel::ResourcesModel() : QAbstractTableModel()
 {
+  // create 'unassigned' resource, also known as resource zero, usually hidden
+  m_resources.append( new Resource(true) );
 }
 
 /****************************************** initialise ******************************************/
@@ -45,9 +47,17 @@ void ResourcesModel::initialise()
   m_resources.append( new Resource() );
   m_resources.append( new Resource() );
   m_resources.append( new Resource() );
+}
 
-  // create unassigned resource
-  m_unassigned = new Resource( true );
+/********************************************* resource ***********************************************/
+
+Resource* ResourcesModel::resource( int n )
+{
+  // return pointer to n'th resource, checking n is in range first
+  if ( n >=0 && n < m_resources.size() ) return m_resources.at(n);
+
+  qWarning("ResourcesModel::resource - out of range '%i'",n);
+  return nullptr;
 }
 
 /***************************************** saveToStream ******************************************/
@@ -59,8 +69,11 @@ void  ResourcesModel::saveToStream( QXmlStreamWriter* stream )
 
   foreach( Resource* r, m_resources )
   {
+    // don't write 'unassigned' resource 0
+    if ( plan->index(r) == 0 ) continue;
+
     stream->writeStartElement( "resource" );
-    stream->writeAttribute( "id", QString("%1").arg(plan->id(r)) );
+    stream->writeAttribute( "id", QString("%1").arg(plan->index(r)) );
     if ( !r->isNull() ) r->saveToStream( stream );
     stream->writeEndElement();
   }
@@ -187,7 +200,7 @@ QVariant ResourcesModel::headerData( int section,
 
   // if horizontal header, return resource header, otherwise row section number
   if ( orientation == Qt::Horizontal ) return Resource::headerData( section );
-  return QString("%1").arg( section+1 );
+  return QString("%1").arg( section );
 }
 
 /********************************************* flags *********************************************/

@@ -20,6 +20,7 @@
 
 #include "calendarsmodel.h"
 #include "calendar.h"
+#include "plan.h"
 
 #include <QStringList>
 #include <QXmlStreamWriter>
@@ -43,6 +44,17 @@ void CalendarsModel::initialise()
     m_calendars.append( new Calendar(cal) );
 }
 
+/******************************************* calendar ********************************************/
+
+Calendar* CalendarsModel::calendar( int n )
+{
+  // return pointer to n'th calendar, checking n is in range first
+  if ( n >=0 && n < m_calendars.size() ) return m_calendars.at(n);
+
+  qWarning("CalendarsModel::calendar - out of range '%i'",n);
+  return nullptr;
+}
+
 /***************************************** saveToStream ******************************************/
 
 void  CalendarsModel::saveToStream( QXmlStreamWriter* stream )
@@ -50,11 +62,10 @@ void  CalendarsModel::saveToStream( QXmlStreamWriter* stream )
   // write calendars data to xml stream
   stream->writeStartElement( "calendars-data" );
 
-  int id = 0;
   foreach( Calendar* c, m_calendars )
   {
     stream->writeStartElement( "calendar" );
-    stream->writeAttribute( "id", QString("%1").arg(id++) );
+    stream->writeAttribute( "id", QString("%1").arg(plan->index(c)) );
     c->saveToStream( stream );
     stream->writeEndElement();
   }

@@ -57,8 +57,8 @@ public:
   void           setOverride( QModelIndex i, QString v )
                    { m_overrideIndex = i; m_overrideValue = v; }  // set model override values
 
-  Task*          task( int n ) { return m_tasks.at(n); }          // return the n'th day type
-  int            index( Task* t ) { return m_tasks.indexOf(t); }  // return index of task
+  Task*          task( int n );                                   // return pointer to n'th task
+  int            index( Task* t ) { return m_tasks.indexOf(t); }  // return index of task, or -1
 
   void           emitDataChangedRow( int row )                    // emit data changed signal for row
                    { emit dataChanged( QAbstractTableModel::index( row, 0 ),
