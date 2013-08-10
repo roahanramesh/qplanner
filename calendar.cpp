@@ -200,6 +200,13 @@ Day*  Calendar::getDay( QDate date ) const
 
 QDateTime  Calendar::addTimeSpan( QDateTime start, TimeSpan ts )
 {
+  // check if start is valid date-time
+  if ( !start.isValid() )
+  {
+    qWarning("Calendar::addTimeSpan - invalid start");
+    return QDateTime();
+  }
+
   // if timespan is zero length return original start
   if ( ts.number() == 0.0 ) return start;
 

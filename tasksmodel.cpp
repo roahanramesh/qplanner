@@ -62,13 +62,23 @@ void  TasksModel::saveToStream( QXmlStreamWriter* stream )
   // write tasks data to xml stream
   stream->writeStartElement( "tasks-data" );
 
-  int id = 0;
   foreach( Task* t, m_tasks )
   {
     stream->writeStartElement( "task" );
-    stream->writeAttribute( "id", QString("%1").arg(id++) );
+    stream->writeAttribute( "id", QString("%1").arg(plan->id(t)) );
     if ( !t->isNull() ) t->saveToStream( stream );
     stream->writeEndElement();
+  }
+
+  foreach( Task* t, m_tasks )
+  {
+    if ( !t->predecessors().isEmpty() )
+    {
+      stream->writeStartElement( "predecessors" );
+      stream->writeAttribute( "task", QString("%1").arg(plan->id(t)) );
+      stream->writeAttribute( "preds", t->predecessors() );
+      stream->writeEndElement();
+    }
   }
 
   // close tasks-data element
@@ -88,12 +98,25 @@ void  TasksModel::loadFromStream( QXmlStreamReader* stream )
     if ( stream->isStartElement() && stream->name() == "task" )
       m_tasks.append( new Task(stream) );
 
+    // if predecessors element update task
+    if ( stream->isStartElement() && stream->name() == "predecessors" )
+    {
+      int      task = -1;
+      QString  preds;
+      foreach( QXmlStreamAttribute attribute, stream->attributes() )
+      {
+        if ( attribute.name() == "task" ) task  = attribute.value().toString().toInt();
+        if ( attribute.name() == "preds") preds = attribute.value().toString();
+      }
+      plan->task( task-1 )->setPredecessors( preds );
+    }
+
     // when reached end of tasks data return
     if ( stream->isEndElement() && stream->name() == "tasks-data" ) return;
   }
 }
 
-/****************************************** nonNullTaskAbove ********************************************/
+/*************************************** nonNullTaskAbove ****************************************/
 
 Task*  TasksModel::nonNullTaskAbove( Task* t )
 {

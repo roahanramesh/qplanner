@@ -20,6 +20,7 @@
 
 #include "resourcesmodel.h"
 #include "resource.h"
+#include "plan.h"
 
 #include <QTableView>
 #include <QXmlStreamWriter>
@@ -56,11 +57,10 @@ void  ResourcesModel::saveToStream( QXmlStreamWriter* stream )
   // write resources data to xml stream
   stream->writeStartElement( "resources-data" );
 
-  int id = 0;
   foreach( Resource* r, m_resources )
   {
     stream->writeStartElement( "resource" );
-    stream->writeAttribute( "id", QString("%1").arg(id++) );
+    stream->writeAttribute( "id", QString("%1").arg(plan->id(r)) );
     if ( !r->isNull() ) r->saveToStream( stream );
     stream->writeEndElement();
   }
