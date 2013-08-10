@@ -38,7 +38,8 @@ class QXmlStreamReader;
 class Task
 {
 public:
-  Task();                                                         // constructor
+  Task();                                                         // constructor (normal)
+  Task( bool );                                                   // constructor (plan summary)
   Task( QXmlStreamReader* );                                      // constructor
 
   void              saveToStream( QXmlStreamWriter* );            // write task data to xml stream

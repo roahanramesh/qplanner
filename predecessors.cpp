@@ -47,7 +47,7 @@ Predecessors::Predecessors( QString text )
     int digit = 0;
     while ( part.length() > digit && part.at(digit).isDigit() ) digit++;
 
-    int       task = part.left(digit).toInt() - 1;
+    int       task = part.left(digit).toInt();
     char      type = Predecessors::TYPE_DEFAULT;
     TimeSpan  lag  = QString("0");
 
@@ -82,7 +82,7 @@ QString Predecessors::toString() const
   // build up string equivalent
   foreach( Predecessor pred, m_preds )
   {
-    str += QString("%1").arg( plan->index( pred.task ) + 1 );
+    str += QString("%1").arg( plan->index( pred.task ) );
 
     if ( pred.type != Predecessors::TYPE_DEFAULT ||
          pred.lag.number() != 0.0 )
@@ -138,25 +138,25 @@ QString Predecessors::validate( const QString& text, int thisTaskNum )
     }
 
     // check number is non-null task
-    int taskNum = part.left( digit ).toInt() - 1;
+    int taskNum = part.left( digit ).toInt();
     if ( taskNum >= plan->tasks()->rowCount( QModelIndex() ) ||
          plan->task( taskNum )->isNull() )
     {
-      error += QString( "'%1' is a null task.\n" ).arg( taskNum + 1 );
+      error += QString( "'%1' is a null task.\n" ).arg( taskNum );
       continue;
     }
 
     // check number is not this task
     if ( taskNum == thisTaskNum )
     {
-      error += QString( "'%1' is a reference to this task.\n" ).arg( taskNum + 1 );
+      error += QString( "'%1' is a reference to this task.\n" ).arg( taskNum );
       continue;
     }
 
     // check number is does not cause circular reference
     if ( plan->task( taskNum )->hasPredecessor( plan->task( thisTaskNum ) ) )
     {
-      error += QString( "'%1' gives a circular reference to this task.\n" ).arg( taskNum + 1 );
+      error += QString( "'%1' gives a circular reference to this task.\n" ).arg( taskNum );
       continue;
     }
 

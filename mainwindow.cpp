@@ -78,6 +78,10 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   ui->daysView->verticalHeader()->setDefaultSectionSize( height );
   ui->daysView->verticalHeader()->setMinimumSectionSize( height );
 
+  // hide task 0 'plan summary' and resource 0 'unassigned'
+  ui->tasksView->verticalHeader()->hideSection( 0 );
+  ui->resourcesView->verticalHeader()->hideSection( 0 );
+
   // set initial column widths for tables views
   plan->tasks()->setColumnWidths( ui->tasksView );
   plan->resources()->setColumnWidths( ui->resourcesView );

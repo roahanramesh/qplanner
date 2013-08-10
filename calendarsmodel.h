@@ -42,9 +42,9 @@ public:
   void           saveToStream( QXmlStreamWriter* );                       // write calendars data to xml stream
   void           loadFromStream( QXmlStreamReader* );                     // load calendars data from xml stream
 
-  Calendar*      calendar( int n ) { return m_calendars.at(n); }          // return the n'th day calendar
-  int            index( Calendar* c ) { return m_calendars.indexOf(c); }  // return index of task
-  int            number() { return m_calendars.size(); }                  // return number of tasks in plan
+  Calendar*      calendar( int n );                                       // return pointer to n'th calendar
+  int            index( Calendar* c ) { return m_calendars.indexOf(c); }  // return index of calendar, or -1
+  int            number() { return m_calendars.size(); }                  // return number of calendars in plan
   QStringList    namesList() const;                                       // return list of calendar names
 
   /********************* methods to support QAbstractTableModel ************************/

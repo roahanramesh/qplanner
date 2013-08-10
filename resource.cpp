@@ -49,9 +49,10 @@ Resource::Resource( bool unassigned )
   Q_UNUSED( unassigned )
 
   // set resource variables for unassigned resource
+  m_initials     = "Unassigned";
   m_availability = 1e10;
   m_cost         = 0.0;
-  m_calendar     = plan->calendar();
+  m_calendar     = nullptr;
   m_ability      = 1.0;
 }
 

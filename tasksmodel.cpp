@@ -36,6 +36,8 @@
 
 TasksModel::TasksModel() : QAbstractTableModel()
 {
+  // create plan summary task, also known as task zero, usually hidden
+  m_tasks.append( new Task(true) );
 }
 
 /****************************************** initialise *******************************************/
@@ -55,6 +57,17 @@ void TasksModel::initialise()
   m_tasks.append( new Task() );
 }
 
+/********************************************* task **********************************************/
+
+Task* TasksModel::task( int n )
+{
+  // return pointer to n'th task, checking n is in range first
+  if ( n >=0 && n < m_tasks.size() ) return m_tasks.at(n);
+
+  qWarning("TasksModel::task - out of range '%i'",n);
+  return nullptr;
+}
+
 /***************************************** saveToStream ******************************************/
 
 void  TasksModel::saveToStream( QXmlStreamWriter* stream )
@@ -64,8 +77,11 @@ void  TasksModel::saveToStream( QXmlStreamWriter* stream )
 
   foreach( Task* t, m_tasks )
   {
+    // don't write 'plan summary' task 0
+    if ( plan->index(t) == 0 ) continue;
+
     stream->writeStartElement( "task" );
-    stream->writeAttribute( "id", QString("%1").arg(plan->id(t)) );
+    stream->writeAttribute( "id", QString("%1").arg(plan->index(t)) );
     if ( !t->isNull() ) t->saveToStream( stream );
     stream->writeEndElement();
   }
@@ -75,7 +91,7 @@ void  TasksModel::saveToStream( QXmlStreamWriter* stream )
     if ( !t->predecessors().isEmpty() )
     {
       stream->writeStartElement( "predecessors" );
-      stream->writeAttribute( "task", QString("%1").arg(plan->id(t)) );
+      stream->writeAttribute( "task", QString("%1").arg(plan->index(t)) );
       stream->writeAttribute( "preds", t->predecessors() );
       stream->writeEndElement();
     }
@@ -108,7 +124,7 @@ void  TasksModel::loadFromStream( QXmlStreamReader* stream )
         if ( attribute.name() == "task" ) task  = attribute.value().toString().toInt();
         if ( attribute.name() == "preds") preds = attribute.value().toString();
       }
-      plan->task( task-1 )->setPredecessors( preds );
+      plan->task( task )->setPredecessors( preds );
     }
 
     // when reached end of tasks data return
@@ -411,7 +427,7 @@ QVariant TasksModel::headerData( int section, Qt::Orientation orientation, int r
 
   // if horizontal header, return task header, otherwise row section number
   if ( orientation == Qt::Horizontal ) return Task::headerData( section );
-  return QString("%1").arg( section+1 );
+  return QString("%1").arg( section );
 }
 
 /********************************************* flags *********************************************/
