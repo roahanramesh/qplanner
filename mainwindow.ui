@@ -103,10 +103,18 @@
                 </widget>
                </item>
                <item row="2" column="1">
-                <widget class="QLineEdit" name="planBeginning"/>
+                <widget class="QLineEdit" name="planBeginning">
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
                </item>
                <item row="4" column="1">
-                <widget class="QLineEdit" name="planEnd"/>
+                <widget class="QLineEdit" name="planEnd">
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
                </item>
                <item row="5" column="0">
                 <widget class="QLabel" name="labelDefaultCalendar">
@@ -136,7 +144,11 @@
                 </widget>
                </item>
                <item row="7" column="1">
-                <widget class="QLineEdit" name="fileName"/>
+                <widget class="QLineEdit" name="fileName">
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
                </item>
                <item row="8" column="0">
                 <widget class="QLabel" name="labelFileLocation">
@@ -146,7 +158,11 @@
                 </widget>
                </item>
                <item row="8" column="1">
-                <widget class="QLineEdit" name="fileLocation"/>
+                <widget class="QLineEdit" name="fileLocation">
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
                </item>
                <item row="9" column="0">
                 <widget class="QLabel" name="labelSavedBy">
@@ -156,7 +172,11 @@
                 </widget>
                </item>
                <item row="9" column="1">
-                <widget class="QLineEdit" name="savedBy"/>
+                <widget class="QLineEdit" name="savedBy">
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
                </item>
                <item row="10" column="0">
                 <widget class="QLabel" name="labelSavedWhen">
@@ -166,7 +186,11 @@
                 </widget>
                </item>
                <item row="10" column="1">
-                <widget class="QLineEdit" name="savedWhen"/>
+                <widget class="QLineEdit" name="savedWhen">
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
                </item>
                <item row="1" column="0">
                 <widget class="QLabel" name="labelPlanStart">
@@ -477,9 +501,9 @@
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
-   <widget class="QMenu" name="menuEditTemp">
+   <widget class="QMenu" name="menuEdit">
     <property name="title">
-     <string>EditTemp</string>
+     <string>&amp;Edit</string>
     </property>
     <addaction name="actionUndo"/>
     <addaction name="actionRedo"/>
@@ -514,21 +538,15 @@
     <addaction name="separator"/>
     <addaction name="actionStretchTasks"/>
    </widget>
-   <widget class="QMenu" name="menuEdit">
-    <property name="title">
-     <string>&amp;Edit</string>
-    </property>
-   </widget>
    <widget class="QMenu" name="menuTask">
     <property name="title">
-     <string>Task</string>
+     <string>&amp;Task</string>
     </property>
     <addaction name="actionIndent"/>
     <addaction name="actionOutdent"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
-   <addaction name="menuEditTemp"/>
    <addaction name="menuTask"/>
    <addaction name="menuReport"/>
    <addaction name="menuView"/>

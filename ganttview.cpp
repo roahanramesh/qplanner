@@ -48,7 +48,8 @@ void GanttView::createGantt( QWidget* view )
   // create widget to display the gantt scales + chart
   m_view = view;
   m_view->setContextMenuPolicy( Qt::CustomContextMenu );
-  connect( m_view, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenu(QPoint)) );
+  connect( m_view, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenu(QPoint)),
+           Qt::UniqueConnection );
 
   // create the upper & lower scale view and chart view
   m_upperScale = new GanttScale( m_view );
