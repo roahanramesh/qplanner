@@ -39,6 +39,8 @@ class MainWindow : public QMainWindow
 public:
   explicit MainWindow( QWidget *parent = nullptr );         // constructor
 
+  void     setModels();                        // set models for views & undostack
+
 public slots:
   void slotUndoStackView( bool );              // slot for actionUndoStackView triggered signal
   void slotUndoStackViewDestroyed();           // slot for undo stack view destroyed signal

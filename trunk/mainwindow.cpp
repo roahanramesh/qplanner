@@ -65,7 +65,8 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   ui->daysView->setModel( (QAbstractItemModel*)plan->days() );
 
   // connect task delegate edit task cell to slot, queued so any earlier edit is finished and closed
-  connect( td, SIGNAL(editTaskCell(QModelIndex,QString)), this, SLOT(slotEditTaskCell(QModelIndex,QString)), Qt::QueuedConnection );
+  connect( td, SIGNAL(editTaskCell(QModelIndex,QString)),
+           this, SLOT(slotEditTaskCell(QModelIndex,QString)), Qt::QueuedConnection );
 
   // set smaller row height for table views
   int height = ui->tasksView->fontMetrics().lineSpacing() + 4;
@@ -107,49 +108,61 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   palette->setColor( QPalette::Base, palette->window().color() );
 
   // setup properties tab
-  ui->planBeginning->setReadOnly( true );
   ui->planBeginning->setPalette( *palette );
-  ui->planEnd->setReadOnly( true );
   ui->planEnd->setPalette( *palette );
-  ui->fileName->setReadOnly( true );
   ui->fileName->setPalette( *palette );
-  ui->fileLocation->setReadOnly( true );
   ui->fileLocation->setPalette( *palette );
-  ui->savedBy->setReadOnly( true );
   ui->savedBy->setPalette( *palette );
-  ui->savedWhen->setReadOnly( true );
   ui->savedWhen->setPalette( *palette );
 
+  // update edit menu with undostack undo & redo actions
+  setModels();
+}
+
+/******************************************* setModels *******************************************/
+
+void MainWindow::setModels()
+{
   // ensure properties widget and plan variables are kept up-to-date
   slotUpdatePropertiesWidgets();
-  connect( ui->mainTabWidget, SIGNAL(currentChanged(int)), this, SLOT(slotTabChange(int)) );
-  connect( plan, SIGNAL(signalPropertiesUpdated()), this, SLOT(slotUpdatePropertiesWidgets()) );
+  connect( ui->mainTabWidget, SIGNAL(currentChanged(int)), this, SLOT(slotTabChange(int)),
+           Qt::UniqueConnection );
+  connect( plan, SIGNAL(signalPropertiesUpdated()), this, SLOT(slotUpdatePropertiesWidgets()),
+           Qt::UniqueConnection );
 
-  // construct Edit menu with undostack undo & redo actions at the top
+  // set models for table views
+  ui->tasksView->setModel( (QAbstractItemModel*)plan->tasks() );
+  ui->resourcesView->setModel( (QAbstractItemModel*)plan->resources() );
+  ui->calendarsView->setModel( (QAbstractItemModel*)plan->calendars() );
+  ui->daysView->setModel( (QAbstractItemModel*)plan->days() );
+
+  // set models for gantt view
+  ui->ganttView->setTable( ui->tasksView );
+
+  // set undostack for edit menu undo/redo
   QAction* undoAction = plan->undostack()->createUndoAction( this );
   undoAction->setShortcut( QKeySequence::Undo );
   undoAction->setStatusTip( "Undo the last operation" );
-  ui->menuEdit->addAction( undoAction );
+  ui->menuEdit->insertAction( ui->actionUndo, undoAction );
   QAction* redoAction = plan->undostack()->createRedoAction( this );
   redoAction->setShortcut( QKeySequence::Redo );
   redoAction->setStatusTip( "Redo the last operation" );
-  ui->menuEdit->addAction( redoAction );
-  ui->menuEdit->addSeparator();
-  ui->menuEdit->addAction( ui->actionInsert );
-  ui->menuEdit->addSeparator();
-  ui->menuEdit->addAction( ui->actionCut );
-  ui->menuEdit->addAction( ui->actionCopy );
-  ui->menuEdit->addAction( ui->actionPaste );
-  ui->menuEdit->addAction( ui->actionDelete );
-  ui->menuEdit->addSeparator();
-  ui->menuEdit->addAction( ui->actionFindReplace );
-  delete ui->menuEditTemp;
+  ui->menuEdit->insertAction( ui->actionUndo, redoAction );
+  ui->menuEdit->removeAction( ui->actionUndo );
+  ui->menuEdit->removeAction( ui->actionRedo );
+  ui->actionUndo = undoAction;
+  ui->actionRedo = redoAction;
+
+  // set undostack for undoview
+  if ( m_undoview != nullptr ) m_undoview->setStack( plan->undostack() );
 
   // connect signal for tasks selection & data change to slots
   connect( ui->tasksView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-           this, SLOT(slotTaskSelectionChanged(QItemSelection,QItemSelection)) );
-  connect ( plan->tasks(), SIGNAL(dataChanged(QModelIndex,QModelIndex)),
-            this, SLOT(slotTaskDataChanged(QModelIndex,QModelIndex)) );
+           this, SLOT(slotTaskSelectionChanged(QItemSelection,QItemSelection)),
+           Qt::UniqueConnection );
+  connect( plan->tasks(), SIGNAL(dataChanged(QModelIndex,QModelIndex)),
+           this, SLOT(slotTaskDataChanged(QModelIndex,QModelIndex)),
+           Qt::UniqueConnection );
 }
 
 /*************************************** slotEditTaskCell ****************************************/
@@ -282,21 +295,11 @@ bool MainWindow::slotFileOpen()
     return false;
   }
 
+  // delete old plan, set models, and schedule
   delete oldPlan;
-
-  // set models for table views
-  ui->tasksView->setModel( (QAbstractItemModel*)plan->tasks() );
-  ui->resourcesView->setModel( (QAbstractItemModel*)plan->resources() );
-  ui->calendarsView->setModel( (QAbstractItemModel*)plan->calendars() );
-  ui->daysView->setModel( (QAbstractItemModel*)plan->days() );
-  if ( m_undoview != nullptr ) m_undoview->setStack( plan->undostack() );
-
-  // schedule loaded tasks
+  setModels();
   plan->tasks()->schedule();
-
-  // display useful message and ensure properties widget is up to date
   ui->statusBar->showMessage( QString("Loaded '%1'").arg(filename) );
-  slotUpdatePropertiesWidgets();
   return true;
 }
 
@@ -415,7 +418,8 @@ void MainWindow::slotUndoStackView( bool checked )
       m_undoview->setWindowTitle( "Undo stack" );
       m_undoview->setAttribute( Qt::WA_QuitOnClose, false );
       m_undoview->setAttribute( Qt::WA_DeleteOnClose, true );
-      connect( m_undoview, SIGNAL(destroyed()), this, SLOT(slotUndoStackViewDestroyed()) );
+      connect( m_undoview, SIGNAL(destroyed()), this, SLOT(slotUndoStackViewDestroyed()),
+               Qt::UniqueConnection );
     }
     m_undoview->show();
   }
