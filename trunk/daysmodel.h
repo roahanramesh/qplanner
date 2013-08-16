@@ -37,6 +37,7 @@ class DaysModel : public QAbstractTableModel
   Q_OBJECT
 public:
   DaysModel();                                                     // constructor
+  ~DaysModel();                                                    // destructor
 
   void         initialise();                                       // create initial default contents
   void         saveToStream( QXmlStreamWriter* );                  // write days data to xml stream

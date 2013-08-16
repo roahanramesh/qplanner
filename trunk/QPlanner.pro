@@ -32,7 +32,8 @@ SOURCES += main.cpp\
     xdatetime.cpp \
     ganttdata.cpp \
     taskres.cpp \
-    resourcesdelegate.cpp
+    resourcesdelegate.cpp \
+    xtableview.cpp
 
 HEADERS  += mainwindow.h \
     plan.h \
@@ -61,6 +62,7 @@ HEADERS  += mainwindow.h \
     commandtaskoutdent.h \
     taskres.h \
     resourcesdelegate.h \
-    task_schedule.h
+    task_schedule.h \
+    xtableview.h
 
 FORMS    += mainwindow.ui

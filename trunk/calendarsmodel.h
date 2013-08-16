@@ -37,6 +37,7 @@ class CalendarsModel : public QAbstractTableModel
   Q_OBJECT
 public:
   CalendarsModel();                                                       // constructor
+  ~CalendarsModel();                                                      // destructor
 
   void           initialise();                                            // create initial default contents
   void           saveToStream( QXmlStreamWriter* );                       // write calendars data to xml stream

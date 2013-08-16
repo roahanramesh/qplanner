@@ -35,6 +35,14 @@ CalendarsModel::CalendarsModel() : QAbstractTableModel()
 {
 }
 
+/****************************************** destructor *******************************************/
+
+CalendarsModel::~CalendarsModel()
+{
+  // delete all calendars in model
+  foreach( Calendar* c, m_calendars ) delete c;
+}
+
 /****************************************** initialise *******************************************/
 
 void CalendarsModel::initialise()

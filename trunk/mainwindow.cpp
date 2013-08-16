@@ -68,17 +68,6 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   connect( td, SIGNAL(editTaskCell(QModelIndex,QString)),
            this, SLOT(slotEditTaskCell(QModelIndex,QString)), Qt::QueuedConnection );
 
-  // set smaller row height for table views
-  int height = ui->tasksView->fontMetrics().lineSpacing() + 4;
-  ui->tasksView->verticalHeader()->setDefaultSectionSize( height );
-  ui->tasksView->verticalHeader()->setMinimumSectionSize( height );
-  ui->resourcesView->verticalHeader()->setDefaultSectionSize( height );
-  ui->resourcesView->verticalHeader()->setMinimumSectionSize( height );
-  ui->calendarsView->verticalHeader()->setDefaultSectionSize( height );
-  ui->calendarsView->verticalHeader()->setMinimumSectionSize( height );
-  ui->daysView->verticalHeader()->setDefaultSectionSize( height );
-  ui->daysView->verticalHeader()->setMinimumSectionSize( height );
-
   // hide task 0 'plan summary' and resource 0 'unassigned'
   ui->tasksView->verticalHeader()->hideSection( 0 );
   ui->resourcesView->verticalHeader()->hideSection( 0 );
@@ -102,6 +91,7 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   // setup tasks gantt
   ui->ganttView->createGantt( ui->ganttWidget );
   ui->ganttView->setTable( ui->tasksView );
+  ui->tasksView->setHeaderHeight( ui->ganttView->scaleHeight() );
 
   // create new palette for read-only edit widgets with different Base colour
   QPalette*     palette = new QPalette( ui->propertiesWidget->palette() );
@@ -165,6 +155,17 @@ void MainWindow::setModels()
            Qt::UniqueConnection );
 }
 
+/******************************************* endEdits ********************************************/
+
+void MainWindow::endEdits()
+{
+  // end any task/resource/calendar/day edits in progress
+  ui->tasksView->endEdit();
+  ui->resourcesView->endEdit();
+  ui->calendarsView->endEdit();
+  ui->daysView->endEdit();
+}
+
 /*************************************** slotEditTaskCell ****************************************/
 
 void MainWindow::slotEditTaskCell( const QModelIndex& index, const QString& warning )
@@ -216,6 +217,7 @@ void MainWindow::slotTaskSelectionChanged( const QItemSelection&, const QItemSel
 void MainWindow::slotIndent()
 {
   // indent task(s) - determine unique rows selected
+  endEdits();
   QSet<int>  rows;
   foreach( QModelIndex index, ui->tasksView->selectionModel()->selection().indexes() )
     rows.insert( index.row() );
@@ -228,6 +230,7 @@ void MainWindow::slotIndent()
 void MainWindow::slotOutdent()
 {
   // outdent task(s) - determine unique rows selected
+  endEdits();
   QSet<int>  rows;
   foreach( QModelIndex index, ui->tasksView->selectionModel()->selection().indexes() )
     rows.insert( index.row() );
@@ -240,6 +243,7 @@ void MainWindow::slotOutdent()
 void MainWindow::slotFileNew()
 {
   // slot for file new plan action
+  endEdits();
   qDebug("MainWindow::slotFileNew() - TODO !!!!");
 }
 
@@ -248,6 +252,7 @@ void MainWindow::slotFileNew()
 bool MainWindow::slotFileOpen()
 {
   // slot for file open plan action - get user to select filename and location
+  endEdits();
   QString filename = QFileDialog::getOpenFileName();
   if ( filename.isEmpty() ) return false;
 
@@ -308,6 +313,7 @@ bool MainWindow::slotFileOpen()
 void MainWindow::slotFileSave()
 {
   // slot for file save plan action
+  endEdits();
   qDebug("MainWindow::slotFileSave() - TODO !!!!");
 }
 
@@ -316,6 +322,7 @@ void MainWindow::slotFileSave()
 bool MainWindow::slotFileSaveAs()
 {
   // slot for file saveAs plan action - get user to select filename and location
+  endEdits();
   QString filename = QFileDialog::getSaveFileName();
   if ( filename.isEmpty() ) return false;
 
@@ -358,6 +365,7 @@ bool MainWindow::slotFileSaveAs()
 void MainWindow::slotFilePrint()
 {
   // slot for file saveAs plan action
+  endEdits();
   qDebug("MainWindow::slotFilePrint() - TODO !!!!");
 }
 
@@ -366,6 +374,7 @@ void MainWindow::slotFilePrint()
 void MainWindow::slotFilePrintPreview()
 {
   // slot for file saveAs plan action
+  endEdits();
   qDebug("MainWindow::slotFilePrintPreview() - TODO !!!!");
 }
 
@@ -374,6 +383,7 @@ void MainWindow::slotFilePrintPreview()
 void MainWindow::slotFileExit()
 {
   // slot for file saveAs plan action
+  endEdits();
   qDebug("MainWindow::slotFileExit() - TODO !!!!");
 }
 
@@ -382,6 +392,7 @@ void MainWindow::slotFileExit()
 void MainWindow::slotAboutQPlanner()
 {
   // slot for file saveAs plan action
+  endEdits();
   qDebug("MainWindow::slotAboutQPlanner() - TODO !!!!");
 }
 
@@ -390,6 +401,7 @@ void MainWindow::slotAboutQPlanner()
 void MainWindow::slotSchedulePlan()
 {
   // get plan to reschedule all the tasks
+  endEdits();
   plan->tasks()->schedule();
 }
 
@@ -398,6 +410,7 @@ void MainWindow::slotSchedulePlan()
 void MainWindow::slotStretchTasks( bool checked )
 {
   // if stretch tasks flag is changed, trigger redraw of gantt
+  endEdits();
   if ( plan->stretchTasks != checked )
   {
     plan->stretchTasks = checked;
@@ -410,6 +423,7 @@ void MainWindow::slotStretchTasks( bool checked )
 void MainWindow::slotUndoStackView( bool checked )
 {
   // show undo stack view window if checked, otherwise hide
+  endEdits();
   if ( checked )
   {
     if ( m_undoview == nullptr )

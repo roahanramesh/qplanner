@@ -40,6 +40,7 @@ public:
   explicit MainWindow( QWidget *parent = nullptr );         // constructor
 
   void     setModels();                        // set models for views & undostack
+  void     endEdits();                         // end any task/resource/calendar/day edits in progress
 
 public slots:
   void slotUndoStackView( bool );              // slot for actionUndoStackView triggered signal

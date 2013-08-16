@@ -38,6 +38,7 @@ class ResourcesModel : public QAbstractTableModel
   Q_OBJECT
 public:
   ResourcesModel();                                                       // constructor
+  ~ResourcesModel();                                                      // destructor
 
   void           initialise();                                            // create initial default contents
   void           saveToStream( QXmlStreamWriter* );                       // write resources data to xml stream
