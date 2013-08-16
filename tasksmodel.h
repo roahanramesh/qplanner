@@ -38,6 +38,7 @@ class TasksModel : public QAbstractTableModel
   Q_OBJECT
 public:
   TasksModel();                                                   // constructor
+  ~TasksModel();                                                  // destructor
 
   void           initialise();                                    // create initial default contents
   void           saveToStream( QXmlStreamWriter* );               // write tasks data to xml stream

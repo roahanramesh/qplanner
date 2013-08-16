@@ -60,6 +60,14 @@ Resource* ResourcesModel::resource( int n )
   return nullptr;
 }
 
+/****************************************** destructor *******************************************/
+
+ResourcesModel::~ResourcesModel()
+{
+  // delete all resources in model
+  foreach( Resource* r, m_resources ) delete r;
+}
+
 /***************************************** saveToStream ******************************************/
 
 void  ResourcesModel::saveToStream( QXmlStreamWriter* stream )

@@ -36,6 +36,14 @@ DaysModel::DaysModel() : QAbstractTableModel()
 {
 }
 
+/****************************************** destructor *******************************************/
+
+DaysModel::~DaysModel()
+{
+  // delete all day types in model
+  foreach( Day* d, m_days ) delete d;
+}
+
 /****************************************** initialise *******************************************/
 
 void DaysModel::initialise()

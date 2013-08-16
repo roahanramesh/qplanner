@@ -40,6 +40,14 @@ TasksModel::TasksModel() : QAbstractTableModel()
   m_tasks.append( new Task(true) );
 }
 
+/****************************************** destructor *******************************************/
+
+TasksModel::~TasksModel()
+{
+  // delete all tasks in model
+  foreach( Task* t, m_tasks ) delete t;
+}
+
 /****************************************** initialise *******************************************/
 
 void TasksModel::initialise()
