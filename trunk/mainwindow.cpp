@@ -107,6 +107,7 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
 
   // update edit menu with undostack undo & redo actions
   setModels();
+  slotTabChange( ui->mainTabWidget->currentIndex() );
 }
 
 /******************************************* setModels *******************************************/
@@ -456,7 +457,20 @@ void MainWindow::slotUndoStackViewDestroyed()
 
 void MainWindow::slotTabChange( int index )
 {
-  Q_UNUSED(index)
+  // check if switched to tasks/gantt tab, enable its menu & actions, otherwise hide them
+  if ( index == ui->mainTabWidget->indexOf(ui->tasksGanttTab) )
+  {
+    ui->menuTask->menuAction()->setVisible( true );
+    ui->actionIndent->setVisible( true );
+    ui->actionOutdent->setVisible( true );
+  }
+  else
+  {
+    ui->menuTask->menuAction()->setVisible( false );
+    ui->actionIndent->setVisible( false );
+    ui->actionOutdent->setVisible( false );
+  }
+
   // check if we need to update plan from 'Properties' tab widgets
   if ( ui->title->text()                   != plan->title()          ||
        ui->planStart->dateTime()           != plan->start()          ||
@@ -470,12 +484,9 @@ void MainWindow::slotTabChange( int index )
                                ui->defaultCalendar->currentIndex(), plan->index( plan->calendar() ),
                                ui->dateTimeFormat->text(),          plan->datetimeFormat(),
                                ui->notesEdit->toPlainText(),        plan->notes()) );
-
-
-    return;
   }
 
-  // otherwise just update the 'Properties' tab widgets
+  // ensure 'Properties' tab widgets reflects plan
   slotUpdatePropertiesWidgets();
 }
 
