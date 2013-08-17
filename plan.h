@@ -103,6 +103,7 @@ public:
 
   QColor           nullCellColour() { return QColor( "#F0F0F0" ); } // colour for null table cell
   bool             stretchTasks;                                    // flag if gantt task bars stretched to use full 24h day
+  QDateTime        stretch( QDateTime dt );                         // return date-time stretched if necessary
 
 signals:
   void  signalPropertiesUpdated();      // signal to say plan properties updated

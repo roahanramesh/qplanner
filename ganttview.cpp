@@ -22,6 +22,7 @@
 #include "ganttchart.h"
 #include "ganttscale.h"
 #include "xdatetime.h"
+#include "plan.h"
 
 #include <QVBoxLayout>
 #include <QMenu>
@@ -145,10 +146,30 @@ void  GanttView::slotZoomOut()
 
 void  GanttView::slotZoomFit()
 {
+  // determine plan beginning and end to show
+  QDateTime  start  = plan->stretch( plan->beginning() );
+  QDateTime  end    = plan->stretch( plan->end() );
+
+  // if start or end is invalid, eg before any tasks added, fit to width
+  if ( !start.isValid() || !end.isValid() )
+  {
+    m_end   = m_start.addSecs( width() * m_secsPP );
+    m_chart->setEnd( m_end );
+    m_view->setFixedWidth( width() );
+    return;
+  }
+
+  // add margins to start and end
+  qint64 margin = 1 + start.secsTo( end ) / 32;
+  m_start  = start.addSecs( -margin );
+  m_end    = end.addSecs( margin );
+
   // set secs per pixel to show entire chart duration in displayed width
   m_secsPP = double( m_start.secsTo( m_end ) ) / width();
   m_upperScale->setSecsPerPixel( m_secsPP );
   m_lowerScale->setSecsPerPixel( m_secsPP );
+  m_chart->setStart( m_start );
+  m_chart->setEnd( m_end );
   m_chart->setSecsPerPixel( m_secsPP );
   m_view->setFixedWidth( width() );
 }

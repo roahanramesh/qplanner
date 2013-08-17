@@ -44,7 +44,6 @@ public:
   void        drawTaskBar( QPainter*, int, QDateTime, double );     // draw task bar on gantt
   void        drawMilestone( QPainter*, int, QDateTime, double );   // draw milestone on gantt
   void        drawSummary( QPainter*, int, QDateTime, double );     // draw milestone on gantt
-  QDateTime   stretch( QDateTime dt );                              // return date-time stretched if necessary
 
 private:
   QDateTime            m_start;    // start of gantt task

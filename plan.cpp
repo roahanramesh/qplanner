@@ -183,3 +183,18 @@ void  Plan::loadFromStream( QXmlStreamReader* stream, QString file )
     }
   }
 }
+
+/********************************************* stretch *******************************************/
+
+QDateTime  Plan::stretch( QDateTime dt )
+{
+  // return date-time stretched across full 24 hrs if plan stretchTasks flag is true
+  if ( stretchTasks )
+  {
+    QTime time = m_calendar->getDay( dt.date() )->stretch( dt.time() );
+    return QDateTime( dt.date(), time );
+  }
+
+  // plan stretchTasks flag not true, so return original date-time
+  return dt;
+}
