@@ -193,7 +193,10 @@ Day*  Calendar::getDay( QDate date ) const
   // if exception exists return it, otherwise return normal cycle day
   if ( m_exceptions.contains( date ) ) return m_exceptions.value( date );
 
-  return m_normal.at( m_cycleAnchor.daysTo( date ) % m_cycleLength );
+  int normal = m_cycleAnchor.daysTo( date ) % m_cycleLength;
+  if ( normal < 0 ) normal += m_cycleLength;
+
+  return m_normal.at( normal );
 }
 
 /********************************************* addXXX ********************************************/
@@ -226,70 +229,130 @@ QDateTime  Calendar::addTimeSpan( QDateTime start, TimeSpan ts )
 
 QDateTime  Calendar::addSeconds( QDateTime start, int secs )
 {
-  // check that secs is greater than zero
-  if ( secs <  0 ) return QDateTime();   // return invalid date-time
+  // check that secs is not zero
   if ( secs == 0 ) return start;         // nothing to add
 
-  // use up any remaining working periods on start
-  QDate date  = start.date();
-  Day*  today = getDay( date );
-  int toGo  = today->secsToGo( start.time() );
-  if ( toGo == secs ) return QDateTime( date, today->end() );
-  if ( toGo >  secs ) return QDateTime( date, today->doSecs( start.time(), secs ) );
-
-  // to go was insufficient so move to next day
-  date  = date.addDays(1);
-  secs -= toGo;
-
-  // repeat forever until no need to move to next day
-  while ( true )
+  // if secs is positive go forward in time, else go backwards
+  if ( secs > 0 )
   {
-    // check if found finish date
-    today = getDay( date );
-    if ( today->seconds() == secs ) return QDateTime( date, today->end() );
-    if ( today->seconds() >  secs ) return QDateTime( date, today->doSecs( QTime(), secs ) );
+    // use up any remaining working seconds on start date
+    QDate date  = start.date();
+    Day*  today = getDay( date );
+    int toGo  = today->secsToGo( start.time() );
+    if ( toGo == secs ) return QDateTime( date, today->end() );
+    if ( toGo >  secs ) return QDateTime( date, today->doSecs( start.time(), secs ) );
 
-    // not finished so move to next day
+    // to go was insufficient so move to next day
     date  = date.addDays(1);
-    secs -= today->seconds();
+    secs -= toGo;
+
+    // repeat forever until no need to move to next day
+    while ( true )
+    {
+      // check if found finish date
+      today = getDay( date );
+      if ( today->seconds() == secs ) return QDateTime( date, today->end() );
+      if ( today->seconds() >  secs ) return QDateTime( date, today->doSecs( QTime(), secs ) );
+
+      // not finished so move to next day
+      date  = date.addDays(1);
+      secs -= today->seconds();
+    }
+  }
+  else
+  {
+    // work backwards on any seconds done on start date
+    secs = -secs;
+    QDate date  = start.date();
+    Day*  today = getDay( date );
+    int done  = today->secsDone( start.time() );
+    if ( done == secs ) return QDateTime( date, today->start() );
+    if ( done >  secs ) return QDateTime( date, today->doSecs( today->start(), done - secs ) );
+
+    // done was insufficient so move to previous day
+    date  = date.addDays(1);
+    secs -= done;
+
+    // repeat forever until no need to move to previous day
+    while ( true )
+    {
+      // check if found finish date
+      today = getDay( date );
+      if ( today->seconds() == secs ) return QDateTime( date, today->start() );
+      if ( today->seconds() >  secs ) return QDateTime( date, today->doSecs( today->start(), today->seconds() - secs ) );
+
+      // not finished so move to previous day
+      date  = date.addDays(-1);
+      secs -= today->seconds();
+    }
   }
 }
 
 QDateTime  Calendar::addDays( QDateTime start, float days )
 {
-  // check that days is greater than zero
-  if ( days <  0.0 ) return QDateTime();   // return invalid date-time
+  // check that days is not zero
   if ( days == 0.0 ) return start;         // nothing to add
 
-  // use up any remaining working periods on start
-  QDate date  = start.date();
-  Day*  today = getDay( date );
-  float toGo  = today->workToGo( start.time() );
-  if ( toGo == days ) return QDateTime( date, today->end() );
-  if ( toGo >  days ) return QDateTime( date, today->doWork( start.time(), days ) );
-
-  // to go was insufficient so move to next day
-  date  = date.addDays(1);
-  days -= toGo;
-
-  // repeat forever until no need to move to next day
-  while ( true )
+  // if days is positive go forward in time, else go backwards
+  if ( days > 0.0 )
   {
-    // check if found finish date
-    today = getDay( date );
-    if ( today->work() == days ) return QDateTime( date, today->end() );
-    if ( today->work() >  days ) return QDateTime( date, today->doWork( QTime(), days ) );
+    // use up any remaining working time on start date
+    QDate date  = start.date();
+    Day*  today = getDay( date );
+    float toGo  = today->workToGo( start.time() );
+    if ( toGo == days ) return QDateTime( date, today->end() );
+    if ( toGo >  days ) return QDateTime( date, today->doWork( start.time(), days ) );
 
-    // not finished so move to next day
+    // to go was insufficient so move to next day
     date  = date.addDays(1);
-    days -= today->work();
+    days -= toGo;
+
+    // repeat forever until no need to move to next day
+    while ( true )
+    {
+      // check if found finish date
+      today = getDay( date );
+      if ( today->work() == days ) return QDateTime( date, today->end() );
+      if ( today->work() >  days ) return QDateTime( date, today->doWork( QTime(), days ) );
+
+      // not finished so move to next day
+      date  = date.addDays(1);
+      days -= today->work();
+    }
+  }
+  else
+  {
+    // work backwards on any work done on start date
+    days = -days;
+    QDate date  = start.date();
+    Day*  today = getDay( date );
+    float done  = today->workDone( start.time() );
+    if ( done == days ) return QDateTime( date, today->start() );
+    if ( done >  days ) return QDateTime( date, today->doWork( today->start(), done - days ) );
+
+    // done was insufficient so move to previous day
+    date  = date.addDays(-1);
+    days -= done;
+
+    // repeat forever until no need to move to previous day
+    while ( true )
+    {
+      // check if found finish date
+      today = getDay( date );
+      if ( today->work() == days ) return QDateTime( date, today->start() );
+      if ( today->work() >  days ) return QDateTime( date, today->doWork( today->start(), today->work() - days ) );
+
+      // not finished so move to previous day
+      date  = date.addDays(-1);
+      days -= today->work();
+    }
   }
 }
 
 QDateTime  Calendar::addWeeks( QDateTime start, float weeks )
 {
   // return date-time moved by weeks (7 day week ignores non-working days)
-  return start.addDays( weeks*7.0 );
+  return start.addSecs( weeks*7*24*3600 );
 }
 
 QDateTime  Calendar::addMonths( QDateTime start, float months )

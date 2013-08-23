@@ -167,6 +167,16 @@ void MainWindow::endEdits()
   ui->daysView->endEdit();
 }
 
+/******************************************* message *********************************************/
+
+void MainWindow::message( QString msg )
+{
+  // show message on status bar and enure is top & active
+  raise();
+  activateWindow();
+  ui->statusBar->showMessage( msg );
+}
+
 /*************************************** slotEditTaskCell ****************************************/
 
 void MainWindow::slotEditTaskCell( const QModelIndex& index, const QString& warning )
@@ -261,7 +271,7 @@ bool MainWindow::slotFileOpen()
   QFile file( filename );
   if ( !file.open( QIODevice::ReadOnly ) )
   {
-    ui->statusBar->showMessage( QString("Failed to open '%1'").arg(filename) );
+    message( QString("Failed to open '%1'").arg(filename) );
     return false;
   }
 
@@ -286,7 +296,7 @@ bool MainWindow::slotFileOpen()
   file.close();
   if ( stream.hasError() )
   {
-    ui->statusBar->showMessage( QString("Failed to load '%1' (%2)").arg(filename).arg(stream.errorString()) );
+    message( QString("Failed to load '%1' (%2)").arg(filename).arg(stream.errorString()) );
     delete newPlan;
     plan = oldPlan;
     return false;
@@ -295,7 +305,7 @@ bool MainWindow::slotFileOpen()
   // check if plan is ok
   if ( !newPlan->isOK() )
   {
-    ui->statusBar->showMessage( QString("Invalid plan in '%1'").arg(filename) );
+    message( QString("Invalid plan in '%1'").arg(filename) );
     delete newPlan;
     plan = oldPlan;
     return false;
@@ -305,7 +315,7 @@ bool MainWindow::slotFileOpen()
   delete oldPlan;
   setModels();
   plan->tasks()->schedule();
-  ui->statusBar->showMessage( QString("Loaded '%1'").arg(filename) );
+  message( QString("Loaded '%1'").arg(filename) );
   return true;
 }
 
@@ -331,7 +341,7 @@ bool MainWindow::slotFileSaveAs()
   QFile file( filename );
   if ( !file.open( QIODevice::WriteOnly ) )
   {
-    ui->statusBar->showMessage( QString("Failed to write to '%1'").arg(filename) );
+    message( QString("Failed to write to '%1'").arg(filename) );
     return false;
   }
 
@@ -353,7 +363,7 @@ bool MainWindow::slotFileSaveAs()
 
   // close the file and display useful message
   file.close();
-  ui->statusBar->showMessage( QString("Plan saved to '%1'").arg(filename) );
+  message( QString("Plan saved to '%1'").arg(filename) );
 
   // update plan properties
   plan->setFileInfo( filename, when, who );

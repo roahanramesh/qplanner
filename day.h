@@ -57,7 +57,9 @@ public:
   bool       isWorking() const                         // is the day a working day (i.e. work > 0.0)
                { return m_work > 0.0; }
   float      workToGo( QTime ) const;                  // return day working equivalent remaining
+  float      workDone( QTime ) const;                  // return day working equivalent done
   int        secsToGo( QTime ) const;                  // return day working seconds remaining
+  int        secsDone( QTime ) const;                  // return day working seconds done
   int        seconds() const;                          // return length of working day in seconds
   QTime      doWork( QTime, float ) const;             // return time after doing some working day
   QTime      doSecs( QTime, int ) const;               // return time after doing some working seconds
