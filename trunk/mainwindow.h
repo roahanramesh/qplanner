@@ -41,6 +41,7 @@ public:
 
   void     setModels();                        // set models for views & undostack
   void     endEdits();                         // end any task/resource/calendar/day edits in progress
+  void     message( QString );                 // show message on status bar and enure is top & active
 
 public slots:
   void slotUndoStackView( bool );              // slot for actionUndoStackView triggered signal

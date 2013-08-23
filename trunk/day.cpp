@@ -238,6 +238,28 @@ float Day::workToGo( QTime time ) const
   return float( working - worked ) * m_work / working;
 }
 
+/******************************************** workDone ********************************************/
+
+float Day::workDone( QTime time ) const
+{
+  // count working seconds and worked seconds
+  int working = 0;
+  int worked  = 0;
+  for( int period=0 ; period < m_periods ; period++ )
+  {
+    int secs = m_start.at(period).secsTo( m_end.at(period) );
+
+    working += secs;
+
+    if ( time >= m_end.at(period) ) worked += secs;
+    if ( time >  m_start.at(period) && time < m_end.at(period) )
+      worked += m_start.at(period).secsTo( time );
+  }
+
+  if ( working == 0 ) return 0.0;
+  return float( worked ) * m_work / working;
+}
+
 /******************************************** secsToGo ********************************************/
 
 int Day::secsToGo( QTime time ) const
@@ -253,6 +275,23 @@ int Day::secsToGo( QTime time ) const
   }
 
   return remain;
+}
+
+/******************************************** secsDone ********************************************/
+
+int Day::secsDone( QTime time ) const
+{
+  // count done working seconds from start of day
+  int done = 0;
+  for( int period=0 ; period < m_periods ; period++ )
+  {
+    if ( time >= m_end.at(period) )
+      done += m_start.at(period).secsTo( m_end.at(period) );
+    if ( time >  m_start.at(period) && time < m_end.at(period) )
+      done += m_start.at(period).secsTo( time );
+  }
+
+  return done;
 }
 
 /******************************************** seconds ********************************************/
