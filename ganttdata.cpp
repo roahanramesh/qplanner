@@ -100,7 +100,7 @@ void GanttData::drawMilestone( QPainter* p, int y, QDateTime start, double secsP
 {
   // calc x position of milestone & height
   int x = int( start.secsTo( plan->stretch(m_start) ) / secsPP );
-  int h = height( p ) / 3;
+  int h = 1 + height( p ) / 3;
 
   // populate points array to draw the milestone
   QPoint points[4];
@@ -110,7 +110,7 @@ void GanttData::drawMilestone( QPainter* p, int y, QDateTime start, double secsP
   points[3] = QPoint( x-h, y   );
 
   // draw the milestone
-  p->setPen( Qt::black );
+  p->setPen( Qt::NoPen );
   p->setBrush( Qt::black );
   p->drawConvexPolygon( points, 4 );
 }
@@ -122,7 +122,7 @@ void GanttData::drawSummary( QPainter* p, int y, QDateTime start, double secsPP 
   // calc x positions of summary & height
   int xs = int( start.secsTo( plan->stretch(m_start) ) / secsPP );
   int xe = int( start.secsTo( plan->stretch(m_end[0]) ) / secsPP );
-  int h  = height( p ) / 3;
+  int h  = 1 + height( p ) / 3;
 
   // populate points array to draw the summary
   QPoint points[8];
@@ -136,7 +136,7 @@ void GanttData::drawSummary( QPainter* p, int y, QDateTime start, double secsPP 
   points[7] = QPoint( xs-h, y   );
 
   // draw the milestone
-  p->setPen( Qt::black );
+  p->setPen( Qt::NoPen );
   p->setBrush( Qt::black );
   p->drawPolygon( points, 8 );
 }

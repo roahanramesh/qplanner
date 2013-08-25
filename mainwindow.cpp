@@ -177,6 +177,15 @@ void MainWindow::message( QString msg )
   ui->statusBar->showMessage( msg );
 }
 
+/******************************************* setTitle ********************************************/
+
+void MainWindow::setTitle( QString text )
+{
+  // update main window title to include given text
+  if ( text.isEmpty() ) setWindowTitle( "QPlanner" );
+  else                  setWindowTitle( text + " - QPlanner");
+}
+
 /*************************************** slotEditTaskCell ****************************************/
 
 void MainWindow::slotEditTaskCell( const QModelIndex& index, const QString& warning )
@@ -265,7 +274,11 @@ bool MainWindow::slotFileOpen()
   // slot for file open plan action - get user to select filename and location
   endEdits();
   QString filename = QFileDialog::getOpenFileName();
-  if ( filename.isEmpty() ) return false;
+  if ( filename.isEmpty() )
+  {
+    message();
+    return false;
+  }
 
   // open the file and check we can read from it
   QFile file( filename );
@@ -316,28 +329,15 @@ bool MainWindow::slotFileOpen()
   setModels();
   plan->tasks()->schedule();
   message( QString("Loaded '%1'").arg(filename) );
+  setTitle( plan->filename() );
   return true;
 }
 
-/****************************************** slotFileSave *****************************************/
+/******************************************** savePlan *******************************************/
 
-void MainWindow::slotFileSave()
+bool MainWindow::savePlan( QString filename )
 {
-  // slot for file save plan action
-  endEdits();
-  qDebug("MainWindow::slotFileSave() - TODO !!!!");
-}
-
-/***************************************** slotFileSaveAs ****************************************/
-
-bool MainWindow::slotFileSaveAs()
-{
-  // slot for file saveAs plan action - get user to select filename and location
-  endEdits();
-  QString filename = QFileDialog::getSaveFileName();
-  if ( filename.isEmpty() ) return false;
-
-  // open the file and check we can write to it
+  // save plan to xml file, first open the file and check we can write to it
   QFile file( filename );
   if ( !file.open( QIODevice::WriteOnly ) )
   {
@@ -345,12 +345,12 @@ bool MainWindow::slotFileSaveAs()
     return false;
   }
 
-  // call slotTabChange to ensure plan is up to date with 'Properties' tab widgets
-  slotTabChange(0);
+  // make sure plan is up to date from 'Properties' tab widgets before saving
+  updatePlan();
 
   // open an xml stream writer and write simulation data
   QXmlStreamWriter  stream( &file );
-  QString           who  = getenv("USERNAME");
+  QString           who  = qgetenv("USERNAME");
   QDateTime         when = QDateTime::currentDateTime();
   stream.setAutoFormatting( true );
   stream.writeStartDocument();
@@ -367,8 +367,35 @@ bool MainWindow::slotFileSaveAs()
 
   // update plan properties
   plan->setFileInfo( filename, when, who );
+  setTitle( plan->filename() );
   slotUpdatePropertiesWidgets();
   return true;
+}
+
+/****************************************** slotFileSave *****************************************/
+
+bool MainWindow::slotFileSave()
+{
+  // slot for file save plan action - if plan has filename, save to same file and location
+  endEdits();
+  if ( !plan->filename().isEmpty() ) return savePlan( plan->fileLocation() + "/" + plan->filename() );
+
+  // plan has no filename so use saveAs functionality
+  return slotFileSaveAs();
+}
+
+/***************************************** slotFileSaveAs ****************************************/
+
+bool MainWindow::slotFileSaveAs()
+{
+  // slot for file saveAs plan action - get user to select filename and location
+  endEdits();
+  QString filename = QFileDialog::getSaveFileName();
+  if ( !filename.isEmpty() ) return savePlan( filename );
+
+  // user cancelled
+  message();
+  return false;
 }
 
 /***************************************** slotFilePrint *****************************************/
@@ -481,6 +508,15 @@ void MainWindow::slotTabChange( int index )
     ui->actionOutdent->setVisible( false );
   }
 
+  // ensure plan reflects 'Properties' tab widgets and vice versa
+  updatePlan();
+  slotUpdatePropertiesWidgets();
+}
+
+/****************************************** updatePlan *******************************************/
+
+void MainWindow::updatePlan()
+{
   // check if we need to update plan from 'Properties' tab widgets
   if ( ui->title->text()                   != plan->title()          ||
        ui->planStart->dateTime()           != plan->start()          ||
@@ -495,12 +531,9 @@ void MainWindow::slotTabChange( int index )
                                ui->dateTimeFormat->text(),          plan->datetimeFormat(),
                                ui->notesEdit->toPlainText(),        plan->notes()) );
   }
-
-  // ensure 'Properties' tab widgets reflects plan
-  slotUpdatePropertiesWidgets();
 }
 
-/************************************ updatePropertiesWidgets ************************************/
+/********************************** slotUpdatePropertiesWidgets **********************************/
 
 void MainWindow::slotUpdatePropertiesWidgets()
 {
@@ -529,6 +562,7 @@ void MainWindow::slotUpdatePropertiesWidgets()
 
   ui->fileName->setText( plan->filename() );
   ui->fileName->setCursorPosition( 0 );
+  ui->fileLocation->setToolTip( plan->filename() );
 
   ui->fileLocation->setText( plan->fileLocation() );
   ui->fileLocation->setCursorPosition( 0 );
@@ -536,6 +570,7 @@ void MainWindow::slotUpdatePropertiesWidgets()
 
   ui->savedBy->setText( plan->savedBy() );
   ui->savedBy->setCursorPosition( 0 );
+  ui->savedBy->setToolTip( plan->savedBy() );
 
   ui->savedWhen->setText( plan->savedWhen().toString("dd/MM/yyyy hh:mm:ss") );
   ui->savedWhen->setCursorPosition( 0 );
