@@ -311,7 +311,7 @@ int  Day::seconds() const
 QTime  Day::doWork( QTime time, float work ) const
 {
   // calculate number of seconds to move forward
-  int secs = int( seconds() * work / m_work );
+  int secs = int( 0.5 + seconds() * work / m_work );
 
   for( int period=0 ; period < m_periods ; period++ )
   {

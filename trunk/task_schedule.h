@@ -23,25 +23,11 @@
 
 #include "task.h"
 #include "plan.h"
+#include "calendar.h"
 
 /*************************************************************************************************/
 /**************************** Scheduling methods for single plan task ****************************/
 /*************************************************************************************************/
-
-/******************************************* schedule ********************************************
-
-void  Task::schedule()
-{
-  // schedule individual task, ensure start is valid
-  if ( !m_start.isValid() ) m_start = plan->start();
-
-  // determine task end - TODO currently assumes no resources
-  QDateTime end = plan->calendar()->addTimeSpan( m_start, m_duration );
-  end = plan->calendar()->workDown( end );
-  if ( end < m_start ) m_end = m_start;
-  else                 m_end = end;
-  m_gantt.setTask( m_start, m_end );
-} */
 
 /******************************************* schedule ********************************************/
 
@@ -80,14 +66,16 @@ void  Task::schedule_ASAP_FDUR()
   // schedule ASAP fixed duration
 
   // get start from predecessors
-  m_start = m_predecessors.start();
+  m_start = plan->calendar()->workUp( m_predecessors.start() );
 
   // TRY TO DETERMINE END ???
   QDateTime end = plan->calendar()->addTimeSpan( m_start, m_duration );
   end = plan->calendar()->workDown( end );
   if ( end < m_start ) m_end = m_start;
   else                 m_end = end;
-  m_gantt.setTask( m_start, m_end );
+
+  if ( m_summary ) m_gantt.setSummary( m_start, m_end );
+  else             m_gantt.setTask( m_start, m_end );
 
 
   qDebug("Task::schedule_ASAP_FDUR() UNFINISHED !!! %i %p",plan->index(this),this);

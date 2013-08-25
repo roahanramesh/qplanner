@@ -41,7 +41,10 @@ public:
 
   void     setModels();                        // set models for views & undostack
   void     endEdits();                         // end any task/resource/calendar/day edits in progress
-  void     message( QString );                 // show message on status bar and enure is top & active
+  void     message( QString = "" );            // show message on status bar and enure is top & active
+  void     setTitle( QString = "" );           // update main window title to include text
+  bool     savePlan( QString );                // save plan to xml file
+  void     updatePlan();                       // update plan from 'Properties' tab widgets
 
 public slots:
   void slotUndoStackView( bool );              // slot for actionUndoStackView triggered signal
@@ -55,7 +58,7 @@ public slots:
 
   void slotFileNew();                          // slot for file new plan action
   bool slotFileOpen();                         // slot for file open plan action
-  void slotFileSave();                         // slot for file save plan action
+  bool slotFileSave();                         // slot for file save plan action
   bool slotFileSaveAs();                       // slot for file saveAs plan action
   void slotFilePrint();                        // slot for file print action
   void slotFilePrintPreview();                 // slot for file print preview action

@@ -146,16 +146,16 @@ void  GanttView::slotZoomOut()
 
 void  GanttView::slotZoomFit()
 {
-  // determine plan beginning and end to show
+  // determine plan beginning and end to show, and set view new fixed width
   QDateTime  start  = plan->stretch( plan->beginning() );
   QDateTime  end    = plan->stretch( plan->end() );
+  m_view->setFixedWidth( width() );
 
-  // if start or end is invalid, eg before any tasks added, fit to width
+  // if start or end is invalid, eg before any tasks, keep existing start and secsPP
   if ( !start.isValid() || !end.isValid() )
   {
     m_end   = m_start.addSecs( width() * m_secsPP );
     m_chart->setEnd( m_end );
-    m_view->setFixedWidth( width() );
     return;
   }
 
@@ -166,12 +166,19 @@ void  GanttView::slotZoomFit()
 
   // set secs per pixel to show entire chart duration in displayed width
   m_secsPP = double( m_start.secsTo( m_end ) ) / width();
-  m_upperScale->setSecsPerPixel( m_secsPP );
-  m_lowerScale->setSecsPerPixel( m_secsPP );
+
+  // set chart
   m_chart->setStart( m_start );
   m_chart->setEnd( m_end );
   m_chart->setSecsPerPixel( m_secsPP );
-  m_view->setFixedWidth( width() );
+
+  // set upper scale
+  m_upperScale->setSecsPerPixel( m_secsPP );
+  m_upperScale->setStart( m_start );
+
+  // set lower scale
+  m_lowerScale->setSecsPerPixel( m_secsPP );
+  m_lowerScale->setStart( m_start );
 }
 
 /******************************************* resizeEvent *****************************************/

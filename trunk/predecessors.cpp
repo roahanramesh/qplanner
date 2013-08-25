@@ -192,7 +192,7 @@ QString Predecessors::validate( const QString& text, int thisTaskNum )
 QDateTime  Predecessors::start() const
 {
   // return task start based on predecessors
-  QDateTime start = QDateTime( QDate::fromJulianDay( -784350574800 ) );
+  QDateTime start = QDateTime( QDate(-999999,1,1) );
   foreach( Predecessor pred, m_preds )
   {
     if ( pred.type == TYPE_FINISH_START )
@@ -209,7 +209,7 @@ QDateTime  Predecessors::start() const
   }
 
   // if not set by predecessors, task start is plan start
-  if ( start == QDateTime( QDate::fromJulianDay( -784350574800 ) ) ) return plan->start();
+  if ( start == QDateTime( QDate(-999999,1,1) ) ) return plan->start();
 
   return start;
 }

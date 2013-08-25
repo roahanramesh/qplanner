@@ -560,6 +560,8 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionOpen"/>
+   <addaction name="actionSave"/>
+   <addaction name="actionSaveAs"/>
    <addaction name="actionSchedule"/>
    <addaction name="actionIndent"/>
    <addaction name="actionOutdent"/>
