@@ -55,8 +55,8 @@ public:
 
   bool              isNull() const { return m_title.isNull(); }   // is the task null (blank)
   QString           name() const { return m_title; }              // return name of task (i.e. title)
-  QDateTime         start() const { return m_start; }             // return task start date-time
-  QDateTime         end() const { return m_end; }                 // return task end date-time
+  QDateTime         start() const;                                // return task or summary start date-time
+  QDateTime         end() const;                                  // return task or summary end date-time
   bool              isExpanded() const { return m_expanded; }     // is summary task expanded to show subtasks
   bool              isSummary() const { return m_summary; }       // is the task a summary
   void              setSummary( bool s ) { m_summary = s; }       // set task summary status

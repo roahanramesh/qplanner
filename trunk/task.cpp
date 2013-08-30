@@ -54,7 +54,7 @@ Task::Task( bool planSummary )
 {
   Q_UNUSED( planSummary )
 
-  // set task variables for plan summary task
+  // set task variables for plan summary task 0 (hidden by default)
   m_indent   = -1;
   m_summary  = true;
   m_expanded = true;
@@ -275,10 +275,10 @@ QVariant  Task::dataToolTipRole( int col ) const
 {
   // return tool tip text for cell
   if ( col == SECTION_START && m_start.isValid() )
-    return m_start.toString( "ddd dd MMM yyyy hh:mm" );
+    return start().toString( "ddd dd MMM yyyy hh:mm" );
 
   if ( col == SECTION_END && m_end.isValid() )
-    return m_end.toString( "ddd dd MMM yyyy hh:mm" );
+    return end().toString( "ddd dd MMM yyyy hh:mm" );
 
   if ( col == SECTION_DEADLINE && m_deadline.isValid() )
     return m_deadline.toString( "ddd dd MMM yyyy hh:mm" );
@@ -325,9 +325,9 @@ QVariant  Task::dataDisplayRole( int col ) const
 
   if ( col == SECTION_TYPE ) return typeToString( m_type );
 
-  if ( col == SECTION_START ) return m_start.toString( plan->datetimeFormat() );
+  if ( col == SECTION_START ) return start().toString( plan->datetimeFormat() );
 
-  if ( col == SECTION_END ) return m_end.toString( plan->datetimeFormat() );
+  if ( col == SECTION_END ) return end().toString( plan->datetimeFormat() );
 
   if ( col == SECTION_PREDS ) return m_predecessors.toString();
 
@@ -396,4 +396,30 @@ void  Task::setDataDirect( int col, const QVariant& value )
   if ( col == SECTION_COST )     m_cost         = value.toReal();
   if ( col == SECTION_PRIORITY ) m_priority     = value.toInt() * 1000000;
   if ( col == SECTION_COMMENT )  m_comment      = value.toString();
+}
+
+/********************************************* start *********************************************/
+
+QDateTime Task::start() const
+{
+  // return task or summary start date-time
+  if ( m_summary )
+  {
+
+  }
+
+  return m_start;
+}
+
+/********************************************** end **********************************************/
+
+QDateTime Task::end() const
+{
+  // return task or summary end date-time
+  if ( m_summary )
+  {
+
+  }
+
+  return m_end;
 }

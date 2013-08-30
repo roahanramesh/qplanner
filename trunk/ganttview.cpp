@@ -94,19 +94,19 @@ void GanttView::contextMenu( QPoint pos )
 
   // create menu and associated actions for context menu
   QMenu menu;
-  menu.setTitle("Gantt");
-  menu.addAction("Zoom in",  this, SLOT(slotZoomIn()) );
-  menu.addAction("Zoom out", this, SLOT(slotZoomOut()) );
-  menu.addAction("Zoom fit", this, SLOT(slotZoomFit()) );
+  menu.setTitle( "Gantt" );
+  menu.addAction( "Zoom in",  this, SLOT(slotZoomIn()) );
+  menu.addAction( "Zoom out", this, SLOT(slotZoomOut()) );
+  menu.addAction( "Zoom fit", this, SLOT(slotZoomFit()) );
   menu.addSeparator();
-  m_upperScale->menu()->setTitle("Upper scale");
+  m_upperScale->menu()->setTitle( "Upper scale" );
   menu.addMenu( m_upperScale->menu() );
-  m_lowerScale->menu()->setTitle("Lower scale");
+  m_lowerScale->menu()->setTitle( "Lower scale" );
   menu.addMenu( m_lowerScale->menu() );
-  menu.addAction("Non working days");
-  menu.addAction("Current date");
-  menu.addAction("Upper scale mark");
-  menu.addAction("Lower scale mark");
+  menu.addAction( "Non working days" );
+  menu.addAction( "Current date" );
+  menu.addAction( "Upper scale mark" );
+  menu.addAction( "Lower scale mark" );
 
   // execute the context menu
   menu.exec( QCursor::pos() );
@@ -123,8 +123,8 @@ void  GanttView::slotZoomIn()
   m_chart->setSecsPerPixel( m_secsPP );
 
   // ensure view width is never less than chart width
-  if (m_chart->chartWidth() > width()) m_view->setFixedWidth( m_chart->chartWidth() );
-  else                                 m_view->setFixedWidth( width() );
+  if ( m_chart->chartWidth() > width() ) m_view->setFixedWidth( m_chart->chartWidth() );
+  else                                   m_view->setFixedWidth( width() );
 }
 
 /******************************************* slotZoomOut *****************************************/
@@ -137,9 +137,18 @@ void  GanttView::slotZoomOut()
   m_lowerScale->setSecsPerPixel( m_secsPP );
   m_chart->setSecsPerPixel( m_secsPP );
 
+  // zoom around centre of chart if chart width less than view width
+  if ( m_chart->chartWidth() < width() )
+  {
+    QDateTime  start = m_start.addSecs( -m_secsPP * ( width() - m_chart->chartWidth() ) / 2 );
+    m_upperScale->setStart( start );
+    m_lowerScale->setStart( start );
+    m_chart->setStart( start );
+  }
+
   // ensure view width is never less than chart width
-  if (m_chart->chartWidth() > width()) m_view->setFixedWidth( m_chart->chartWidth() );
-  else                                 m_view->setFixedWidth( width() );
+  if ( m_chart->chartWidth() > width() ) m_view->setFixedWidth( m_chart->chartWidth() );
+  else                                   m_view->setFixedWidth( width() );
 }
 
 /******************************************* slotZoomFit *****************************************/
@@ -189,8 +198,8 @@ void GanttView::resizeEvent( QResizeEvent* event )
   m_view->setFixedHeight( event->size().height() );
 
   // ensure view width is never less than chart width
-  if (m_chart->chartWidth() > width()) m_view->setFixedWidth( m_chart->chartWidth() );
-  else                                 m_view->setFixedWidth( width() );
+  if ( m_chart->chartWidth() > width() ) m_view->setFixedWidth( m_chart->chartWidth() );
+  else                                   m_view->setFixedWidth( width() );
 
   // call QScrollArea::resizeEvent to handle horizontal scroll bar etc
   QScrollArea::resizeEvent( event );

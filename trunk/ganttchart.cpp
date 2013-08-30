@@ -199,13 +199,9 @@ void GanttChart::drawTasks( QPainter* p, int x, int y, int w, int h )
   if ( first < 0 ) first = 0;
   if ( last  < 0 ) last  = plan->tasks()->rowCount() - 1;
 
-  // TODO for each row draw the gantt task
+  // for each row draw the gantt task
   for( int row=first ; row<=last ; row++ )
     plan->task(row)->ganttData()->drawTask( p, m_table->rowViewportPosition(row) + ( m_table->rowHeight(row) / 2 ), m_start, m_secsPP );
-
-  //for( int row=first ; row<=last ; row++ )
-  //  plan->tasks()->ganttData( row )->drawTask( p,
-  //    m_table->rowViewportPosition(row) + ( m_table->rowHeight(row) / 2 ), m_start, m_secsPP, m_calendar );
 }
 
 /*************************************** shadeNonWorkingDays **************************************/
@@ -215,11 +211,14 @@ void GanttChart::shadeNonWorkingDays( QPainter* p, int x, int y, int w, int h )
   // fill in white background
   p->fillRect( x, y, w, h, Qt::white );
 
+  // not practical to shade non working days if one day less than one pixel
+  if ( m_secsPP > 86400 ) return;
+
   // use plan current default calendar
   Calendar*  calendar = plan->calendar();
 
   // setup internal variable
-  QDate  dateStart = m_start.addSecs( int( m_secsPP *  x    ) ).date();
+  QDate  dateStart = m_start.addSecs( int( m_secsPP * (x-1) ) ).date();
   QDate  dateEnd   = m_start.addSecs( int( m_secsPP * (x+w) ) ).date();
   int    xs = -1, xe;
   QBrush brush( QColor("#F5F5F5") );
@@ -228,12 +227,16 @@ void GanttChart::shadeNonWorkingDays( QPainter* p, int x, int y, int w, int h )
   for( QDate date = dateStart; date <= dateEnd; date=date.addDays(1) )
   {
     // find m_start of non-working days
-    if (xs<0 && !calendar->isWorking(date)) xs = int(m_start.secsTo( QDateTime(date) ) / m_secsPP) + 1;
+    if ( xs<0 && !calendar->isWorking(date) )
+    {
+      xs = int( m_start.secsTo( QDateTime(date) ) / m_secsPP ) + 1;
+      if ( xs < 0 ) xs = 0;
+    }
 
     // find m_end of non-working days and shade the period
-    if (xs>=0 && calendar->isWorking(date))
+    if ( xs>=0 && calendar->isWorking(date) )
     {
-      xe = int(m_start.secsTo( QDateTime(date) ) / m_secsPP);
+      xe = int( m_start.secsTo( QDateTime(date) ) / m_secsPP );
       p->fillRect( xs, y, xe-xs, h, brush );
       xs = -1;
     }
