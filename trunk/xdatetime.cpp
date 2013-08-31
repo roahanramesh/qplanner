@@ -90,7 +90,49 @@ QDateTime XDateTime::nextInterval( int interval )
   }
 }
 
-/******************************************* ganttLabel ******************************************/
+/********************************************* toText ********************************************/
+
+QString XDateTime::toText()
+{
+  // convert date-time to text but without ISO format limitation of year between 0000 and 9999
+  // ISO format example is "2013-08-27T09:00:00"
+
+  if ( isValid() )
+  {
+    int year, month, day;
+    date().getDate( &year, &month, &day );
+
+    return QString("%1-%2-%3T%4").arg(year).arg(month).arg(day).arg(time().toString(Qt::ISODate));
+  }
+
+  // not valid
+  return "INVALID";
+}
+
+/******************************************** fromText *******************************************/
+
+QDateTime XDateTime::fromText( QString text )
+{
+  // convert ISO format like text to date-time but without limitation of year between 0000 and 9999
+  // ISO format example is "2013-08-27T09:00:00"
+
+  QString date = text.left( text.indexOf('T') );
+  QString time = text.mid(  text.indexOf('T')+1 );
+
+  QString year  = date.left( date.indexOf('-', 1) );
+  QString month = date.left( date.indexOf('-', year.length()+1) );
+  month = month.mid( month.indexOf('-',1)+1 );
+  QString day   = date.mid( year.length()+month.length()+2 );
+
+  bool ok;
+  int y = year.toInt( &ok );
+  int m = month.toInt( &ok );
+  int d = day.toInt( &ok );
+
+  return QDateTime( QDate(y,m,d), QTime::fromString(time,"hh:mm:ss") );
+}
+
+/********************************************* toLabel *******************************************/
 
 QString XDateTime::toLabel( QString format )
 {

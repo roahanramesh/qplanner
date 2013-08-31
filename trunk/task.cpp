@@ -26,6 +26,7 @@
 #include "calendar.h"
 #include "commandtasksetdata.h"
 #include "task_schedule.h"
+#include "xdatetime.h"
 
 #include <QXmlStreamWriter>
 
@@ -87,10 +88,10 @@ Task::Task( QXmlStreamReader* stream ) : Task()
       m_duration = attribute.value().toString();
 
     if ( attribute.name() == "start" )
-      m_start = QDateTime::fromString( attribute.value().toString(), "yyyy-MM-ddTHH:mm:ss" );
+      m_start = XDateTime::fromText( attribute.value().toString() );
 
     if ( attribute.name() == "end" )
-      m_end = QDateTime::fromString( attribute.value().toString(), "yyyy-MM-ddTHH:mm:ss" );
+      m_end = XDateTime::fromText( attribute.value().toString() );
 
     if ( attribute.name() == "work" )
       m_work = attribute.value().toString();
@@ -121,8 +122,8 @@ void  Task::saveToStream( QXmlStreamWriter* stream )
   stream->writeAttribute( "expanded", QString("%1").arg(m_expanded) );
   stream->writeAttribute( "title", m_title );
   stream->writeAttribute( "duration", m_duration.toString() );
-  stream->writeAttribute( "start", m_start.toString(Qt::ISODate) );
-  stream->writeAttribute( "end", m_end.toString(Qt::ISODate) );
+  stream->writeAttribute( "start", XDateTime( m_start ).toText() );
+  stream->writeAttribute( "end", XDateTime( m_end ).toText() );
   stream->writeAttribute( "work", m_work.toString() );
   stream->writeAttribute( "resources", m_resources.toString() );
   stream->writeAttribute( "type", QString("%1").arg(int(m_type)) );
@@ -167,6 +168,12 @@ bool  Task::scheduleOrder( Task* t1, Task* t2 )
   bool pred12 = t1->hasPredecessor( t2 );
   bool pred21 = t2->hasPredecessor( t1 );
   if ( pred12 || pred21 ) return pred21;
+
+  // then if summary
+  bool sum1 = t1->isSummary();
+  bool sum2 = t2->isSummary();
+  if ( sum1 && sum2 ) return plan->index(t1) > plan->index(t2);
+  if ( sum1 || sum2 ) return sum2;
 
   // otherwise, by priority and index
   return ( t1->m_priority - plan->index(t1) ) > ( t2->m_priority - plan->index(t2) );
@@ -405,7 +412,25 @@ QDateTime Task::start() const
   // return task or summary start date-time
   if ( m_summary )
   {
+    int        here = plan->index( (Task*)this );
+    int        last = plan->tasks()->rowCount() - 1;
+    QDateTime  s    = QDateTime( MAX_DATE );
 
+    // loop through each subtask
+    for( int t = here+1 ; t <= last ; t++ )
+    {
+      // skip null tasks
+      Task*  task = plan->task( t );
+      if ( task->isNull() ) continue;
+
+      // if indent is same or lower, we have got to last subtask
+      if ( task->indent() <= m_indent ) return s;
+
+      // if task isn't summary check if its start is before current earliest
+      if ( !task->isSummary() && task->start() < s ) s = task->start();
+    }
+
+    return s;
   }
 
   return m_start;
@@ -418,7 +443,25 @@ QDateTime Task::end() const
   // return task or summary end date-time
   if ( m_summary )
   {
+    int        here = plan->index( (Task*)this );
+    int        last = plan->tasks()->rowCount() - 1;
+    QDateTime  e    = QDateTime( MIN_DATE );
 
+    // loop through each subtask
+    for( int t = here+1 ; t <= last ; t++ )
+    {
+      // skip null tasks
+      Task*  task = plan->task( t );
+      if ( task->isNull() ) continue;
+
+      // if indent is same or lower, we have got to last subtask
+      if ( task->indent() <= m_indent ) return e;
+
+      // if task isn't summary check if its end is after current latest
+      if ( !task->isSummary() && task->end() > e ) e = task->end();
+    }
+
+    return e;
   }
 
   return m_end;

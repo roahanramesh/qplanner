@@ -55,6 +55,7 @@ public:
   void             setFileInfo( QString, QDateTime, QString );      // set plan file, when, who properties
   void             saveToStream( QXmlStreamWriter* );               // write plan data to xml stream
   void             loadFromStream( QXmlStreamReader*, QString );    // load plan data from xml stream
+  void             schedule();                                      // schedule the plan tasks
 
   TasksModel*      tasks() { return m_tasks; }                      // return tasks model pointer
   ResourcesModel*  resources() { return m_resources; }              // return resources model pointer
@@ -127,7 +128,8 @@ private:
   QString          m_notes;             // plan notes as in properties
 };
 
-extern Plan*  plan;
-
+extern Plan*        plan;
+extern const QDate  MIN_DATE;
+extern const QDate  MAX_DATE;
 
 #endif // PLAN_H

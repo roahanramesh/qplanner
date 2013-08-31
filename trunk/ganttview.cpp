@@ -220,11 +220,3 @@ void GanttView::setTable( QTableView* table )
   // sets the table associated with the gantt
   m_chart->setTable( table );
 }
-
-/******************************************* setTable ********************************************/
-
-void GanttView::updateChart( int row )
-{
-  // re-draw gantt chart (from row downwards)
-  m_chart->taskChanged( row );
-}

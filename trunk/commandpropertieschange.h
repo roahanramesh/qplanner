@@ -75,7 +75,7 @@ public:
 
     // if default calendar or start changed, need to re-schedule
     if ( m_cal_new   != m_cal_old   ||
-         m_start_new != m_start_old ) plan->tasks()->schedule();
+         m_start_new != m_start_old ) plan->schedule();
   }
 
   void  undo()
@@ -90,7 +90,7 @@ public:
 
     // if default calendar or start changed, need to re-schedule
     if ( m_cal_new   != m_cal_old   ||
-         m_start_new != m_start_old ) plan->tasks()->schedule();
+         m_start_new != m_start_old ) plan->schedule();
   }
 
 private:

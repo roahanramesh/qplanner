@@ -327,7 +327,7 @@ bool MainWindow::slotFileOpen()
   // delete old plan, set models, and schedule
   delete oldPlan;
   setModels();
-  plan->tasks()->schedule();
+  plan->schedule();
   message( QString("Loaded '%1'").arg(filename) );
   setTitle( plan->filename() );
   return true;
@@ -355,7 +355,7 @@ bool MainWindow::savePlan( QString filename )
   stream.setAutoFormatting( true );
   stream.writeStartDocument();
   stream.writeStartElement( "qplanner" );
-  stream.writeAttribute( "version", "2013-08" );
+  stream.writeAttribute( "version", "2013-09" );
   stream.writeAttribute( "user", who );
   stream.writeAttribute( "when", when.toString(Qt::ISODate) );
   plan->saveToStream( &stream );
@@ -440,7 +440,7 @@ void MainWindow::slotSchedulePlan()
 {
   // get plan to reschedule all the tasks
   endEdits();
-  plan->tasks()->schedule();
+  plan->schedule();
 }
 
 /*************************************** slotStretchTasks ****************************************/
