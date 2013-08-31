@@ -87,15 +87,15 @@ void GanttChart::setTable( QTableView* table )
   {
     // disconnect m_table vertical header to chart for task row height change
     disconnect( (QObject*)m_table->verticalHeader(), SIGNAL(sectionResized(int,int,int)),
-                 this, SLOT(taskHeight(int,int,int)) );
+                 this, SLOT(slotTaskHeightChanged(int,int,int)) );
 
     // disconnect m_table vertical header to chart for vertical moving of tasks
     disconnect( (QObject*)m_table->verticalHeader(), SIGNAL(sectionMoved(int,int,int)),
-                 this, SLOT(taskMoved(int,int,int)) );
+                 this, SLOT(slotTaskMoved(int,int,int)) );
 
     // disconnect m_table vertical scroll bar to chart for vertical scrolling of tasks
     disconnect( (QObject*)m_table->verticalScrollBar(), SIGNAL(valueChanged(int)),
-                 this, SLOT(tasksScrolled(int)) );
+                 this, SLOT(slotTasksScrolled(int)) );
   }
 
   // set private variables with table & plan associated with gantt
@@ -106,28 +106,28 @@ void GanttChart::setTable( QTableView* table )
   {
     // connect m_table vertical header to chart for task row height change
     connect( (QObject*)m_table->verticalHeader(), SIGNAL(sectionResized(int,int,int)),
-              this, SLOT(taskHeight(int,int,int)),
+              this, SLOT(slotTaskHeightChanged(int,int,int)),
               Qt::UniqueConnection );
 
     // connect m_table vertical header to chart for vertical moving of tasks
     connect( (QObject*)m_table->verticalHeader(), SIGNAL(sectionMoved(int,int,int)),
-              this, SLOT(taskMoved(int,int,int)),
+              this, SLOT(slotTaskMoved(int,int,int)),
               Qt::UniqueConnection );
 
     // connect m_table vertical scroll bar to chart for vertical scrolling of tasks
     connect( (QObject*)m_table->verticalScrollBar(), SIGNAL(valueChanged(int)),
-              this, SLOT(tasksScrolled(int)),
+              this, SLOT(slotTasksScrolled(int)),
               Qt::UniqueConnection );
   }
 
   // connect plan model gantt changes for general task updates
-  connect( plan->tasks(), SIGNAL(ganttChanged(int)), this, SLOT(taskChanged(int)),
+  connect( plan->tasks(), SIGNAL(ganttChanged()), this, SLOT(slotTasksChanged()),
            Qt::UniqueConnection );
 }
 
 /***************************************** tasksScrolled *****************************************/
 
-void GanttChart::tasksScrolled( int value )
+void GanttChart::slotTasksScrolled( int value )
 {
   Q_UNUSED(value);
 
@@ -137,7 +137,7 @@ void GanttChart::tasksScrolled( int value )
 
 /******************************************* taskMoved *******************************************/
 
-void GanttChart::taskMoved( int logicalIndex, int oldVisualIndex, int newVisualIndex )
+void GanttChart::slotTaskMoved( int logicalIndex, int oldVisualIndex, int newVisualIndex )
 {
   Q_UNUSED(logicalIndex);
   Q_UNUSED(oldVisualIndex);
@@ -149,7 +149,7 @@ void GanttChart::taskMoved( int logicalIndex, int oldVisualIndex, int newVisualI
 
 /******************************************* taskHeight ******************************************/
 
-void GanttChart::taskHeight( int row, int oldHeight, int newHeight )
+void GanttChart::slotTaskHeightChanged( int row, int oldHeight, int newHeight )
 {
   Q_UNUSED(oldHeight);
   Q_UNUSED(newHeight);
@@ -160,10 +160,10 @@ void GanttChart::taskHeight( int row, int oldHeight, int newHeight )
 
 /****************************************** taskInserted *****************************************/
 
-void GanttChart::taskChanged( int row )
+void GanttChart::slotTasksChanged()
 {
-  // update chart at and below row where new task inserted/change
-  update( 0, m_table->rowViewportPosition(row), width(), height() );
+  // update whole chart
+  update();
 }
 
 /******************************************* paintEvent ******************************************/

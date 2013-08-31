@@ -51,8 +51,7 @@ public:
       plan->task(row)->setIndent( plan->task(row)->indent() + 1 );
 
     plan->tasks()->setSummaries();
-    plan->tasks()->emitDataChangedColumn( Task::SECTION_TITLE );
-    plan->tasks()->schedule();
+    plan->schedule();
   }
 
   void  undo()
@@ -62,8 +61,7 @@ public:
       plan->task(row)->setIndent( plan->task(row)->indent() - 1 );
 
     plan->tasks()->setSummaries();
-    plan->tasks()->emitDataChangedColumn( Task::SECTION_TITLE );
-    plan->tasks()->schedule();
+    plan->schedule();
   }
 
 private:

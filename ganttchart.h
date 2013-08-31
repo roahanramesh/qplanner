@@ -44,10 +44,10 @@ public:
   void setTable( QTableView* );                    // set associated table view & plan for the gantt
 
 public slots:
-  void tasksScrolled( int );                       // receive vertical scroll events from table
-  void taskHeight( int, int, int );                // receive row height change events from table
-  void taskMoved( int, int, int );                 // receive task row moved events from table
-  void taskChanged( int );                         // receive task change events from model
+  void slotTasksScrolled( int );                   // receive vertical scroll events from table
+  void slotTaskHeightChanged( int, int, int );     // receive row height change events from table
+  void slotTaskMoved( int, int, int );             // receive task row moved events from table
+  void slotTasksChanged();                         // receive task change events from model
 
 protected:
   void paintEvent( QPaintEvent* );                 // draw gantt contents

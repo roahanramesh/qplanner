@@ -74,7 +74,7 @@ void  Task::schedule_ASAP_FDUR()
   if ( end < m_start ) m_end = m_start;
   else                 m_end = end;
 
-  if ( m_summary ) m_gantt.setSummary( m_start, m_end );
+  if ( m_summary ) m_gantt.setSummary( this->start(), this->end() );
   else             m_gantt.setTask( m_start, m_end );
 
 

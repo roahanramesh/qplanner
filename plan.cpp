@@ -50,6 +50,8 @@ int        Plan::numDays() { return m_days->number(); }                   // ret
 QDateTime  Plan::beginning() { return m_tasks->planBeginning(); }         // return start of earliest starting task
 QDateTime  Plan::end() { return m_tasks->planEnd(); }                     // return finish of latest finishing task
 
+void       Plan::schedule() { m_tasks->schedule(); }                      // schedule the plan tasks
+
 /****************************************** constructor ******************************************/
 
 Plan::Plan()

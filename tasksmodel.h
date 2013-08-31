@@ -61,13 +61,6 @@ public:
   Task*          task( int n );                                   // return pointer to n'th task
   int            index( Task* t ) { return m_tasks.indexOf(t); }  // return index of task, or -1
 
-  void           emitDataChangedRow( int row )                    // emit data changed signal for row
-                   { emit dataChanged( QAbstractTableModel::index( row, 0 ),
-                                       QAbstractTableModel::index( row, columnCount() ) ); }
-  void           emitDataChangedColumn( int col )                 // emit data changed signal for column
-                   { emit dataChanged( QAbstractTableModel::index( 0, col ),
-                                       QAbstractTableModel::index( rowCount(), col ) ); }
-
   /********************* methods to support QAbstractTableModel ************************/
 
   int            rowCount( const QModelIndex& parent = QModelIndex() ) const;     // implement virtual row count
@@ -78,13 +71,13 @@ public:
   Qt::ItemFlags  flags( const QModelIndex& ) const;                               // implement virtual return flags
 
 signals:
-  void           ganttChanged( int );            // signal task changed for gantt chart
+  void           ganttChanged();       // signal tasks could have changed so redraw gantt chart
 
 private:
-  QList<Task*>    m_tasks;           // list of tasks in plan
+  QList<Task*>    m_tasks;             // list of tasks in plan
 
-  QModelIndex     m_overrideIndex;   // with value can override model for edits in progress
-  QString         m_overrideValue;   // with index can override model for edits in progress
+  QModelIndex     m_overrideIndex;     // with value can override model for edits in progress
+  QString         m_overrideValue;     // with index can override model for edits in progress
 };
 
 #endif // TASKSMODEL_H

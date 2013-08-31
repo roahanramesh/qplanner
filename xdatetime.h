@@ -44,9 +44,11 @@ class XDateTime : public QDateTime
       INTERVAL_DAY                       // Interval is one day
     };
 
-    QDateTime truncInterval( int );      // return truncated date-time for interval
-    QDateTime nextInterval( int );       // return next date-time for interval
-    QString   toLabel( QString );        // return label based on format
+    QDateTime         truncInterval( int );         // return truncated date-time for interval
+    QDateTime         nextInterval( int );          // return next date-time for interval
+    QString           toLabel( QString );           // return label based on supplied format
+    QString           toText();                     // return date-time as text
+    static QDateTime  fromText( QString );          // return text as date-time
 };
 
 #endif // XDATETIME_H

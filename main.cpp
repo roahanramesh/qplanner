@@ -37,7 +37,10 @@
 // Progress 2013-08-07 user can save plan to, and load from, xml files
 /*************************************************************************************************/
 
-Plan*  plan;     // global variable
+// global variables
+Plan*        plan;
+const QDate  MIN_DATE = QDate( -99999999, 1, 1 );
+const QDate  MAX_DATE = QDate(  99999999, 1, 1 );
 
 int main( int argc, char *argv[] )
 {

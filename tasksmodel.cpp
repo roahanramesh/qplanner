@@ -195,6 +195,7 @@ void  TasksModel::setSummaries()
   do
   {
     // find non-null below
+    m_tasks.at(above)->setSummary( false );
     int below = above + 1;
     while ( below < m_tasks.size() && m_tasks.at(below)->isNull() ) below++;
 
@@ -203,21 +204,7 @@ void  TasksModel::setSummaries()
 
     // check if task above should be summary or not
     if ( m_tasks.at(above)->indent() < m_tasks.at(below)->indent() )
-    {
-      if ( !m_tasks.at(above)->isSummary() )
-      {
-        m_tasks.at(above)->setSummary( true );
-        emitDataChangedRow( above );
-      }
-    }
-    else
-    {
-      if ( m_tasks.at(above)->isSummary() )
-      {
-        m_tasks.at(above)->setSummary( false );
-        emitDataChangedRow( above );
-      }
-    }
+      m_tasks.at(above)->setSummary( true );
 
     above = below;
   }
@@ -343,11 +330,9 @@ void TasksModel::schedule()
     t->schedule();
   }
 
-  emitDataChangedColumn( Task::SECTION_DURATION );
-  emitDataChangedColumn( Task::SECTION_START );
-  emitDataChangedColumn( Task::SECTION_END );
-  emitDataChangedColumn( Task::SECTION_WORK );
-  emit ganttChanged(0);
+  // now scheduling has completed update both tasks table view and gantt view
+  emit dataChanged( QAbstractTableModel::index( 0, 0 ), QAbstractTableModel::index( rowCount(), columnCount() ) );
+  emit ganttChanged();
 }
 
 /**************************************** setColumnWidths ****************************************/

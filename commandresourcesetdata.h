@@ -54,6 +54,8 @@ public:
     // update resource with new value
     plan->resource( m_row )->setDataDirect( m_column, m_new_value );
     plan->resources()->emitDataChangedRow( m_row );
+
+    if ( m_row != Resource::SECTION_COMMENT ) plan->schedule();
   }
 
   void  undo()
@@ -61,6 +63,8 @@ public:
     // revert resource back to old value
     plan->resource( m_row )->setDataDirect( m_column, m_old_value );
     plan->resources()->emitDataChangedRow( m_row );
+
+    if ( m_row != Resource::SECTION_COMMENT ) plan->schedule();
   }
 
 private:

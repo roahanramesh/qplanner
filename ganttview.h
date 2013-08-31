@@ -44,7 +44,6 @@ public:
   void    createGantt( QWidget* );      // sets the table associated with the gantt
   void    setTable( QTableView* );      // sets the table associated with the gantt
   int     scaleHeight();                // return scale (upper+lower) height
-  void    updateChart( int );           // re-draw gantt chart (from row downwards)
 
 public slots:
   void    contextMenu( QPoint );        // slot to receive context menu signals
