@@ -28,6 +28,11 @@
 /********************** Task predecessors shows dependencies on other tasks **********************/
 /*************************************************************************************************/
 
+const char*  Predecessors::LABEL_FINISH_START  = "FS";
+const char*  Predecessors::LABEL_START_START   = "SS";
+const char*  Predecessors::LABEL_START_FINISH  = "SF";
+const char*  Predecessors::LABEL_FINISH_FINISH = "FF";
+
 /****************************************** constructor ******************************************/
 
 Predecessors::Predecessors()
@@ -55,10 +60,10 @@ Predecessors::Predecessors( QString text )
     part = part.trimmed();
     if ( !part.isEmpty() )
     {
-      if ( part.startsWith( "FS", Qt::CaseInsensitive ) ) type = Predecessors::TYPE_FINISH_START;
-      if ( part.startsWith( "SS", Qt::CaseInsensitive ) ) type = Predecessors::TYPE_START_START;
-      if ( part.startsWith( "SF", Qt::CaseInsensitive ) ) type = Predecessors::TYPE_START_FINISH;
-      if ( part.startsWith( "FF", Qt::CaseInsensitive ) ) type = Predecessors::TYPE_FINISH_FINISH;
+      if ( part.startsWith( LABEL_FINISH_START,  Qt::CaseInsensitive ) ) type = TYPE_FINISH_START;
+      if ( part.startsWith( LABEL_START_START,   Qt::CaseInsensitive ) ) type = TYPE_START_START;
+      if ( part.startsWith( LABEL_START_FINISH,  Qt::CaseInsensitive ) ) type = TYPE_START_FINISH;
+      if ( part.startsWith( LABEL_FINISH_FINISH, Qt::CaseInsensitive ) ) type = TYPE_FINISH_FINISH;
 
       part.remove( 0, 2 );
       part = part.trimmed();
@@ -84,13 +89,13 @@ QString Predecessors::toString() const
   {
     str += QString("%1").arg( plan->index( pred.task ) );
 
-    if ( pred.type != Predecessors::TYPE_DEFAULT ||
+    if ( pred.type != TYPE_DEFAULT ||
          pred.lag.number() != 0.0 )
     {
-      if ( pred.type == Predecessors::TYPE_FINISH_START )  str += "FS";
-      if ( pred.type == Predecessors::TYPE_START_FINISH )  str += "SF";
-      if ( pred.type == Predecessors::TYPE_START_START )   str += "SS";
-      if ( pred.type == Predecessors::TYPE_FINISH_FINISH ) str += "FF";
+      if ( pred.type == TYPE_FINISH_START )  str += LABEL_FINISH_START;
+      if ( pred.type == TYPE_START_FINISH )  str += LABEL_START_FINISH;
+      if ( pred.type == TYPE_START_START )   str += LABEL_START_START;
+      if ( pred.type == TYPE_FINISH_FINISH ) str += LABEL_FINISH_FINISH;
       if ( pred.lag.number() >  0.0 ) str += "+";
       if ( pred.lag.number() != 0.0 ) str += pred.lag.toString();
     }
@@ -164,10 +169,10 @@ QString Predecessors::validate( const QString& text, int thisTaskNum )
     part.remove( 0, digit );
     part = part.trimmed();
     if ( part.isEmpty() ) continue;
-    if ( !part.startsWith( "FS", Qt::CaseInsensitive ) &&
-         !part.startsWith( "SS", Qt::CaseInsensitive ) &&
-         !part.startsWith( "SF", Qt::CaseInsensitive ) &&
-         !part.startsWith( "FF", Qt::CaseInsensitive ) )
+    if ( !part.startsWith( LABEL_FINISH_START,  Qt::CaseInsensitive ) &&
+         !part.startsWith( LABEL_START_START,   Qt::CaseInsensitive ) &&
+         !part.startsWith( LABEL_START_FINISH,  Qt::CaseInsensitive ) &&
+         !part.startsWith( LABEL_FINISH_FINISH, Qt::CaseInsensitive ) )
     {
       error += QString( "'%1' is not a valid dependency type.\n" ).arg( part );
       continue;
@@ -192,7 +197,7 @@ QString Predecessors::validate( const QString& text, int thisTaskNum )
 QDateTime  Predecessors::start() const
 {
   // return task start based on predecessors
-  QDateTime start = QDateTime( QDate(-999999,1,1) );
+  QDateTime start = plan->MIN_DATETIME;
   foreach( Predecessor pred, m_preds )
   {
     if ( pred.type == TYPE_FINISH_START )
@@ -209,7 +214,7 @@ QDateTime  Predecessors::start() const
   }
 
   // if not set by predecessors, task start is plan start
-  if ( start == QDateTime( QDate(-999999,1,1) ) ) return plan->start();
+  if ( start == plan->MIN_DATETIME ) return plan->start();
 
   return start;
 }

@@ -102,9 +102,15 @@ public:
   void             emitPropertiesUpdated()
                      { emit signalPropertiesUpdated(); }            // emit signalPropertiesUpdated
 
-  QColor           nullCellColour() { return QColor( "#F0F0F0" ); } // colour for null table cell
   bool             stretchTasks;                                    // flag if gantt task bars stretched to use full 24h day
   QDateTime        stretch( QDateTime dt );                         // return date-time stretched if necessary
+
+  QColor           nullCellColour() { return QColor( "#F0F0F0" ); } // return colour for null table cell
+
+  static const QDate        MIN_DATE;                               // const min date allowed in plan
+  static const QDate        MAX_DATE;                               // const max date allowed in plan
+  static const QDateTime    MIN_DATETIME;                           // const min date-time allowed in plan
+  static const QDateTime    MAX_DATETIME;                           // const max date-time allowed in plan
 
 signals:
   void  signalPropertiesUpdated();      // signal to say plan properties updated
@@ -129,7 +135,5 @@ private:
 };
 
 extern Plan*        plan;
-extern const QDate  MIN_DATE;
-extern const QDate  MAX_DATE;
 
 #endif // PLAN_H

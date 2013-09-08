@@ -73,12 +73,68 @@ void GanttData::setSummary( QDateTime start, QDateTime end )
   m_value[0] = -1.0;
 }
 
+/********************************************* startX ********************************************/
+
+int GanttData::startX( QDateTime start, double secsPP )
+{
+  // return task gantt row start x coordinate
+  return int( start.secsTo( plan->stretch( m_start ) ) / secsPP );
+}
+
+/********************************************** endX *********************************************/
+
+int GanttData::endX( QDateTime start, double secsPP )
+{
+  // return task gantt row end x coordinate
+  return int( start.secsTo( plan->stretch( m_end.at(m_end.size()-1) ) ) / secsPP );;
+}
+
 /********************************************* height ********************************************/
 
 int GanttData::height( QPainter* p )
 {
   // return max height of task on gantt
   return p->fontMetrics().lineSpacing() * 4 / 5;
+}
+
+/**************************************** drawDependencyFS ***************************************/
+
+void GanttData::drawDependencyFS(QPainter* p, int thisY, int otherY, int num,
+                                 QDateTime start, double secsPP )
+{
+  // draw dependency FINISH_START line on gantt
+  qDebug("GanttData::drawDependencyFS  thisY=%i  otherY=%i  num=%i",thisY,otherY,num);
+
+}
+
+/**************************************** drawDependencySF ***************************************/
+
+void GanttData::drawDependencySF(QPainter* p, int thisY, int otherY, int num,
+                                 QDateTime start, double secsPP )
+{
+  // draw dependency START_FINISH line on gantt
+  qDebug("GanttData::drawDependencySF  thisY=%i  otherY=%i  num=%i",thisY,otherY,num);
+
+}
+
+/**************************************** drawDependencyFS ***************************************/
+
+void GanttData::drawDependencySS(QPainter* p, int thisY, int otherY, int num,
+                                 QDateTime start, double secsPP )
+{
+  // draw dependency START_START line on gantt
+  qDebug("GanttData::drawDependencySS  thisY=%i  otherY=%i  num=%i",thisY,otherY,num);
+
+}
+
+/**************************************** drawDependencyFS ***************************************/
+
+void GanttData::drawDependencyFF(QPainter* p, int thisY, int otherY, int num,
+                                 QDateTime start, double secsPP )
+{
+  // draw dependency FINISH_FINISH line on gantt
+  qDebug("GanttData::drawDependencyFF  thisY=%i  otherY=%i  num=%i",thisY,otherY,num);
+
 }
 
 /******************************************** drawTask *******************************************/

@@ -52,6 +52,11 @@ QDateTime  Plan::end() { return m_tasks->planEnd(); }                     // ret
 
 void       Plan::schedule() { m_tasks->schedule(); }                      // schedule the plan tasks
 
+const QDate      Plan::MIN_DATE = QDate( -99999999, 1, 1 );               // const min date allowed in plan
+const QDate      Plan::MAX_DATE = QDate(  99999999, 1, 1 );               // const max date allowed in plan
+const QDateTime  Plan::MIN_DATETIME = QDateTime( MIN_DATE );              // const min date-time allowed in plan
+const QDateTime  Plan::MAX_DATETIME = QDateTime( MAX_DATE );              // const max date-time allowed in plan
+
 /****************************************** constructor ******************************************/
 
 Plan::Plan()

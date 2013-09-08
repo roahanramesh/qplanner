@@ -414,7 +414,7 @@ QDateTime Task::start() const
   {
     int        here = plan->index( (Task*)this );
     int        last = plan->tasks()->rowCount() - 1;
-    QDateTime  s    = QDateTime( MAX_DATE );
+    QDateTime  s    = plan->MAX_DATETIME;
 
     // loop through each subtask
     for( int t = here+1 ; t <= last ; t++ )
@@ -445,7 +445,7 @@ QDateTime Task::end() const
   {
     int        here = plan->index( (Task*)this );
     int        last = plan->tasks()->rowCount() - 1;
-    QDateTime  e    = QDateTime( MIN_DATE );
+    QDateTime  e    = plan->MIN_DATETIME;
 
     // loop through each subtask
     for( int t = here+1 ; t <= last ; t++ )

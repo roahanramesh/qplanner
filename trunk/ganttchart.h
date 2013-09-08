@@ -60,8 +60,8 @@ private:
 
   void shadeNonWorkingDays( QPainter*,
          int, int, int, int );                     // shade gantt chart non working days
-  void drawTasks( QPainter*,
-         int, int, int, int );                     // draw gantt tasks
+  void drawTasks( QPainter*, int, int );           // draw gantt tasks
+  void drawDependencies( QPainter*, int, int );    // draw gantt tasks dependencies
 };
 
 #endif // GANTTCHART_H

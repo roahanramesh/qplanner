@@ -68,7 +68,6 @@ void   GanttScale::paintEvent( QPaintEvent* event )
   int       x1    = int(m_start.secsTo( dt1 ) / m_secsPP), x2;
 
   // set font stretch
-  //qDebug("GanttScale::paintEvent  stretch=%i", stretch);
   if ( m_stretch > 0 )
   {
     QFont font = p.font();

@@ -60,7 +60,7 @@ QDateTime XDateTime::truncInterval( int interval )
     case INTERVAL_DAY:
       return QDateTime( date() );
     default:
-      qDebug("XDateTime::truncInterval - UNKNOWN interval %i", interval );
+      qWarning("XDateTime::truncInterval - UNKNOWN interval %i", interval );
       return QDateTime();
   }
 }
@@ -85,7 +85,7 @@ QDateTime XDateTime::nextInterval( int interval )
     case INTERVAL_DAY:
       return addDays(1);
     default:
-      qDebug("XDateTime::nextInterval - UNKNOWN interval %i", interval );
+      qWarning("XDateTime::nextInterval - UNKNOWN interval %i", interval );
       return QDateTime();
   }
 }

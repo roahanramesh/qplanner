@@ -60,6 +60,11 @@ public:
     TimeSpan  lag;
   } Predecessor;
 
+  static const char*  LABEL_FINISH_START;
+  static const char*  LABEL_START_START;
+  static const char*  LABEL_START_FINISH;
+  static const char*  LABEL_FINISH_FINISH;
+
 private:
   QList<Predecessor>    m_preds;      // list of task predecessors
 };
