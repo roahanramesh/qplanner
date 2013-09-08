@@ -33,14 +33,11 @@
 // IDEA - Resourcing tasks can use special pseudo-resource 'All' & Organisations/Groups/Types
 // Progress 2012-10-10 started again using Qt 4.8.0 using QtCreator 2.5.83
 // Progress 2012-12-16 default days and calendars, user can enter tasks and resources with undo
-// Progress 2013-05-16 updated to use Qt 5.0.2, QtCreator 2.7.0 and C++11
+// Progress 2013-05-16 updated to use Qt 5, QtCreator 2.7 and C++11
 // Progress 2013-08-07 user can save plan to, and load from, xml files
 /*************************************************************************************************/
 
-// global variables
-Plan*        plan;
-const QDate  MIN_DATE = QDate( -99999999, 1, 1 );
-const QDate  MAX_DATE = QDate(  99999999, 1, 1 );
+Plan*        plan;    // global variable
 
 int main( int argc, char *argv[] )
 {

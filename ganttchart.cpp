@@ -155,7 +155,7 @@ void GanttChart::slotTaskHeightChanged( int row, int oldHeight, int newHeight )
   Q_UNUSED(newHeight);
 
   // update chart at and below row when task m_table row height change
-  update( 0, m_table->rowViewportPosition(row), width(), height() );
+  update( 0, m_table->rowViewportPosition(row) - 4, width(), height() );
 }
 
 /****************************************** taskInserted *****************************************/
@@ -178,7 +178,8 @@ void GanttChart::paintEvent( QPaintEvent* event )
 
   QPainter p( this );
   shadeNonWorkingDays( &p, x, y, w, h );
-  drawTasks( &p, x, y, w, h );
+  drawTasks( &p, y, h );
+  drawDependencies( &p, y, h );
 
   // draw current date-time line
   int now = int(m_start.secsTo( QDateTime::currentDateTime() ) / m_secsPP);
@@ -186,13 +187,66 @@ void GanttChart::paintEvent( QPaintEvent* event )
   p.drawLine( now, y, now, y+h );
 }
 
+/**************************************** drawDependencies ***************************************/
+
+void GanttChart::drawDependencies( QPainter* p, int y, int h )
+{
+  // determine first and last task visible
+  int first = m_table->rowAt( y );
+  int last  = m_table->rowAt( y+h );
+  if ( first < 0 ) first = 0;
+  if ( last  < 0 ) last  = plan->tasks()->rowCount() - 1;
+
+  // for each task
+  for( int t=0 ; t<=plan->tasks()->rowCount()-1 ; t++ )
+  {
+    Task*        task  = plan->task(t);
+    int          thisY = m_table->rowViewportPosition(t) + ( m_table->rowHeight(t) / 2 );
+    QStringList  preds = task->predecessors().split(",", QString::SkipEmptyParts);
+
+    // and each task predecessor
+    foreach( QString pred, preds )
+    {
+      // extract task number at beginning of predecessor string and type
+      QString type = Predecessors::LABEL_FINISH_START;   // default predecessor type
+      int     num = 0;
+      for( int c=0 ; c<pred.length() ; c++ )
+      {
+        if ( pred.at(c).isDigit() )
+          num = num*10 + pred.at(c).digitValue();
+        else
+        {
+          // not a digit, so must be a type
+          type = QString( pred.at(c) ) + QString( pred.at(c+1) );
+          break;
+        }
+      }
+
+      // if link outside range to be drawn, move on to next
+      if ( t < first && num < first ) continue;
+      if ( t > last  && num > last  ) continue;
+
+      int otherY = m_table->rowViewportPosition(num) + ( m_table->rowHeight(num) / 2 );
+
+      if ( type == Predecessors::LABEL_FINISH_START )
+        task->ganttData()->drawDependencyFS( p, thisY, otherY, num, m_start, m_secsPP );
+
+      if ( type == Predecessors::LABEL_START_FINISH )
+        task->ganttData()->drawDependencySF( p, thisY, otherY, num, m_start, m_secsPP );
+
+      if ( type == Predecessors::LABEL_FINISH_FINISH )
+        task->ganttData()->drawDependencyFF( p, thisY, otherY, num, m_start, m_secsPP );
+
+      if ( type == Predecessors::LABEL_START_START )
+        task->ganttData()->drawDependencySS( p, thisY, otherY, num, m_start, m_secsPP );
+    }
+  }
+}
+
 /******************************************* drawTasks *******************************************/
 
-void GanttChart::drawTasks( QPainter* p, int x, int y, int w, int h )
+void GanttChart::drawTasks( QPainter* p, int y, int h )
 {
-  Q_UNUSED(x);
-  Q_UNUSED(w);
-
   // determine first and last task to draw
   int first = m_table->rowAt( y );
   int last  = m_table->rowAt( y+h );

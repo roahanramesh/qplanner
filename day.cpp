@@ -330,7 +330,7 @@ QTime  Day::doWork( QTime time, float work ) const
       return time.addSecs( secs );
   }
 
-  qDebug("Day::doWork - ERROR asked to do more work than remains!!!");
+  qWarning("Day::doWork - ERROR asked to do more work than remains!!!");
   return QTime();
 }
 
@@ -356,7 +356,7 @@ QTime  Day::doSecs( QTime time, int secs ) const
       return time.addSecs( secs );
   }
 
-  qDebug("Day::doSecs - ERROR asked to do more work than remains!!!");
+  qWarning("Day::doSecs - ERROR asked to do more work than remains!!!");
   return QTime();
 }
 

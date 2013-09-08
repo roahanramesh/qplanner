@@ -280,6 +280,13 @@ bool MainWindow::slotFileOpen()
     return false;
   }
 
+  return loadPlan( filename );
+}
+
+/******************************************** loadPlan *******************************************/
+
+bool MainWindow::loadPlan( QString filename )
+{
   // open the file and check we can read from it
   QFile file( filename );
   if ( !file.open( QIODevice::ReadOnly ) )

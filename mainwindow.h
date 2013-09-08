@@ -44,6 +44,7 @@ public:
   void     message( QString = "" );            // show message on status bar and enure is top & active
   void     setTitle( QString = "" );           // update main window title to include text
   bool     savePlan( QString );                // save plan to xml file
+  bool     loadPlan( QString );                // load plan from xml file
   void     updatePlan();                       // update plan from 'Properties' tab widgets
 
 public slots:
