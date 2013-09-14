@@ -20,6 +20,7 @@
 
 #include "ganttdata.h"
 #include "plan.h"
+#include "task.h"
 #include "calendar.h"
 
 #include <QPainter>
@@ -73,9 +74,26 @@ void GanttData::setSummary( QDateTime start, QDateTime end )
   m_value[0] = -1.0;
 }
 
+/********************************************* start *********************************************/
+
+QDateTime GanttData::start() const
+{
+  // return task gantt row start date-time
+  return m_start;
+}
+
+/********************************************** end **********************************************/
+
+QDateTime GanttData::end() const
+{
+  // return task gantt row end date-time
+  if ( m_end.size() == 0 ) return m_start;
+  return m_end.at( m_end.size() - 1 );
+}
+
 /********************************************* startX ********************************************/
 
-int GanttData::startX( QDateTime start, double secsPP )
+int GanttData::startX( QDateTime start, double secsPP ) const
 {
   // return task gantt row start x coordinate
   return int( start.secsTo( plan->stretch( m_start ) ) / secsPP );
@@ -83,10 +101,10 @@ int GanttData::startX( QDateTime start, double secsPP )
 
 /********************************************** endX *********************************************/
 
-int GanttData::endX( QDateTime start, double secsPP )
+int GanttData::endX( QDateTime start, double secsPP ) const
 {
   // return task gantt row end x coordinate
-  return int( start.secsTo( plan->stretch( m_end.at(m_end.size()-1) ) ) / secsPP );;
+  return int( start.secsTo( plan->stretch( end() ) ) / secsPP );
 }
 
 /********************************************* height ********************************************/
@@ -97,30 +115,127 @@ int GanttData::height( QPainter* p )
   return p->fontMetrics().lineSpacing() * 4 / 5;
 }
 
+/***************************************** verticalArrow ******************************************/
+
+void GanttData::verticalArrow( QPainter* p, int x, int y, int size )
+{
+  // draw vertical arrow for dependency links
+  if ( size < 0 ) y++;
+  QPoint points[3];
+
+  points[0] = QPoint( x, y );
+  points[1] = QPoint( x-size, y-size );
+  points[2] = QPoint( x+size, y-size );
+
+  p->setPen( Qt::NoPen );
+  p->setBrush( Qt::darkGray );
+  p->drawConvexPolygon( points, 3 );
+}
+
+/**************************************** horizontalArrow ****************************************/
+
+void GanttData::horizontalArrow( QPainter* p, int x, int y, int size )
+{
+  // draw horizontal arrow for dependency links
+  QPoint points[3];
+
+  points[0] = QPoint( x, y );
+  if ( size > 0 )
+  {
+    points[1] = QPoint( x-size, y-size+1 );
+    points[2] = QPoint( x-size, y+size );
+  }
+  else
+  {
+    points[1] = QPoint( x-size, y-size );
+    points[2] = QPoint( x-size, y+size+1 );
+  }
+
+  p->setPen( Qt::NoPen );
+  p->setBrush( Qt::darkGray );
+  p->drawConvexPolygon( points, 3 );
+}
+
 /**************************************** drawDependencyFS ***************************************/
 
-void GanttData::drawDependencyFS(QPainter* p, int thisY, int otherY, int num,
-                                 QDateTime start, double secsPP )
+void GanttData::drawDependencyFS( QPainter* p, int thisY, int otherY, int num,
+                                  QDateTime start, double secsPP )
 {
   // draw dependency FINISH_START line on gantt
-  qDebug("GanttData::drawDependencyFS  thisY=%i  otherY=%i  num=%i",thisY,otherY,num);
+  int  otherX = plan->task(num)->ganttData()->endX( start, secsPP );
+  int  thisX  = startX( start, secsPP );
+  int  sign   = thisY > otherY ? 1 : -1;
+  int  h      = height( p );
 
+  p->setPen( Qt::darkGray );
+
+  if ( thisX == otherX )
+  {
+    p->drawLine( otherX+1, otherY,      otherX+2, otherY );
+    p->drawLine( otherX+3, otherY+sign, otherX+3, thisY-sign*(h/2+2) );
+    verticalArrow( p, otherX+3, thisY-sign*h/2, (sign*h*2)/5 );
+  }
+
+  if ( thisX > otherX )
+  {
+    p->drawLine( otherX+1, otherY,      thisX-1, otherY );
+    p->drawLine( thisX,    otherY+sign, thisX,   thisY-sign*(h/2+2) );
+    verticalArrow( p, thisX, thisY-sign*h/2, (sign*h*2)/5 );
+  }
+
+  if ( thisX < otherX )
+  {
+    p->drawLine( otherX+1, otherY,      otherX+2, otherY );
+    p->drawLine( otherX+3, otherY+sign, otherX+3, otherY+sign*(h/2+2) );
+    p->drawLine( otherX+2, otherY+sign*(h/2+3), thisX-6, otherY+sign*(h/2+3));
+    p->drawLine( thisX-7, otherY+sign*(h/2+4), thisX-7, thisY-sign );
+    p->drawLine( thisX-6, thisY, thisX-2, thisY );
+    horizontalArrow( p, thisX, thisY, (h*2)/5 );
+  }
 }
 
 /**************************************** drawDependencySF ***************************************/
 
-void GanttData::drawDependencySF(QPainter* p, int thisY, int otherY, int num,
-                                 QDateTime start, double secsPP )
+void GanttData::drawDependencySF( QPainter* p, int thisY, int otherY, int num,
+                                  QDateTime start, double secsPP )
 {
   // draw dependency START_FINISH line on gantt
-  qDebug("GanttData::drawDependencySF  thisY=%i  otherY=%i  num=%i",thisY,otherY,num);
+  int  otherX = plan->task(num)->ganttData()->startX( start, secsPP );
+  int  thisX  = endX( start, secsPP );
+  int  sign   = thisY > otherY ? 1 : -1;
+  int  h      = height( p );
 
+  p->setPen( Qt::darkGray );
+
+  if ( thisX == otherX )
+  {
+    p->drawLine( otherX-1, otherY,      otherX-2, otherY );
+    p->drawLine( otherX-3, otherY+sign, otherX-3, thisY-sign*(h/2+2) );
+    verticalArrow( p, otherX-3, thisY-sign*h/2, (sign*h*2)/5 );
+  }
+
+  if ( thisX > otherX )
+  {
+    p->drawLine( otherX-1, otherY,      thisX+1, otherY );
+    p->drawLine( thisX,    otherY+sign, thisX,   thisY-sign*(h/2+2) );
+    verticalArrow( p, thisX, thisY-sign*h/2, (sign*h*2)/5 );
+  }
+
+  if ( thisX < otherX )
+  {
+    p->drawLine( otherX-1, otherY,      otherX-2, otherY );
+    p->drawLine( otherX-3, otherY+sign, otherX-3, otherY+sign*(h/2+2) );
+    p->drawLine( otherX-2, otherY+sign*(h/2+3), thisX+6, otherY+sign*(h/2+3));
+    p->drawLine( thisX+7, otherY+sign*(h/2+4), thisX+7, thisY-sign );
+    p->drawLine( thisX+6, thisY, thisX+2, thisY );
+    horizontalArrow( p, thisX, thisY, (h*2)/5 );
+  }
 }
 
 /**************************************** drawDependencyFS ***************************************/
 
-void GanttData::drawDependencySS(QPainter* p, int thisY, int otherY, int num,
-                                 QDateTime start, double secsPP )
+void GanttData::drawDependencySS( QPainter* p, int thisY, int otherY, int num,
+                                  QDateTime start, double secsPP )
 {
   // draw dependency START_START line on gantt
   qDebug("GanttData::drawDependencySS  thisY=%i  otherY=%i  num=%i",thisY,otherY,num);
@@ -129,8 +244,8 @@ void GanttData::drawDependencySS(QPainter* p, int thisY, int otherY, int num,
 
 /**************************************** drawDependencyFS ***************************************/
 
-void GanttData::drawDependencyFF(QPainter* p, int thisY, int otherY, int num,
-                                 QDateTime start, double secsPP )
+void GanttData::drawDependencyFF( QPainter* p, int thisY, int otherY, int num,
+                                  QDateTime start, double secsPP )
 {
   // draw dependency FINISH_FINISH line on gantt
   qDebug("GanttData::drawDependencyFF  thisY=%i  otherY=%i  num=%i",thisY,otherY,num);
@@ -182,19 +297,20 @@ void GanttData::drawSummary( QPainter* p, int y, QDateTime start, double secsPP 
 
   // populate points array to draw the summary
   QPoint points[8];
-  points[0] = QPoint( xs-h, y-h );
-  points[1] = QPoint( xe+h, y-h );
-  points[2] = QPoint( xe+h, y   );
-  points[3] = QPoint( xe  , y+h );
-  points[4] = QPoint( xe-h, y   );
-  points[5] = QPoint( xs+h, y   );
-  points[6] = QPoint( xs  , y+h );
-  points[7] = QPoint( xs-h, y   );
+  points[0] = QPoint( xe+h+1, y-h );
+  points[1] = QPoint( xe+h+1, y   );
+  points[2] = QPoint( xe    , y+h );
+  points[3] = QPoint( xe-h  , y   );
+  points[4] = QPoint( xs+h  , y   );
+  points[5] = QPoint( xs    , y+h );
+  points[6] = QPoint( xs-h  , y   );
+  points[7] = QPoint( xs-h  , y-h );
 
   // draw the milestone
   p->setPen( Qt::NoPen );
   p->setBrush( Qt::black );
   p->drawPolygon( points, 8 );
+  p->drawPolygon( points, 4 );
 }
 
 /******************************************* drawTaskBar *****************************************/

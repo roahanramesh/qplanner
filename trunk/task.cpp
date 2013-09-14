@@ -326,7 +326,7 @@ QVariant  Task::dataDisplayRole( int col ) const
   // return appropriate display text from plan data
   if ( col == SECTION_TITLE ) return m_title;
 
-  if ( col == SECTION_DURATION ) return m_duration.toString();
+  if ( col == SECTION_DURATION ) return duration().toString();
 
   if ( col == SECTION_WORK ) return m_work.toString();
 
@@ -403,6 +403,16 @@ void  Task::setDataDirect( int col, const QVariant& value )
   if ( col == SECTION_COST )     m_cost         = value.toReal();
   if ( col == SECTION_PRIORITY ) m_priority     = value.toInt() * 1000000;
   if ( col == SECTION_COMMENT )  m_comment      = value.toString();
+}
+
+/******************************************* duration ********************************************/
+
+TimeSpan Task::duration() const
+{
+  // return task or summary duration
+  if ( m_summary ) return plan->calendar()->workBetween( m_gantt.start(), m_gantt.end() );
+
+  return m_duration;
 }
 
 /********************************************* start *********************************************/

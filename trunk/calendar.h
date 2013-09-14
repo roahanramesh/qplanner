@@ -59,6 +59,8 @@ public:
   bool          isWorking( QDate date ) const                  // return whether date is working or not
                   { return getDay( date )->isWorking(); }
 
+  TimeSpan      workBetween( QDateTime, QDateTime ) const;     // return timespan between two date-times
+
   enum DefaultCalendarTypes
   {
     DEFAULT_CALENDAR = 0,

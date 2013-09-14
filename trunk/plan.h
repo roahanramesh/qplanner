@@ -50,8 +50,8 @@ public:
   Plan();                       // constructor
   ~Plan();                      // destructor
 
-  void             initialise();                                    // create initial default contents
-  bool             isOK();                                          // return if plan appears ok
+  void             initialise();                                    // create initial plan default contents
+  bool             isOK();                                          // return if plan appears valid
   void             setFileInfo( QString, QDateTime, QString );      // set plan file, when, who properties
   void             saveToStream( QXmlStreamWriter* );               // write plan data to xml stream
   void             loadFromStream( QXmlStreamReader*, QString );    // load plan data from xml stream

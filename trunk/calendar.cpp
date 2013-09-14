@@ -379,6 +379,28 @@ QDateTime  Calendar::addYears( QDateTime start, float years )
   return addMonths( start.addYears( whole ), fraction*12.0 );
 }
 
+/****************************************** workBetween ******************************************/
+
+TimeSpan Calendar::workBetween( QDateTime start, QDateTime end ) const
+{
+  // return work between two dates
+  if ( start == end ) return TimeSpan( 0, TimeSpan::UNIT_DAYS );
+  if ( start >  end ) qSwap( start, end );
+  QDate sd   = start.date();
+  QDate ed   = end.date();
+  Day*  day  = getDay( sd );
+  float work = day->workToGo( start.time() );
+
+  if ( sd == ed ) return TimeSpan( work - day->workToGo( end.time() ), TimeSpan::UNIT_DAYS );
+
+  for( QDate date = sd.addDays(1) ; date < ed ; date = date.addDays(1) )
+    work += getDay( date )->work();
+
+  work += getDay( ed )->workDone( end.time() );
+
+  return TimeSpan( work, TimeSpan::UNIT_DAYS );
+}
+
 /********************************************* workUp ********************************************/
 
 QDateTime  Calendar::workUp( QDateTime dt ) const

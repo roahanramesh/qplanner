@@ -56,6 +56,15 @@ public:
 
 /****************************************** constructor ******************************************/
 
+  TimeSpan( float num, char units )
+  {
+    // construct time-span from number and units
+    m_units = units;
+    m_num   = num;
+  };
+
+/****************************************** constructor ******************************************/
+
   TimeSpan( QString str )
   {
     // construct time-span from string
