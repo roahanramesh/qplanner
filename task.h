@@ -57,6 +57,7 @@ public:
   QString           name() const { return m_title; }              // return name of task (i.e. title)
   QDateTime         start() const;                                // return task or summary start date-time
   QDateTime         end() const;                                  // return task or summary end date-time
+  TimeSpan          duration() const;                             // return task or summary duration
   bool              isExpanded() const { return m_expanded; }     // is summary task expanded to show subtasks
   bool              isSummary() const { return m_summary; }       // is the task a summary
   void              setSummary( bool s ) { m_summary = s; }       // set task summary status

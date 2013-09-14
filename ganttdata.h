@@ -39,14 +39,18 @@ public:
   void        setTask( QDateTime, QDateTime );           // set task data to simple gantt bar
   void        setSummary( QDateTime, QDateTime );        // set task data to summary gantt bar
 
-  int         startX( QDateTime, double );               // return task gantt row start x
-  int         endX( QDateTime, double );                 // return task gantt row end x
+  QDateTime   start() const;                             // return task gantt start date-time
+  QDateTime   end() const;                               // return task gantt start date-time
+  int         startX( QDateTime, double ) const;         // return task gantt start x coordinate
+  int         endX( QDateTime, double ) const;           // return task gantt end x coordinate
 
   int         height( QPainter* );                                  // max height of task on gantt
   void        drawTask( QPainter*, int, QDateTime, double );        // draw task data on gantt
   void        drawTaskBar( QPainter*, int, QDateTime, double );     // draw task bar on gantt
   void        drawMilestone( QPainter*, int, QDateTime, double );   // draw milestone on gantt
   void        drawSummary( QPainter*, int, QDateTime, double );     // draw milestone on gantt
+  void        verticalArrow( QPainter*, int, int, int );            // draw vertical arrow for dependency links
+  void        horizontalArrow( QPainter*, int, int, int );          // draw horizontal arrow for dependency links
 
   void        drawDependencyFS( QPainter*, int, int, int,
                                 QDateTime, double );     // draw dependency FINISH_START line on gantt
