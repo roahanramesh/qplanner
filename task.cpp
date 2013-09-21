@@ -40,7 +40,7 @@ Task::Task()
 {
   // set task variables to default/null values
   m_indent   = 0;
-  m_summary  = false;
+  m_summary  = -1;
   m_expanded = true;
   m_type     = TYPE_DEFAULT;
   m_cost     = 0.0;
@@ -57,7 +57,7 @@ Task::Task( bool planSummary )
 
   // set task variables for plan summary task 0 (hidden by default)
   m_indent   = -1;
-  m_summary  = true;
+  m_summary  = 0;
   m_expanded = true;
   m_type     = TYPE_DEFAULT;
   m_cost     = 0.0;
@@ -76,7 +76,7 @@ Task::Task( QXmlStreamReader* stream ) : Task()
       m_indent = attribute.value().toString().toShort();
 
     if ( attribute.name() == "summary" )
-      m_summary = ( attribute.value() == "1" );
+      m_summary = attribute.value().toString().toInt();
 
     if ( attribute.name() == "expanded" )
       m_expanded = ( attribute.value() == "1" );
@@ -242,14 +242,12 @@ QVariant  Task::dataEditRole( int col ) const
   if ( col == SECTION_WORK )
   {
     // return m_work as float for QDoubleSpinBox value
-    //if ( m_work < 0 ) return 1;
     return m_work.toString();
   }
 
   if ( col == SECTION_DURATION )
   {
     // return m_duration as float for QDoubleSpinBox value
-    //if ( m_duration < 0 ) return 1;
     return m_duration.toString();
   }
 
@@ -317,12 +315,6 @@ QVariant  Task::dataDisplayRole( int col ) const
   // if task is null don't display anything
   if ( isNull() ) return QVariant();
 
-  // if summary return appropriate display text for summary calculated cells
-  if ( isSummary() )
-  {
-    // TODO return QVariant();
-  }
-
   // return appropriate display text from plan data
   if ( col == SECTION_TITLE ) return m_title;
 
@@ -383,11 +375,13 @@ bool  Task::setData( int row, int col, const QVariant& value )
 void  Task::setDataDirect( int col, const QVariant& value )
 {
   // if the task was null determine a suitable default indent
+  bool wasNull = false;
   if ( isNull() )
   {
     Task* above = plan->tasks()->nonNullTaskAbove( this );
     if ( above && above->isSummary() ) m_indent = above->indent() + 1;
     if ( above && !above->isSummary() ) m_indent = above->indent();
+    wasNull = true;
   }
 
   // update task (should only be called by undostack)
@@ -403,6 +397,9 @@ void  Task::setDataDirect( int col, const QVariant& value )
   if ( col == SECTION_COST )     m_cost         = value.toReal();
   if ( col == SECTION_PRIORITY ) m_priority     = value.toInt() * 1000000;
   if ( col == SECTION_COMMENT )  m_comment      = value.toString();
+
+  // call set summaries if was null
+  if ( wasNull ) plan->tasks()->setSummaries();
 }
 
 /******************************************* duration ********************************************/
@@ -410,7 +407,7 @@ void  Task::setDataDirect( int col, const QVariant& value )
 TimeSpan Task::duration() const
 {
   // return task or summary duration
-  if ( m_summary ) return plan->calendar()->workBetween( m_gantt.start(), m_gantt.end() );
+  if ( isSummary() ) return plan->calendar()->workBetween( m_gantt.start(), m_gantt.end() );
 
   return m_duration;
 }
@@ -420,24 +417,17 @@ TimeSpan Task::duration() const
 QDateTime Task::start() const
 {
   // return task or summary start date-time
-  if ( m_summary )
+  if ( isSummary() )
   {
     int        here = plan->index( (Task*)this );
-    int        last = plan->tasks()->rowCount() - 1;
     QDateTime  s    = plan->MAX_DATETIME;
 
     // loop through each subtask
-    for( int t = here+1 ; t <= last ; t++ )
+    for( int t = here+1 ; t <= m_summary ; t++ )
     {
-      // skip null tasks
+      // if task isn't summary & isn't null, check if its start is before current earliest
       Task*  task = plan->task( t );
-      if ( task->isNull() ) continue;
-
-      // if indent is same or lower, we have got to last subtask
-      if ( task->indent() <= m_indent ) return s;
-
-      // if task isn't summary check if its start is before current earliest
-      if ( !task->isSummary() && task->start() < s ) s = task->start();
+      if ( !task->isSummary() && !task->isNull() && task->m_start < s ) s = task->m_start;
     }
 
     return s;
@@ -451,24 +441,17 @@ QDateTime Task::start() const
 QDateTime Task::end() const
 {
   // return task or summary end date-time
-  if ( m_summary )
+  if ( isSummary() )
   {
     int        here = plan->index( (Task*)this );
-    int        last = plan->tasks()->rowCount() - 1;
     QDateTime  e    = plan->MIN_DATETIME;
 
     // loop through each subtask
-    for( int t = here+1 ; t <= last ; t++ )
+    for( int t = here+1 ; t <= m_summary ; t++ )
     {
-      // skip null tasks
+      // if task isn't summary & isn't null, check if its end is after current latest
       Task*  task = plan->task( t );
-      if ( task->isNull() ) continue;
-
-      // if indent is same or lower, we have got to last subtask
-      if ( task->indent() <= m_indent ) return e;
-
-      // if task isn't summary check if its end is after current latest
-      if ( !task->isSummary() && task->end() > e ) e = task->end();
+      if ( !task->isSummary() && !task->isNull() && task->m_end > e ) e = task->m_end;
     }
 
     return e;

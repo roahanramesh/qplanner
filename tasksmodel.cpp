@@ -27,6 +27,7 @@
 #include <QTableView>
 #include <QHeaderView>
 #include <QXmlStreamWriter>
+#include <QMessageBox>
 
 /*************************************************************************************************/
 /**************************** Table model containing all plan tasks ******************************/
@@ -135,9 +136,12 @@ void  TasksModel::loadFromStream( QXmlStreamReader* stream )
       plan->task( task )->setPredecessors( preds );
     }
 
-    // when reached end of tasks data return
-    if ( stream->isEndElement() && stream->name() == "tasks-data" ) return;
+    // when reached end of tasks data break out of loop
+    if ( stream->isEndElement() && stream->name() == "tasks-data" ) break;
   }
+
+  // ensure summaries are set correctly
+  setSummaries();
 }
 
 /*************************************** nonNullTaskAbove ****************************************/
@@ -183,32 +187,63 @@ bool  TasksModel::canOutdent( int row )
 
 void  TasksModel::setSummaries()
 {
-  // set summaries for all tasks, starting at top
-  int above = 0;
-
-  // find non-null task
-  while ( above < m_tasks.size() && m_tasks.at(above)->isNull() ) above++;
-
-  // if null exit
-  if ( above >= m_tasks.size() ) return;
-
-  do
+  // set summaries for all tasks, start by assembling list of non-null tasks
+  QList<Task*>  nonNull;
+  for( int t = 0 ; t < m_tasks.size() ; t++ )
   {
-    // find non-null below
-    m_tasks.at(above)->setSummary( false );
-    int below = above + 1;
-    while ( below < m_tasks.size() && m_tasks.at(below)->isNull() ) below++;
-
-    // if null exit
-    if ( below >= m_tasks.size() ) return;
-
-    // check if task above should be summary or not
-    if ( m_tasks.at(above)->indent() < m_tasks.at(below)->indent() )
-      m_tasks.at(above)->setSummary( true );
-
-    above = below;
+    Task*  task = m_tasks.at( t );
+    if ( !task->isNull() ) nonNull.append( task );
   }
-  while ( true );
+
+  // last non-null task cannot be summary
+  if ( nonNull.isEmpty() ) return;
+  nonNull.last()->setNotSummary();
+
+  // set summaries for all other non-null tasks
+  for( int t = 0 ; t < nonNull.size()-1 ; t++ )
+  {
+    // assume not summary until discovered otherwise
+    nonNull.at(t)->setNotSummary();
+
+    // check if summary
+    int  indent = nonNull.at(t)->indent();
+    if ( indent < nonNull.at(t+1)->indent() )
+    {
+      int last = t + 1;
+      while ( last+1 < nonNull.size() && indent < nonNull.at(last+1)->indent() ) last++;
+      nonNull.at(t)->setSummary( plan->index( nonNull.at(last) ) );
+    }
+  }
+}
+
+/************************************** predecessorsIndentOk *************************************/
+
+bool  TasksModel::predecessorsIndentOk( QSet<int> rows )
+{
+  // indent tasks, to enable checking if any forbidden dependencies created
+  foreach( int row, rows )
+    m_tasks.at(row)->setIndent( m_tasks.at(row)->indent() + 1 );
+  setSummaries();
+
+  // check for predecessors that are forbidden
+  // TODO
+
+  // revert by outdenting tasks
+  foreach( int row, rows )
+    m_tasks.at(row)->setIndent( m_tasks.at(row)->indent() - 1 );
+  setSummaries();
+
+
+  // ask if user ok with forbidden dependencies to be removed automatically
+  QString  msg = "Predecessors for tasks TBD will be modified to remove forbidden dependencies.";
+  int ret = QMessageBox::warning( 0, "QPlanner", msg,
+                                  QMessageBox::Ok | QMessageBox::Cancel );
+
+  if ( ret == QMessageBox::Cancel ) return false;
+
+  qDebug("TasksModel::predecessorsIndentOk  %i", ret);
+
+  return true;
 }
 
 /******************************************* indentRows ******************************************/
@@ -223,14 +258,12 @@ bool  TasksModel::indentRows( QSet<int> rows )
   foreach( int row, rows )
     if ( task(row)->isSummary() )
     {
-      int level = task(row)->indent();
-      for( int r=row+1 ; r < m_tasks.size() ; r++ )
-      {
-        if ( task(r)->isNull() ) continue;
-        if ( task(r)->indent() <= level ) break;
-        rows.insert(r);
-      }
+      for( int r=row+1 ; r <= task(row)->summary() ; r++ )
+        if ( !task(r)->isNull() ) rows.insert(r);
     }
+
+  // check for predecessors that would become forbidden
+  if ( predecessorsIndentOk( rows ) == false ) return false;
 
   // do indenting via undo/redo command
   plan->undostack()->push( new CommandTaskIndent( rows ) );
@@ -251,13 +284,8 @@ bool  TasksModel::outdentRows( QSet<int> rows )
   foreach( int row, rows )
     if ( task(row)->isSummary() )
     {
-      int level = task(row)->indent();
-      for( int r=row+1 ; r < m_tasks.size() ; r++ )
-      {
-        if ( task(r)->isNull() ) continue;
-        if ( task(r)->indent() <= level ) break;
-        rows.insert(r);
-      }
+      for( int r=row+1 ; r <= task(row)->summary() ; r++ )
+        if ( !task(r)->isNull() ) rows.insert(r);
     }
 
   // do outdenting via undo/redo command

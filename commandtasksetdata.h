@@ -61,6 +61,7 @@ public:
     // revert task back to old values
     Task* task = plan->task( m_row );
     *task = m_old_task;
+    if ( plan->task( m_row )->isNull() ) plan->tasks()->setSummaries();
     plan->schedule();
   }
 

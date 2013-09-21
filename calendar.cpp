@@ -384,6 +384,7 @@ QDateTime  Calendar::addYears( QDateTime start, float years )
 TimeSpan Calendar::workBetween( QDateTime start, QDateTime end ) const
 {
   // return work between two dates
+  if ( !start.isValid() || !end.isValid() ) return TimeSpan( 0, TimeSpan::UNIT_DAYS );
   if ( start == end ) return TimeSpan( 0, TimeSpan::UNIT_DAYS );
   if ( start >  end ) qSwap( start, end );
   QDate sd   = start.date();

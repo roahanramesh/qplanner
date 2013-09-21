@@ -59,8 +59,10 @@ public:
   QDateTime         end() const;                                  // return task or summary end date-time
   TimeSpan          duration() const;                             // return task or summary duration
   bool              isExpanded() const { return m_expanded; }     // is summary task expanded to show subtasks
-  bool              isSummary() const { return m_summary; }       // is the task a summary
-  void              setSummary( bool s ) { m_summary = s; }       // set task summary status
+  bool              isSummary() const { return m_summary >= 0; }  // is the task a summary
+  int               summary() const { return m_summary; }         // return summary last sub-task id
+  void              setNotSummary() { m_summary = -1; }           // set task to non-summary
+  void              setSummary( int s ) { m_summary = s; }        // set summary last sub-task id
   int               indent() const { return m_indent; }           // return current indent level
   void              setIndent( short i ) { m_indent = i; }        // set task indent level
   bool              hasPredecessor( Task* ) const;                // return true if task is predecessor
@@ -104,7 +106,7 @@ public:
 
 private:
   short         m_indent;          // task indent level, zero for no indent
-  bool          m_summary;         // is a summary task
+  int           m_summary;         // last sub-task id, or -1 for non-summaries
   bool          m_expanded;        // if summary, is task expanded
   GanttData     m_gantt;           // data for drawing task gantt
 

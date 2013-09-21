@@ -74,11 +74,12 @@ void  Task::schedule_ASAP_FDUR()
   if ( end < m_start ) m_end = m_start;
   else                 m_end = end;
 
-  if ( m_summary ) m_gantt.setSummary( this->start(), this->end() );
-  else             m_gantt.setTask( m_start, m_end );
+  if ( isSummary() ) m_gantt.setSummary( this->start(), this->end() );
+  else               m_gantt.setTask( m_start, m_end );
 
 
-  qDebug("Task::schedule_ASAP_FDUR() UNFINISHED !!! %i %p",plan->index(this),this);
+  qDebug("Task::schedule_ASAP_FDUR() UNFINISHED !!! %i (%s) (%s)",plan->index(this),
+         qPrintable(m_start.toString()), qPrintable(m_end.toString()) );
 }
 
 #endif // TASK_SCHEDULE_H
