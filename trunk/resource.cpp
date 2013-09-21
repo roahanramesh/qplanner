@@ -38,7 +38,7 @@ Resource::Resource()
   // set resource variables to default/null values
   m_availability = 1.0;
   m_cost         = 0.0;
-  m_calendar     = plan->calendar();
+  m_calendar     = nullptr;
   m_ability      = 1.0;
 }
 
@@ -240,6 +240,8 @@ void  Resource::setDataDirect( int col, const QVariant& value )
   if ( col == SECTION_COST )     m_cost         = value.toFloat();
   if ( col == SECTION_COMMENT )  m_comment      = value.toString();
 
+  if ( m_calendar == nullptr ) m_calendar = plan->calendar();
+  if ( isNull() ) m_calendar = nullptr;
   plan->resources()->updateAssignable();
 }
 
