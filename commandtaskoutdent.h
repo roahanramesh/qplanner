@@ -50,7 +50,17 @@ public:
     foreach( int row, m_rows )
       plan->task(row)->setIndent( plan->task(row)->indent() - 1 );
 
+    // remove any forbidden predecessors
     plan->tasks()->setSummaries();
+    m_old_preds.clear();
+    for( int t = 1 ; t < plan->tasks()->rowCount() ; t++ )
+    {
+      Task*  task = plan->task(t);
+      QString  old_preds = task->predecessors();
+      QString  new_preds = task->predecessorsClean();
+      if ( old_preds != new_preds ) m_old_preds.insert( t, old_preds );
+    }
+
     plan->schedule();
   }
 
@@ -60,12 +70,21 @@ public:
     foreach( int row, m_rows )
       plan->task(row)->setIndent( plan->task(row)->indent() + 1 );
 
+    // revert any predecessor changes
+    QHashIterator<int, QString> i(m_old_preds);
+    while( i.hasNext() )
+    {
+        i.next();
+        plan->task( i.key() )->setPredecessors( i.value() );
+    }
+
     plan->tasks()->setSummaries();
     plan->schedule();
   }
 
 private:
-  QSet<int>     m_rows;
+  QSet<int>            m_rows;
+  QHash<int, QString>  m_old_preds;
 };
 
 #endif // COMMANDTASKOUTDENT_H

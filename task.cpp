@@ -160,6 +160,22 @@ bool  Task::hasPredecessor( Task* task ) const
   return m_predecessors.hasPredecessor( task );
 }
 
+/************************************** predecessorsClean ****************************************/
+
+QString Task::predecessorsClean()
+{
+  // remove forbidden and then return string
+  return m_predecessors.clean( plan->index((Task*)this) );
+}
+
+/**************************************** predecessorsOK *****************************************/
+
+bool Task::predecessorsOK() const
+{
+  // returns string with forbidden predecessors removed
+  return m_predecessors.predecessorsOK( plan->index((Task*)this) );
+}
+
 /**************************************** scheduleOrder ******************************************/
 
 bool  Task::scheduleOrder( Task* t1, Task* t2 )
@@ -358,7 +374,7 @@ QString  Task::typeToString( int type )
 
 /******************************************** setData ********************************************/
 
-bool  Task::setData( int row, int col, const QVariant& value )
+bool  Task::setData( int col, const QVariant& value )
 {
   // TODO some checks that set data will be allowed, return false if not allowed
 
@@ -366,7 +382,7 @@ bool  Task::setData( int row, int col, const QVariant& value )
   if ( value == dataEditRole(col) ) return false;
 
   // set data via undo/redo command
-  plan->undostack()->push( new CommandTaskSetData( this, row, col, value ) );
+  plan->undostack()->push( new CommandTaskSetData( this, col, value ) );
   return true;
 }
 

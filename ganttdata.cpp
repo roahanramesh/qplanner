@@ -239,7 +239,9 @@ void GanttData::drawDependencySS( QPainter* p, int thisY, int otherY, int num,
 {
   // draw dependency START_START line on gantt
   qDebug("GanttData::drawDependencySS  thisY=%i  otherY=%i  num=%i",thisY,otherY,num);
-
+  Q_UNUSED(p)
+  Q_UNUSED(start)
+  Q_UNUSED(secsPP)
 }
 
 /**************************************** drawDependencyFS ***************************************/
@@ -249,7 +251,9 @@ void GanttData::drawDependencyFF( QPainter* p, int thisY, int otherY, int num,
 {
   // draw dependency FINISH_FINISH line on gantt
   qDebug("GanttData::drawDependencyFF  thisY=%i  otherY=%i  num=%i",thisY,otherY,num);
-
+  Q_UNUSED(p)
+  Q_UNUSED(start)
+  Q_UNUSED(secsPP)
 }
 
 /******************************************** drawTask *******************************************/
@@ -294,23 +298,23 @@ void GanttData::drawSummary( QPainter* p, int y, QDateTime start, double secsPP 
   int xs = int( start.secsTo( plan->stretch(m_start) ) / secsPP );
   int xe = int( start.secsTo( plan->stretch(m_end[0]) ) / secsPP );
   int h  = 1 + height( p ) / 3;
+  int w  = h;
+  if ( w > xe - xs ) w = xe - xs;
 
   // populate points array to draw the summary
-  QPoint points[8];
-  points[0] = QPoint( xe+h+1, y-h );
-  points[1] = QPoint( xe+h+1, y   );
-  points[2] = QPoint( xe    , y+h );
-  points[3] = QPoint( xe-h  , y   );
-  points[4] = QPoint( xs+h  , y   );
-  points[5] = QPoint( xs    , y+h );
-  points[6] = QPoint( xs-h  , y   );
-  points[7] = QPoint( xs-h  , y-h );
+  QPoint points[6];
+  points[0] = QPoint( xs+w, y   );
+  points[1] = QPoint( xs  , y+h );
+  points[2] = QPoint( xs  , y-h );
+  points[3] = QPoint( xe+1, y-h );
+  points[4] = QPoint( xe+1, y+h );
+  points[5] = QPoint( xe-w, y   );
 
   // draw the milestone
   p->setPen( Qt::NoPen );
   p->setBrush( Qt::black );
-  p->drawPolygon( points, 8 );
-  p->drawPolygon( points, 4 );
+  p->drawPolygon( points, 6 );
+  p->drawPolygon( points, 3 );
 }
 
 /******************************************* drawTaskBar *****************************************/

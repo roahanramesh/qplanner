@@ -220,28 +220,62 @@ void  TasksModel::setSummaries()
 
 bool  TasksModel::predecessorsIndentOk( QSet<int> rows )
 {
-  // indent tasks, to enable checking if any forbidden dependencies created
+  // indent tasks, to enable checking if any forbidden predecessors created
   foreach( int row, rows )
     m_tasks.at(row)->setIndent( m_tasks.at(row)->indent() + 1 );
   setSummaries();
 
-  // check for predecessors that are forbidden
-  // TODO
+  // make list of tasks with bad predecessors
+  QString  list;
+  for( int t = 1 ; t < m_tasks.size() ; t++ )
+    if ( !m_tasks.at(t)->predecessorsOK() ) list += QString("%1, ").arg(t);
+  list.chop(2);
 
   // revert by outdenting tasks
   foreach( int row, rows )
     m_tasks.at(row)->setIndent( m_tasks.at(row)->indent() - 1 );
   setSummaries();
 
+  // if list is not empty, ask if ok to remove forbidden predecessors automatically
+  if ( !list.isEmpty() )
+  {
+    QString  msg = "Predecessors for tasks %2\nwill be modified to remove forbidden dependencies.";
+    int ret = QMessageBox::warning( 0, "QPlanner - Indent", msg.arg(list),
+                                    QMessageBox::Ok | QMessageBox::Cancel );
+    if ( ret == QMessageBox::Cancel ) return false;
+  }
 
-  // ask if user ok with forbidden dependencies to be removed automatically
-  QString  msg = "Predecessors for tasks TBD will be modified to remove forbidden dependencies.";
-  int ret = QMessageBox::warning( 0, "QPlanner", msg,
-                                  QMessageBox::Ok | QMessageBox::Cancel );
+  return true;
+}
 
-  if ( ret == QMessageBox::Cancel ) return false;
+/************************************* predecessorsOutdentOk *************************************/
 
-  qDebug("TasksModel::predecessorsIndentOk  %i", ret);
+bool  TasksModel::predecessorsOutdentOk( QSet<int> rows )
+{
+  // outdent tasks, to enable checking if any forbidden predecessors created
+  foreach( int row, rows )
+    m_tasks.at(row)->setIndent( m_tasks.at(row)->indent() - 1 );
+  setSummaries();
+
+  // make list of tasks with bad predecessors
+  QString  list;
+  for( int t = 1 ; t < m_tasks.size() ; t++ )
+    if ( !m_tasks.at(t)->predecessorsOK() ) list += QString("%1, ").arg(t);
+  list.chop(2);
+
+  // revert by indenting tasks
+  foreach( int row, rows )
+    m_tasks.at(row)->setIndent( m_tasks.at(row)->indent() + 1 );
+  setSummaries();
+
+  // if list is not empty, ask if ok to remove forbidden predecessors automatically
+  if ( !list.isEmpty() )
+  {
+    QString  msg = "Predecessors for tasks %2\nwill be modified to remove forbidden dependencies.";
+    int ret = QMessageBox::warning( 0, "QPlanner - Outdent", msg.arg(list),
+                                    QMessageBox::Ok | QMessageBox::Cancel );
+    if ( ret == QMessageBox::Cancel ) return false;
+  }
 
   return true;
 }
@@ -287,6 +321,9 @@ bool  TasksModel::outdentRows( QSet<int> rows )
       for( int r=row+1 ; r <= task(row)->summary() ; r++ )
         if ( !task(r)->isNull() ) rows.insert(r);
     }
+
+  // check for predecessors that would become forbidden
+  if ( predecessorsOutdentOk( rows ) == false ) return false;
 
   // do outdenting via undo/redo command
   plan->undostack()->push( new CommandTaskOutdent( rows ) );
@@ -436,7 +473,7 @@ bool TasksModel::setData( const QModelIndex& index, const QVariant& value, int r
   // try to set data
   int row = index.row();
   int col = index.column();
-  return m_tasks.at( row )->setData( row, col, value );
+  return m_tasks.at( row )->setData( col, value );
 }
 
 /****************************************** headerData *******************************************/

@@ -108,6 +108,23 @@ QString Predecessors::toString() const
   return str;
 }
 
+/********************************************* clean *********************************************/
+
+QString Predecessors::clean( int thisTaskNum )
+{
+  // remove forbidden (currently just sub-tasks linked to summary) and then return string
+  QMutableListIterator<Predecessor> i(m_preds);
+  while ( i.hasNext() )
+  {
+    Predecessor pred = i.next();
+    if ( pred.task->isSummary()                &&
+         plan->index(pred.task) <  thisTaskNum &&
+         pred.task->summary()   >= thisTaskNum ) i.remove();
+  }
+
+  return toString();
+}
+
 /**************************************** hasPredecessor *****************************************/
 
 bool  Predecessors::hasPredecessor( Task* task ) const
@@ -120,6 +137,21 @@ bool  Predecessors::hasPredecessor( Task* task ) const
   }
 
   return false;
+}
+
+/**************************************** predecessorsOK *****************************************/
+
+bool Predecessors::predecessorsOK( int thisTaskNum ) const
+{
+  // return true if no forbidden predecessors (currently just sub-tasks linked to summary)
+  foreach( Predecessor pred, m_preds )
+  {
+    if ( pred.task->isSummary()                &&
+         plan->index(pred.task) <  thisTaskNum &&
+         pred.task->summary()   >= thisTaskNum ) return false;
+  }
+
+  return true;
 }
 
 /******************************************** validate *******************************************/
@@ -151,6 +183,15 @@ QString Predecessors::validate( const QString& text, int thisTaskNum )
       continue;
     }
 
+    // check number is not summary containing this task
+    if ( plan->task( taskNum )->isSummary() &&
+         thisTaskNum > taskNum &&
+         thisTaskNum <= plan->task( taskNum )->summary() )
+    {
+      error += QString( "'%1' is a summary containing this sub-task.\n" ).arg( taskNum );
+      continue;
+    }
+
     // check number is not this task
     if ( taskNum == thisTaskNum )
     {
@@ -165,7 +206,7 @@ QString Predecessors::validate( const QString& text, int thisTaskNum )
       continue;
     }
 
-    // check nothing is remains or is a valid type
+    // check nothing remains or is a valid type
     part.remove( 0, digit );
     part = part.trimmed();
     if ( part.isEmpty() ) continue;
