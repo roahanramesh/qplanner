@@ -54,6 +54,7 @@ public:
   bool           indentRows( QSet<int> );                         // indent selected rows
   bool           outdentRows( QSet<int> );                        // outdent selected rows
   bool           predecessorsIndentOk( QSet<int> );               // return whether ok to indent
+  bool           predecessorsOutdentOk( QSet<int> );              // return whether ok to outdent
   Task*          nonNullTaskAbove( Task* );                       // returns task ptr or nullptr if none
   void           setSummaries();                                  // set summaries for all tasks
   void           setOverride( QModelIndex i, QString v )

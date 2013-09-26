@@ -44,7 +44,7 @@ public:
 
     // construct command description
     setText( QString("Resource %1 %2 = %3")
-             .arg( row + 1 )
+             .arg( row )
              .arg( Resource::headerData( col ).toString() )
              .arg( new_value.toString() ) );
   }

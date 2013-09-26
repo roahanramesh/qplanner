@@ -34,17 +34,17 @@
 class CommandTaskSetData : public QUndoCommand
 {
 public:
-  CommandTaskSetData( Task* old_task, int row, int col, const QVariant& new_value )
+  CommandTaskSetData( Task* old_task, int col, const QVariant& new_value )
   {
     // set private variables for new and old values
     m_old_task  = *old_task;
-    m_row       = row;
+    m_row       = plan->index( old_task );
     m_column    = col;
     m_new_value = new_value;
 
     // construct command description
     setText( QString("Task %1 %2 = %3")
-             .arg( plan->index( old_task ) + 1 )
+             .arg( m_row )
              .arg( Task::headerData( col ).toString() )
              .arg( new_value.toString() ) );
   }
@@ -61,7 +61,7 @@ public:
     // revert task back to old values
     Task* task = plan->task( m_row );
     *task = m_old_task;
-    if ( plan->task( m_row )->isNull() ) plan->tasks()->setSummaries();
+    if ( task->isNull() ) plan->tasks()->setSummaries();
     plan->schedule();
   }
 
