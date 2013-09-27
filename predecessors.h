@@ -55,12 +55,12 @@ public:
     TYPE_DEFAULT       = 0
   };
 
-  typedef struct Predecessor
+  struct Predecessor
   {
     Task*     task;
     char      type;
     TimeSpan  lag;
-  } Predecessor;
+  };
 
   static const char*  LABEL_FINISH_START;
   static const char*  LABEL_START_START;

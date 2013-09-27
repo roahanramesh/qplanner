@@ -183,7 +183,7 @@ void  TasksDelegate::setModelData( QWidget* editor,
       QLineEdit*  line  = dynamic_cast<QLineEdit*>( editor );
       QString     value = line->text().simplified();
 
-      QString     error = TaskRes::validate( value );
+      QString     error = TaskResources::validate( value );
       if ( error.isEmpty() )
         model->setData( index, value );
       else

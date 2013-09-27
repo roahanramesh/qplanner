@@ -108,23 +108,6 @@ QString Predecessors::toString() const
   return str;
 }
 
-/********************************************* clean *********************************************/
-
-QString Predecessors::clean( int thisTaskNum )
-{
-  // remove forbidden (currently just sub-tasks linked to summary) and then return string
-  QMutableListIterator<Predecessor> i(m_preds);
-  while ( i.hasNext() )
-  {
-    Predecessor pred = i.next();
-    if ( pred.task->isSummary()                &&
-         plan->index(pred.task) <  thisTaskNum &&
-         pred.task->summary()   >= thisTaskNum ) i.remove();
-  }
-
-  return toString();
-}
-
 /**************************************** hasPredecessor *****************************************/
 
 bool  Predecessors::hasPredecessor( Task* task ) const
@@ -139,16 +122,50 @@ bool  Predecessors::hasPredecessor( Task* task ) const
   return false;
 }
 
+/********************************************* clean *********************************************/
+
+QString Predecessors::clean( int thisTaskNum )
+{
+  // remove forbidden and then return string
+  QMutableListIterator<Predecessor> i(m_preds);
+  while ( i.hasNext() )
+  {
+    Predecessor pred = i.next();
+
+    // sub-tasks not allowed to depend on their summaries
+    int  predTaskNum = plan->index(pred.task);
+    if ( pred.task->isSummary()              &&
+         predTaskNum          <  thisTaskNum &&
+         pred.task->summary() >= thisTaskNum ) i.remove();
+
+    // summaries not allowed to depend on a sub-task
+    Task*  thisTask = plan->task(thisTaskNum);
+    if ( thisTask->isSummary()              &&
+         thisTaskNum         <  predTaskNum &&
+         thisTask->summary() >= predTaskNum ) i.remove();
+  }
+
+  return toString();
+}
+
 /**************************************** predecessorsOK *****************************************/
 
 bool Predecessors::predecessorsOK( int thisTaskNum ) const
 {
-  // return true if no forbidden predecessors (currently just sub-tasks linked to summary)
+  // return true if no forbidden predecessors
   foreach( Predecessor pred, m_preds )
   {
-    if ( pred.task->isSummary()                &&
-         plan->index(pred.task) <  thisTaskNum &&
-         pred.task->summary()   >= thisTaskNum ) return false;
+    // sub-tasks not allowed to depend on their summaries
+    int  predTaskNum = plan->index(pred.task);
+    if ( pred.task->isSummary()              &&
+         predTaskNum          <  thisTaskNum &&
+         pred.task->summary() >= thisTaskNum ) return false;
+
+    // summaries not allowed to depend on a sub-task
+    Task*  thisTask = plan->task(thisTaskNum);
+    if ( thisTask->isSummary()              &&
+         thisTaskNum         <  predTaskNum &&
+         thisTask->summary() >= predTaskNum ) return false;
   }
 
   return true;
@@ -180,6 +197,15 @@ QString Predecessors::validate( const QString& text, int thisTaskNum )
          plan->task( taskNum )->isNull() )
     {
       error += QString( "'%1' is a null task.\n" ).arg( taskNum );
+      continue;
+    }
+
+    // check number is not sub-task if this task is a summary
+    if ( plan->task( thisTaskNum )->isSummary() &&
+         taskNum >  thisTaskNum &&
+         taskNum <= plan->task( thisTaskNum )->summary() )
+    {
+      error += QString( "'%1' is a sub-task of this summary.\n" ).arg( taskNum );
       continue;
     }
 
