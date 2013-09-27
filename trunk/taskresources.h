@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef TASKRES_H
-#define TASKRES_H
+#ifndef TASKRESOURCES_H
+#define TASKRESOURCES_H
 
 #include <QString>
 #include <QList>
@@ -28,24 +28,24 @@
 /***************************** Resources assigned to task with plan ******************************/
 /*************************************************************************************************/
 
-class TaskRes
+class TaskResources
 {
 public:
-  TaskRes();                                         // constructor
-  TaskRes( QString );                                // constructor
+  TaskResources();                                   // constructor
+  TaskResources( QString );                          // constructor
 
   QString         toString() const;                  // return string for display in tasks view
 
   static QString  validate( const QString& );        // return any validation failures
 
-  typedef struct
+  struct Assignment
   {
     QString   tag;
     float     max;        // 0 (zero) means unlimited
-  } Assignment;
+  };
 
 private:
   QList<Assignment>    m_res;           // list of resource assignments
 };
 
-#endif // TASKRES_H
+#endif // TASKRESOURCES_H

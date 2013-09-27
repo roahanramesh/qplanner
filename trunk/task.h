@@ -25,7 +25,7 @@
 #include <QDateTime>
 
 #include "predecessors.h"
-#include "taskres.h"
+#include "TaskResources.h"
 #include "ganttdata.h"
 
 class QXmlStreamWriter;
@@ -107,23 +107,23 @@ public:
   };
 
 private:
-  short         m_indent;          // task indent level, zero for no indent
-  int           m_summary;         // last sub-task id, or -1 for non-summaries
-  bool          m_expanded;        // if summary, is task expanded
-  GanttData     m_gantt;           // data for drawing task gantt
+  short           m_indent;          // task indent level, zero for no indent
+  int             m_summary;         // last sub-task id, or -1 for non-summaries
+  bool            m_expanded;        // if summary, is task expanded
+  GanttData       m_gantt;           // data for drawing task gantt
 
-  QString       m_title;           // free text title
-  TimeSpan      m_duration;        // duration of task
-  QDateTime     m_start;           // start date-time of task
-  QDateTime     m_end;             // end date-time of task
-  TimeSpan      m_work;            // work effort for task
-  Predecessors  m_predecessors;    // task predecessors
-  TaskRes       m_resources;       // resources allocated to task
-  char          m_type;            // see enumerator task_type
-  int           m_priority;        // overall task priority (0 to 999 times 1 million)
-  QDateTime     m_deadline;        // task warning deadline
-  float         m_cost;            // calculated cost based on resource use
-  QString       m_comment;         // free text comment
+  QString         m_title;           // free text title
+  TimeSpan        m_duration;        // duration of task
+  QDateTime       m_start;           // start date-time of task
+  QDateTime       m_end;             // end date-time of task
+  TimeSpan        m_work;            // work effort for task
+  Predecessors    m_predecessors;    // task predecessors
+  TaskResources   m_resources;       // resources allocated to task
+  char            m_type;            // see enumerator task_type
+  int             m_priority;        // overall task priority (0 to 999 times one million)
+  QDateTime       m_deadline;        // task warning deadline
+  float           m_cost;            // calculated cost based on resource use
+  QString         m_comment;         // free text comment
 };
 
 #endif // TASK_H

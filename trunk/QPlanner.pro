@@ -31,7 +31,7 @@ SOURCES += main.cpp\
     ganttchart.cpp \
     xdatetime.cpp \
     ganttdata.cpp \
-    taskres.cpp \
+    taskresources.cpp \
     resourcesdelegate.cpp \
     xtableview.cpp
 
@@ -60,7 +60,7 @@ HEADERS  += mainwindow.h \
     commandresourcesetdata.h \
     commandtaskindent.h \
     commandtaskoutdent.h \
-    taskres.h \
+    taskresources.h \
     resourcesdelegate.h \
     task_schedule.h \
     xtableview.h

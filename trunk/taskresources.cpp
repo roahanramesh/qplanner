@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "taskres.h"
+#include "taskresources.h"
 #include "plan.h"
 #include "resourcesmodel.h"
 
@@ -28,13 +28,13 @@
 
 /****************************************** constructor ******************************************/
 
-TaskRes::TaskRes()
+TaskResources::TaskResources()
 {
 }
 
 /****************************************** constructor ******************************************/
 
-TaskRes::TaskRes( QString text )
+TaskResources::TaskResources( QString text )
 {
   // split text into individual assignments
   m_res.clear();
@@ -62,7 +62,7 @@ TaskRes::TaskRes( QString text )
 
 /******************************************** toString *******************************************/
 
-QString TaskRes::toString() const
+QString TaskResources::toString() const
 {
   QString str;
 
@@ -81,7 +81,7 @@ QString TaskRes::toString() const
 
 /******************************************** validate *******************************************/
 
-QString TaskRes::validate( const QString& text )
+QString TaskResources::validate( const QString& text )
 {
   // split text into individual assignments
   QString error, tag, max;

@@ -205,6 +205,10 @@ QVariant  Task::dataBackgroundColorRole( int col ) const
   // return appropriate background colour for summary calculated cells
   if ( isSummary() &&
        col != SECTION_TITLE &&
+       col != Task::SECTION_PREDS &&
+       col != Task::SECTION_DEADLINE &&
+       col != Task::SECTION_RES &&
+       col != Task::SECTION_PRIORITY &&
        col != SECTION_COMMENT ) return plan->nullCellColour();
 
   // return appropriate background colour from plan cell
@@ -279,13 +283,13 @@ QVariant  Task::dataTextAlignmentRole( int col ) const
   if ( col == SECTION_DURATION ||
        col == SECTION_WORK ||
        col == SECTION_COST ||
-       col == SECTION_PRIORITY ) return Qt::AlignRight;
+       col == SECTION_PRIORITY ) return Qt::AlignRight + Qt::AlignVCenter;
 
   // return centre aligned if date or m_type field
   if ( col == SECTION_START ||
        col == SECTION_END ||
        col == SECTION_DEADLINE ||
-       col == SECTION_TYPE ) return Qt::AlignHCenter;
+       col == SECTION_TYPE ) return Qt::AlignHCenter + Qt::AlignVCenter;
 
   return QVariant();
 }
@@ -338,7 +342,11 @@ QVariant  Task::dataDisplayRole( int col ) const
 
   if ( col == SECTION_WORK ) return m_work.toString();
 
-  if ( col == SECTION_TYPE ) return typeToString( m_type );
+  if ( col == SECTION_TYPE )
+  {
+    if ( isSummary() ) return "Summary";
+    return typeToString( m_type );
+  }
 
   if ( col == SECTION_START ) return start().toString( plan->datetimeFormat() );
 
@@ -364,10 +372,10 @@ QVariant  Task::dataDisplayRole( int col ) const
 QString  Task::typeToString( int type )
 {
   // return type string description equivalent
-  if ( type == TYPE_ASAP_FWORK )   return "ASAP - work fixed";
-  if ( type == TYPE_ASAP_FDUR )    return "ASAP - duration fixed";
-  if ( type == TYPE_SON_FWORK )    return "Start on - work fixed";
-  if ( type == TYPE_SON_FDUR )     return "Start on - duration fixed";
+  if ( type == TYPE_ASAP_FWORK )   return "ASAP - work bound";
+  if ( type == TYPE_ASAP_FDUR )    return "ASAP - duration bound";
+  if ( type == TYPE_SON_FWORK )    return "Start on - work bound";
+  if ( type == TYPE_SON_FDUR )     return "Start on - duration bound";
   if ( type == TYPE_FIXED_PERIOD ) return "Fixed period";
   return "";
 }

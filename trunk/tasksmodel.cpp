@@ -501,6 +501,10 @@ Qt::ItemFlags TasksModel::flags( const QModelIndex& index ) const
   // if task is summary, then some cells not editable
   if ( m_tasks.at(row)->isSummary() &&
        col != Task::SECTION_TITLE &&
+       col != Task::SECTION_PREDS &&
+       col != Task::SECTION_DEADLINE &&
+       col != Task::SECTION_RES &&
+       col != Task::SECTION_PRIORITY &&
        col != Task::SECTION_COMMENT )
     return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 
