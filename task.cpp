@@ -39,14 +39,14 @@
 Task::Task()
 {
   // set task variables to default/null values
-  m_indent   = 0;
-  m_summary  = -1;
-  m_expanded = true;
-  m_type     = TYPE_DEFAULT;
-  m_cost     = 0.0;
-  m_priority = 100 * 1000000;
-  m_duration = TimeSpan("1d");
-  m_work     = TimeSpan("1d");
+  m_indent      = 0;
+  m_summaryEnd  = -1;
+  m_expanded    = true;
+  m_type        = TYPE_DEFAULT;
+  m_cost        = 0.0;
+  m_priority    = 100 * 1000000;
+  m_duration    = TimeSpan("1d");
+  m_work        = TimeSpan("1d");
 }
 
 /****************************************** constructor ******************************************/
@@ -56,13 +56,13 @@ Task::Task( bool planSummary )
   Q_UNUSED( planSummary )
 
   // set task variables for plan summary task 0 (hidden by default)
-  m_indent   = -1;
-  m_summary  = 0;
-  m_expanded = true;
-  m_type     = TYPE_DEFAULT;
-  m_cost     = 0.0;
-  m_priority = 100 * 1000000;
-  m_comment  = "Plan summary";
+  m_indent      = -1;
+  m_summaryEnd  = 0;
+  m_expanded    = true;
+  m_type        = TYPE_DEFAULT;
+  m_cost        = 0.0;
+  m_priority    = 100 * 1000000;
+  m_comment     = "Plan summary";
 }
 
 /****************************************** constructor ******************************************/
@@ -76,7 +76,7 @@ Task::Task( QXmlStreamReader* stream ) : Task()
       m_indent = attribute.value().toString().toShort();
 
     if ( attribute.name() == "summary" )
-      m_summary = attribute.value().toString().toInt();
+      m_summaryEnd = attribute.value().toString().toInt();
 
     if ( attribute.name() == "expanded" )
       m_expanded = ( attribute.value() == "1" );
@@ -118,7 +118,7 @@ void  Task::saveToStream( QXmlStreamWriter* stream )
 {
   // write task data to xml stream
   stream->writeAttribute( "indent", QString("%1").arg(m_indent) );
-  stream->writeAttribute( "summary", QString("%1").arg(m_summary) );
+  stream->writeAttribute( "summary", QString("%1").arg(m_summaryEnd) );
   stream->writeAttribute( "expanded", QString("%1").arg(m_expanded) );
   stream->writeAttribute( "title", m_title );
   stream->writeAttribute( "duration", m_duration.toString() );
@@ -154,10 +154,20 @@ QVariant  Task::headerData( int column )
 
 /**************************************** hasPredecessor *****************************************/
 
-bool  Task::hasPredecessor( Task* task ) const
+bool  Task::hasPredecessor( Task* other ) const
 {
   // return true if task is predecessor
-  return m_predecessors.hasPredecessor( task );
+  if ( m_predecessors.hasPredecessor( other ) ) return true;
+
+  // if task is summary, then sub-tasks are implict predecessors
+  if ( m_summaryEnd > 0 )
+  {
+    int thisNum  = plan->index( (Task*)this );
+    int otherNum = plan->index( other );
+    if ( otherNum > thisNum && otherNum <= m_summaryEnd ) return true;
+  }
+
+  return false;
 }
 
 /************************************** predecessorsClean ****************************************/
@@ -173,26 +183,15 @@ QString Task::predecessorsClean()
 bool Task::predecessorsOK() const
 {
   // returns string with forbidden predecessors removed
-  return m_predecessors.predecessorsOK( plan->index((Task*)this) );
+  return m_predecessors.areOK( plan->index((Task*)this) );
 }
 
-/**************************************** scheduleOrder ******************************************/
+/************************************* predecessorsString ****************************************/
 
-bool  Task::scheduleOrder( Task* t1, Task* t2 )
+QString Task::predecessorsString() const
 {
-  // less than function for qSort - firstly if predecessor
-  bool pred12 = t1->hasPredecessor( t2 );
-  bool pred21 = t2->hasPredecessor( t1 );
-  if ( pred12 || pred21 ) return pred21;
-
-  // then if summary
-  bool sum1 = t1->isSummary();
-  bool sum2 = t2->isSummary();
-  if ( sum1 && sum2 ) return plan->index(t1) > plan->index(t2);
-  if ( sum1 || sum2 ) return sum2;
-
-  // otherwise, by priority and index
-  return ( t1->m_priority - plan->index(t1) ) > ( t2->m_priority - plan->index(t2) );
+  // return task predecessors as string
+  return m_predecessors.toString();
 }
 
 /************************************* dataBackgroundColorRole ***********************************/
@@ -447,7 +446,7 @@ QDateTime Task::start() const
     QDateTime  s    = plan->MAX_DATETIME;
 
     // loop through each subtask
-    for( int t = here+1 ; t <= m_summary ; t++ )
+    for( int t = here+1 ; t <= m_summaryEnd ; t++ )
     {
       // if task isn't summary & isn't null, check if its start is before current earliest
       Task*  task = plan->task( t );
@@ -471,7 +470,7 @@ QDateTime Task::end() const
     QDateTime  e    = plan->MIN_DATETIME;
 
     // loop through each subtask
-    for( int t = here+1 ; t <= m_summary ; t++ )
+    for( int t = here+1 ; t <= m_summaryEnd ; t++ )
     {
       // if task isn't summary & isn't null, check if its end is after current latest
       Task*  task = plan->task( t );

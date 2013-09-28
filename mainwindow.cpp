@@ -193,7 +193,7 @@ void MainWindow::slotEditTaskCell( const QModelIndex& index, const QString& warn
   // slot to enable task cell edit to be automatically re-started after validation failure
   ui->mainTabWidget->setCurrentWidget( ui->tasksGanttTab );
   ui->tasksView->setCurrentIndex( index );
-  QMessageBox::warning( ui->tasksView, "QPlanner", warning );
+  QMessageBox::warning( ui->tasksView, "QPlanner", warning, QMessageBox::Retry );
   ui->tasksView->edit( index );
 
   // clear override

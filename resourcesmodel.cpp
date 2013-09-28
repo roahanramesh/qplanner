@@ -104,8 +104,10 @@ void  ResourcesModel::loadFromStream( QXmlStreamReader* stream )
       m_resources.append( new Resource(stream) );
 
     // when reached end of resources data return
-    if ( stream->isEndElement() && stream->name() == "resources-data" ) return;
+    if ( stream->isEndElement() && stream->name() == "resources-data" ) break;
   }
+
+  updateAssignable();
 }
 
 /******************************************** number *********************************************/

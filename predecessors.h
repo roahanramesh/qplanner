@@ -41,7 +41,7 @@ public:
   QString         toString() const;                  // return string for display in tasks view
   QString         clean( int );                      // remove forbidden and then return string
   bool            hasPredecessor( Task* ) const;     // return true if task is a predecessor
-  bool            predecessorsOK( int ) const;       // return true if no forbidden predecessors
+  bool            areOK( int ) const;                // return true if no forbidden predecessors
   QDateTime       start() const;                     // return task start based on predecessors
 
   static QString  validate( const QString&, int );   // return any validation failures

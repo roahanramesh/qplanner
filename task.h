@@ -53,30 +53,32 @@ public:
   bool              setData( int, const QVariant& );              // attempt to set value via undostack
   void              setDataDirect( int, const QVariant& );        // set value directly
 
-  bool              isNull() const { return m_title.isNull(); }   // is the task null (blank)
+  bool              isNull() const { return m_title.isNull(); }   // is this task null (blank)
   QString           name() const { return m_title; }              // return name of task (i.e. title)
-  QDateTime         start() const;                                // return task or summary start date-time
-  QDateTime         end() const;                                  // return task or summary end date-time
-  TimeSpan          duration() const;                             // return task or summary duration
-  bool              isExpanded() const { return m_expanded; }     // is summary task expanded to show subtasks
-  bool              isSummary() const { return m_summary >= 0; }  // is the task a summary
-  int               summary() const { return m_summary; }         // return summary last sub-task id
-  void              setNotSummary() { m_summary = -1; }           // set task to non-summary
-  void              setSummary( int s ) { m_summary = s; }        // set summary last sub-task id
-  int               indent() const { return m_indent; }           // return current indent level
+  QDateTime         start() const;                                // return task (or summary) start date-time
+  QDateTime         end() const;                                  // return task (or summary) end date-time
+  TimeSpan          duration() const;                             // return task (or summary) duration
+  bool              isExpanded() const { return m_expanded; }     // if summary is it expanded to show subtasks
+  bool              isSummary() const { return m_summaryEnd >= 0; }    // is this task a summary
+  int               summaryEnd() const { return m_summaryEnd; }   // return summary last sub-task id, or -1 if not summary
+  void              setNotSummary() { m_summaryEnd = -1; }        // set task to non-summary
+  void              setSummaryEnd( int s ) { m_summaryEnd = s; }  // set summary last sub-task id
+  int               indent() const { return m_indent; }           // return task (or summary) indent level
   void              setIndent( short i ) { m_indent = i; }        // set task indent level
-  bool              hasPredecessor( Task* ) const;                // return true if task is predecessor
+  bool              hasPredecessor( Task* ) const;                // return true if other task is predecessor of this task
   QString           predecessorsClean();                          // clean & return task predecessors
-  QString           predecessors() const { return m_predecessors.toString(); }  // return task predecessors
-  void              setPredecessors( QString p ) { m_predecessors = p; }        // set task predecessors
-  bool              predecessorsOK() const;                       // return if no forbidden predecessors
+  QString           predecessorsString() const;                   // return task predecessors as string
+  Predecessors&     predecessors() { return m_predecessors; }     // return task predecessors by reference
+  void              setPredecessors( QString p ) { m_predecessors = p; }    // set task predecessors
+  bool              predecessorsOK() const;                       // return true if no forbidden predecessors
 
   GanttData*        ganttData() { return &m_gantt; }              // return pointer to gantt data
   static QString    typeToString( int );                          // return type string equivalent
-  static bool       scheduleOrder( Task*, Task* );                // less than function for qSort
 
+  static bool       scheduleOrder( Task*, Task* );                // less than function for qSort
   void              schedule();                                   // schedule task
   void              schedule_ASAP_FDUR();                         // schedule ASAP fixed duration
+  QDateTime         scheduleStart() const;                        // determine start based on predecessors
 
   enum sections                 // sections to be displayed by view
   {
@@ -108,7 +110,7 @@ public:
 
 private:
   short           m_indent;          // task indent level, zero for no indent
-  int             m_summary;         // last sub-task id, or -1 for non-summaries
+  int             m_summaryEnd;      // last sub-task id, or -1 for non-summaries
   bool            m_expanded;        // if summary, is task expanded
   GanttData       m_gantt;           // data for drawing task gantt
 

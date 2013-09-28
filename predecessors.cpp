@@ -134,38 +134,38 @@ QString Predecessors::clean( int thisTaskNum )
 
     // sub-tasks not allowed to depend on their summaries
     int  predTaskNum = plan->index(pred.task);
-    if ( pred.task->isSummary()              &&
-         predTaskNum          <  thisTaskNum &&
-         pred.task->summary() >= thisTaskNum ) i.remove();
+    if ( pred.task->isSummary()                 &&
+         predTaskNum             <  thisTaskNum &&
+         pred.task->summaryEnd() >= thisTaskNum ) i.remove();
 
     // summaries not allowed to depend on a sub-task
     Task*  thisTask = plan->task(thisTaskNum);
-    if ( thisTask->isSummary()              &&
-         thisTaskNum         <  predTaskNum &&
-         thisTask->summary() >= predTaskNum ) i.remove();
+    if ( thisTask->isSummary()                 &&
+         thisTaskNum            <  predTaskNum &&
+         thisTask->summaryEnd() >= predTaskNum ) i.remove();
   }
 
   return toString();
 }
 
-/**************************************** predecessorsOK *****************************************/
+/********************************************* areOK *********************************************/
 
-bool Predecessors::predecessorsOK( int thisTaskNum ) const
+bool Predecessors::areOK( int thisTaskNum ) const
 {
   // return true if no forbidden predecessors
   foreach( Predecessor pred, m_preds )
   {
     // sub-tasks not allowed to depend on their summaries
     int  predTaskNum = plan->index(pred.task);
-    if ( pred.task->isSummary()              &&
-         predTaskNum          <  thisTaskNum &&
-         pred.task->summary() >= thisTaskNum ) return false;
+    if ( pred.task->isSummary()                 &&
+         predTaskNum             <  thisTaskNum &&
+         pred.task->summaryEnd() >= thisTaskNum ) return false;
 
     // summaries not allowed to depend on a sub-task
     Task*  thisTask = plan->task(thisTaskNum);
-    if ( thisTask->isSummary()              &&
-         thisTaskNum         <  predTaskNum &&
-         thisTask->summary() >= predTaskNum ) return false;
+    if ( thisTask->isSummary()                 &&
+         thisTaskNum            <  predTaskNum &&
+         thisTask->summaryEnd() >= predTaskNum ) return false;
   }
 
   return true;
@@ -203,7 +203,7 @@ QString Predecessors::validate( const QString& text, int thisTaskNum )
     // check number is not sub-task if this task is a summary
     if ( plan->task( thisTaskNum )->isSummary() &&
          taskNum >  thisTaskNum &&
-         taskNum <= plan->task( thisTaskNum )->summary() )
+         taskNum <= plan->task( thisTaskNum )->summaryEnd() )
     {
       error += QString( "'%1' is a sub-task of this summary.\n" ).arg( taskNum );
       continue;
@@ -212,7 +212,7 @@ QString Predecessors::validate( const QString& text, int thisTaskNum )
     // check number is not summary containing this task
     if ( plan->task( taskNum )->isSummary() &&
          thisTaskNum > taskNum &&
-         thisTaskNum <= plan->task( taskNum )->summary() )
+         thisTaskNum <= plan->task( taskNum )->summaryEnd() )
     {
       error += QString( "'%1' is a summary containing this sub-task.\n" ).arg( taskNum );
       continue;

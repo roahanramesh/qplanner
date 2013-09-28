@@ -97,11 +97,11 @@ void  TasksModel::saveToStream( QXmlStreamWriter* stream )
 
   foreach( Task* t, m_tasks )
   {
-    if ( !t->predecessors().isEmpty() )
+    if ( !t->predecessorsString().isEmpty() )
     {
       stream->writeStartElement( "predecessors" );
       stream->writeAttribute( "task", QString("%1").arg(plan->index(t)) );
-      stream->writeAttribute( "preds", t->predecessors() );
+      stream->writeAttribute( "preds", t->predecessorsString() );
       stream->writeEndElement();
     }
   }
@@ -211,7 +211,7 @@ void  TasksModel::setSummaries()
     {
       int last = t + 1;
       while ( last+1 < nonNull.size() && indent < nonNull.at(last+1)->indent() ) last++;
-      nonNull.at(t)->setSummary( plan->index( nonNull.at(last) ) );
+      nonNull.at(t)->setSummaryEnd( plan->index( nonNull.at(last) ) );
     }
   }
 }
@@ -292,7 +292,7 @@ bool  TasksModel::indentRows( QSet<int> rows )
   foreach( int row, rows )
     if ( task(row)->isSummary() )
     {
-      for( int r=row+1 ; r <= task(row)->summary() ; r++ )
+      for( int r=row+1 ; r <= task(row)->summaryEnd() ; r++ )
         if ( !task(r)->isNull() ) rows.insert(r);
     }
 
@@ -318,7 +318,7 @@ bool  TasksModel::outdentRows( QSet<int> rows )
   foreach( int row, rows )
     if ( task(row)->isSummary() )
     {
-      for( int r=row+1 ; r <= task(row)->summary() ; r++ )
+      for( int r=row+1 ; r <= task(row)->summaryEnd() ; r++ )
         if ( !task(r)->isNull() ) rows.insert(r);
     }
 
@@ -408,8 +408,9 @@ void TasksModel::setColumnWidths( QTableView* table )
   table->horizontalHeader()->setDefaultSectionSize( 140 );
   table->setColumnWidth( Task::SECTION_TITLE,    150 );
   table->setColumnWidth( Task::SECTION_DURATION,  60 );
-  table->setColumnWidth( Task::SECTION_WORK,      60 );
+  table->setColumnWidth( Task::SECTION_WORK,      50 );
   table->setColumnWidth( Task::SECTION_PREDS,     80 );
+  table->setColumnWidth( Task::SECTION_RES,       80 );
   table->setColumnWidth( Task::SECTION_TYPE,     150 );
   table->setColumnWidth( Task::SECTION_PRIORITY,  50 );
   table->setColumnWidth( Task::SECTION_COST,      50 );

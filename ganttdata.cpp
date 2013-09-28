@@ -258,7 +258,7 @@ void GanttData::drawDependencyFF( QPainter* p, int thisY, int otherY, int num,
 
 /******************************************** drawTask *******************************************/
 
-void GanttData::drawTask( QPainter* p, int y, QDateTime start, double secsPP )
+void GanttData::drawTask( QPainter* p, int y, QDateTime start, double secsPP, QString label )
 {
   // if gantt data start date-time is not valid do not draw anything
   if ( !m_start.isValid() ) return;
@@ -267,6 +267,15 @@ void GanttData::drawTask( QPainter* p, int y, QDateTime start, double secsPP )
   if ( m_value.isEmpty() )     drawMilestone( p, y, start, secsPP );
   else if ( m_value[0] < 0.0 ) drawSummary( p, y, start, secsPP );
   else                         drawTaskBar( p, y, start, secsPP );
+
+  // add label to end
+  if ( !label.isEmpty() )
+  {
+    int x     = endX( start, secsPP );
+    int flags = Qt::AlignLeft + Qt::AlignVCenter + Qt::TextSingleLine + Qt::TextDontClip;
+    p->setPen( Qt::black );
+    p->drawText( x, y-1, 0, 0, flags, "   "+label );
+  }
 }
 
 /***************************************** drawMilestone *****************************************/
