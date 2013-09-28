@@ -56,7 +56,7 @@ public:
     for( int t = 1 ; t < plan->tasks()->rowCount() ; t++ )
     {
       Task*  task = plan->task(t);
-      QString  old_preds = task->predecessors();
+      QString  old_preds = task->predecessorsString();
       QString  new_preds = task->predecessorsClean();
       if ( old_preds != new_preds ) m_old_preds.insert( t, old_preds );
     }

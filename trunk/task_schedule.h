@@ -29,6 +29,18 @@
 /**************************** Scheduling methods for single plan task ****************************/
 /*************************************************************************************************/
 
+/**************************************** scheduleOrder ******************************************/
+
+bool  Task::scheduleOrder( Task* t1, Task* t2 )
+{
+  // less than function for qSort - firstly if predecessor
+  if ( t1->hasPredecessor( t2 ) ) return false;
+  if ( t2->hasPredecessor( t1 ) ) return true;
+
+  // otherwise, by priority and index
+  return ( t1->m_priority - plan->index(t1) ) > ( t2->m_priority - plan->index(t2) );
+}
+
 /******************************************* schedule ********************************************/
 
 void  Task::schedule()
@@ -66,7 +78,7 @@ void  Task::schedule_ASAP_FDUR()
   // schedule ASAP fixed duration
 
   // get start from predecessors
-  m_start = plan->calendar()->workUp( m_predecessors.start() );
+  m_start = scheduleStart();
 
   // TRY TO DETERMINE END ???
   QDateTime end = plan->calendar()->addTimeSpan( m_start, m_duration );
@@ -78,8 +90,31 @@ void  Task::schedule_ASAP_FDUR()
   else               m_gantt.setTask( m_start, m_end );
 
 
-  qDebug("Task::schedule_ASAP_FDUR() UNFINISHED !!! %i (%s) (%s)",plan->index(this),
-         qPrintable(m_start.toString()), qPrintable(m_end.toString()) );
+  qDebug("Task::schedule_ASAP_FDUR() UNFINISHED !!! %i %s (%s) (%s)",plan->index(this),
+         qPrintable(m_title), qPrintable(m_start.toString()), qPrintable(m_end.toString()) );
+}
+
+/***************************************** scheduleStart *****************************************/
+
+QDateTime  Task::scheduleStart() const
+{
+  // get start based on this task's predecessors
+  QDateTime  start = plan->calendar()->workUp( m_predecessors.start() );
+
+  // if indented also check start against summary predecessors
+  int summary = plan->index( (Task*)this );
+  for( int indent = m_indent ; indent > 0 ; indent-- )
+  {
+    // find task summary
+    while ( plan->task(summary)->isNull() ||
+            plan->task(summary)->indent() >= indent ) summary--;
+
+    // check if start from summary predecessors is later, use it instead
+    QDateTime s = plan->calendar()->workUp( plan->task(summary)->predecessors().start() );
+    if ( s > start ) start = s;
+  }
+
+  return start;
 }
 
 #endif // TASK_SCHEDULE_H

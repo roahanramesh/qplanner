@@ -202,7 +202,7 @@ void GanttChart::drawDependencies( QPainter* p, int y, int h )
   {
     Task*        task  = plan->task(t);
     int          thisY = m_table->rowViewportPosition(t) + ( m_table->rowHeight(t) / 2 );
-    QStringList  preds = task->predecessors().split(",", QString::SkipEmptyParts);
+    QStringList  preds = task->predecessorsString().split(",", QString::SkipEmptyParts);
 
     // and each task predecessor
     foreach( QString pred, preds )
@@ -255,7 +255,8 @@ void GanttChart::drawTasks( QPainter* p, int y, int h )
 
   // for each row draw the gantt task
   for( int row=first ; row<=last ; row++ )
-    plan->task(row)->ganttData()->drawTask( p, m_table->rowViewportPosition(row) + ( m_table->rowHeight(row) / 2 ), m_start, m_secsPP );
+    plan->task(row)->ganttData()->drawTask( p, m_table->rowViewportPosition(row) + ( m_table->rowHeight(row) / 2 ),
+                                            m_start, m_secsPP, plan->task(row)->dataDisplayRole( Task::SECTION_RES ).toString() );
 }
 
 /*************************************** shadeNonWorkingDays **************************************/
