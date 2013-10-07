@@ -75,16 +75,20 @@ void  Task::schedule()
 
 void  Task::schedule_ASAP_FDUR()
 {
-  // schedule ASAP fixed duration
-
-  // get start from predecessors
+  // schedule ASAP fixed duration - first get start from predecessors
   m_start = scheduleStart();
 
-  // TRY TO DETERMINE END ???
+  // determine end
   QDateTime end = plan->calendar()->addTimeSpan( m_start, m_duration );
   end = plan->calendar()->workDown( end );
   if ( end < m_start ) m_end = m_start;
   else                 m_end = end;
+
+  // check if resources assigned
+  if ( !m_resources.isEmpty() )
+  {
+    qDebug("Task::schedule_ASAP_FDUR() resourced '%s'",qPrintable(m_resources.toString()));
+  }
 
   if ( isSummary() ) m_gantt.setSummary( this->start(), this->end() );
   else               m_gantt.setTask( m_start, m_end );

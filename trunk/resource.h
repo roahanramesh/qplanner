@@ -47,6 +47,7 @@ public:
   bool              isNull() const { return m_initials.isNull(); }   // is the task null (blank)
   QString           initials() const { return m_initials; }          // return initials
   QList<QString>    assignable() const;                              // return assignable names
+  bool              hasTag( QString ) const;                         // return true if tag matches
 
   enum sections                            // sections to be displayed by view
   {

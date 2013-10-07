@@ -135,6 +135,18 @@ void ResourcesModel::updateAssignable()
       m_assignable.insert( str );
 }
 
+/**************************************** resourceSet ***************************************/
+
+QSet<Resource*> ResourcesModel::resourceSet( QString tag )
+{
+  // return set of resources that have tag
+  QSet<Resource*>  set;
+  foreach( Resource* res, m_resources )
+    if ( res->hasTag( tag ) ) set.insert( res );
+
+  return set;
+}
+
 /**************************************** setColumnWidths ****************************************/
 
 void ResourcesModel::setColumnWidths( QTableView* table )
