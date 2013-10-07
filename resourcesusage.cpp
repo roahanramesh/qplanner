@@ -18,40 +18,58 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef TASKRESOURCES_H
-#define TASKRESOURCES_H
-
-#include <QString>
-#include <QList>
-#include <QHash>
-
-class Resource;
+#include "resourcesusage.h"
 
 /*************************************************************************************************/
-/***************************** Resources assigned to task with plan ******************************/
+/******************************* Contains resource usage on Tasks ********************************/
 /*************************************************************************************************/
 
-class TaskResources
+/****************************************** constructor ******************************************/
+
+ResourcesUsage::ResourcesUsage()
 {
-public:
-  TaskResources();                                   // constructor
-  TaskResources( QString );                          // constructor
+  qDebug("ResourcesUsage::ResourcesUsage() - constructor");
+}
 
-  QString         toString() const;                  // return string for display in tasks view
-  bool            isEmpty() const;                   // return true if no resources allocated
-  static QString  validate( const QString& );        // return any validation failures
-  void            process();                         // process internal string format into alloc
+/********************************************* clear *********************************************/
 
-  QHash<Resource*,float>    alloc;                   // processed assignments in easy efficient access format
+void ResourcesUsage::clear()
+{
+  // clears all contents
+  m_usage.clear();
+}
 
-  struct Assignment
-  {
-    QString   tag;        // initials or name or org or group or alias or role etc
-    float     max;        // 0 (zero) means unlimited
-  };
+/********************************************* clear *********************************************/
 
-private:
-  QList<Assignment>    m_res;       // list of resource assignments in original string format
-};
+void ResourcesUsage::clear( Task* task )
+{
+  // clears contents related to specified task
+  Q_UNUSED( task )
+  qDebug("ResourcesUsage::clear(Task %p)",task);
+}
 
-#endif // TASKRESOURCES_H
+/******************************************** insert *********************************************/
+
+void ResourcesUsage::insert( Resource* res, Task* task, QDateTime start, QDateTime end, float quantity )
+{
+  // insert usage record
+  Q_UNUSED( res )
+  Q_UNUSED( task )
+  Q_UNUSED( start )
+  Q_UNUSED( end )
+  Q_UNUSED( quantity )
+  qDebug("ResourcesUsage::insert()");
+}
+
+/******************************************* available *******************************************/
+
+float ResourcesUsage::available( Resource* res, QDateTime dt, QDateTime& change )
+{
+  // returns quantity and date-time quantity changes
+  Q_UNUSED( res )
+  Q_UNUSED( dt )
+  Q_UNUSED( change )
+  qDebug("ResourcesUsage::insert()");
+
+  return 0.0;
+}

@@ -37,25 +37,27 @@ class ResourcesModel : public QAbstractTableModel
 {
   Q_OBJECT
 public:
-  ResourcesModel();                                                       // constructor
-  ~ResourcesModel();                                                      // destructor
+  ResourcesModel();                                                   // constructor
+  ~ResourcesModel();                                                  // destructor
 
-  void           initialise();                                            // create initial default contents
-  void           saveToStream( QXmlStreamWriter* );                       // write resources data to xml stream
-  void           loadFromStream( QXmlStreamReader* );                     // load resources data from xml stream
-  int            number();                                                // return number of resources in plan
-  void           setColumnWidths( QTableView* );                          // set initial column widths
+  void              initialise();                                     // create initial default contents
+  void              saveToStream( QXmlStreamWriter* );                // write resources data to xml stream
+  void              loadFromStream( QXmlStreamReader* );              // load resources data from xml stream
+  int               number();                                         // return number of resources in plan
+  void              setColumnWidths( QTableView* );                   // set initial column widths
 
-  void           updateAssignable();                                      // determine assignable list
-  bool           isAssignable( const QString& tag ) const
-                   { return m_assignable.contains( tag ); }               // is tag assignable?
+  void              updateAssignable();                               // determine assignable list
+  QSet<Resource*>   resourceSet( QString );                           // return set of resources that have tag
+  bool              isAssignable( const QString& tag ) const
+                      { return m_assignable.contains( tag ); }        // is tag assignable?
 
-  Resource*      resource( int n );                                       // return pointer to n'th resource
-  int            index( Resource* r ) { return m_resources.indexOf(r); }  // return index of resource, or -1
+  Resource*         resource( int n );                                // return pointer to n'th resource
+  int               index( Resource* r )
+                      { return m_resources.indexOf(r); }              // return index of resource, or -1
 
-  void           emitDataChangedRow( int row )                            // emit data changed signal for row
-                   { emit dataChanged( QAbstractTableModel::index( row, 0 ),
-                                       QAbstractTableModel::index( row, columnCount() ) ); }
+  void              emitDataChangedRow( int row )                     // emit data changed signal for row
+                      { emit dataChanged( QAbstractTableModel::index( row, 0 ),
+                                          QAbstractTableModel::index( row, columnCount() ) ); }
 
   /********************* methods to support QAbstractTableModel ************************/
 
@@ -68,7 +70,7 @@ public:
 
 private:
   QList<Resource*>  m_resources;       // list of resources available to plan
-  QSet<QString>     m_assignable;      // set of assignable resource(s)
+  QSet<QString>     m_assignable;      // set of assignable resource tag(s)
 };
 
 #endif // RESOURCESMODEL_H

@@ -18,40 +18,46 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef TASKRESOURCES_H
-#define TASKRESOURCES_H
+#ifndef RESOURCESUSAGE_H
+#define RESOURCESUSAGE_H
 
-#include <QString>
-#include <QList>
-#include <QHash>
+#include <QMultiHash>
+#include <QDateTime>
 
+class Task;
 class Resource;
 
 /*************************************************************************************************/
-/***************************** Resources assigned to task with plan ******************************/
+/******************************* Contains resource usage on Tasks ********************************/
 /*************************************************************************************************/
 
-class TaskResources
+class ResourcesUsage
 {
 public:
-  TaskResources();                                   // constructor
-  TaskResources( QString );                          // constructor
+  ResourcesUsage();                                       // constructor
 
-  QString         toString() const;                  // return string for display in tasks view
-  bool            isEmpty() const;                   // return true if no resources allocated
-  static QString  validate( const QString& );        // return any validation failures
-  void            process();                         // process internal string format into alloc
+  void       clear();                                     // clears all contents
+  void       clear( Task* );                              // clears contents related to specified task
+  void       insert( Resource*, Task*, QDateTime,
+                     QDateTime, float );                  // insert usage record
+  float      available( Resource*, QDateTime,
+                        QDateTime& );                     // returns quantity and date-time quantity changes
 
-  QHash<Resource*,float>    alloc;                   // processed assignments in easy efficient access format
-
-  struct Assignment
+  struct Usage
   {
-    QString   tag;        // initials or name or org or group or alias or role etc
-    float     max;        // 0 (zero) means unlimited
+    QDateTime     start;          // null not allowed
+    QDateTime     end;            // null not allowed
+    float         quantity;       // must be greater than zero
+  };
+
+  struct TaskUsage
+  {
+    Task*         task;           // nullptr not allowed
+    QList<Usage>  list;
   };
 
 private:
-  QList<Assignment>    m_res;       // list of resource assignments in original string format
+  QMultiHash<Resource*,TaskUsage>  m_usage;      // container of all usage records
 };
 
-#endif // TASKRESOURCES_H
+#endif // RESOURCESUSAGE_H

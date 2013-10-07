@@ -30,6 +30,7 @@ class TasksModel;
 class ResourcesModel;
 class CalendarsModel;
 class DaysModel;
+class ResourcesUsage;
 
 class Task;
 class Resource;
@@ -122,6 +123,7 @@ private:
   DaysModel*       m_days;              // model of plan day types
 
   QUndoStack*      m_undostack;         // undo stack of plan editing
+  ResourcesUsage*  m_resUsage;          // contains resource usage from scheduling
 
   QString          m_title;             // plan title as set in properties
   QDateTime        m_start;             // plan start as set in properties

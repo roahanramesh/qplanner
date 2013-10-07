@@ -24,6 +24,7 @@
 #include "calendarsmodel.h"
 #include "daysmodel.h"
 #include "calendar.h"
+#include "resourcesusage.h"
 
 #include <QXmlStreamWriter>
 #include <QFileInfo>
@@ -67,6 +68,7 @@ Plan::Plan()
   m_resources = new ResourcesModel();
   m_tasks     = new TasksModel();
   m_undostack = new QUndoStack();
+  m_resUsage  = new ResourcesUsage();
 
   m_datetime_format = "ddd dd/MM/yyyy hh:mm:ss";
   m_calendar        = nullptr;

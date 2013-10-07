@@ -388,6 +388,10 @@ void TasksModel::schedule()
   //---------qDebug("Tasks to schedule = %i",scheduleList.size());
   qSort( scheduleList.begin(), scheduleList.end(), Task::scheduleOrder );
 
+  // ensure task resourcing quick access container is up-to-date
+  foreach( Task* t, scheduleList )
+    t->resourceProcess();
+
   // re-schedule each task
   foreach( Task* t, scheduleList )
   {

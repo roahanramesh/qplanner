@@ -268,3 +268,18 @@ QList<QString>  Resource::assignable() const
 
   return list;
 }
+
+/******************************************** hasTag *********************************************/
+
+bool Resource::hasTag( QString tag ) const
+{
+  // return true if tag matches on of the free text fields
+  if ( tag == m_initials ) return true;
+  if ( tag == m_name )     return true;
+  if ( tag == m_org )      return true;
+  if ( tag == m_group )    return true;
+  if ( tag == m_role )     return true;
+  if ( tag == m_alias )    return true;
+
+  return false;
+}

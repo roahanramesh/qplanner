@@ -43,6 +43,7 @@ public:
   Task( QXmlStreamReader* );                                      // constructor
 
   void              saveToStream( QXmlStreamWriter* );            // write task data to xml stream
+
   static QVariant   headerData( int );                            // return column header data
   QVariant          dataDisplayRole( int ) const;                 // return display text for cell
   QVariant          dataEditRole( int ) const;                    // return cell data ready for editor
@@ -74,6 +75,7 @@ public:
 
   GanttData*        ganttData() { return &m_gantt; }              // return pointer to gantt data
   static QString    typeToString( int );                          // return type string equivalent
+  void              resourceProcess() { m_resources.process(); }  // prepare resourcing quick access container
 
   static bool       scheduleOrder( Task*, Task* );                // less than function for qSort
   void              schedule();                                   // schedule task
