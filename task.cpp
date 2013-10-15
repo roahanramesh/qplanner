@@ -339,7 +339,7 @@ QVariant  Task::dataDisplayRole( int col ) const
 
   if ( col == SECTION_DURATION ) return duration().toString();
 
-  if ( col == SECTION_WORK ) return m_work.toString();
+  if ( col == SECTION_WORK ) return plan->work( this ).toString();
 
   if ( col == SECTION_TYPE )
   {

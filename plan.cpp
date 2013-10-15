@@ -24,7 +24,8 @@
 #include "calendarsmodel.h"
 #include "daysmodel.h"
 #include "calendar.h"
-#include "resourcesusage.h"
+#include "task.h"
+#include "employment.h"
 
 #include <QXmlStreamWriter>
 #include <QFileInfo>
@@ -63,12 +64,12 @@ const QDateTime  Plan::MAX_DATETIME = QDateTime( MAX_DATE );              // con
 Plan::Plan()
 {
   // create blank models and set private variables
-  m_days      = new DaysModel();
-  m_calendars = new CalendarsModel();
-  m_resources = new ResourcesModel();
-  m_tasks     = new TasksModel();
-  m_undostack = new QUndoStack();
-  m_resUsage  = new ResourcesUsage();
+  m_days       = new DaysModel();
+  m_calendars  = new CalendarsModel();
+  m_resources  = new ResourcesModel();
+  m_tasks      = new TasksModel();
+  m_undostack  = new QUndoStack();
+  m_employment = new Employment();
 
   m_datetime_format = "ddd dd/MM/yyyy hh:mm:ss";
   m_calendar        = nullptr;
@@ -85,6 +86,7 @@ Plan::~Plan()
   delete m_calendars;
   delete m_days;
   delete m_undostack;
+  delete m_employment;
 }
 
 /****************************************** initialise *******************************************/
@@ -206,4 +208,46 @@ QDateTime  Plan::stretch( QDateTime dt )
 
   // plan stretchTasks flag not true, so return original date-time
   return dt;
+}
+
+/********************************************** free *********************************************/
+
+float Plan::free( Resource* res, QDateTime when, QDateTime& change )
+{
+  // returns resource free to be allocated quantity and date-time quantity changes
+  return m_employment->free( res, when, change );
+}
+
+/********************************************** use **********************************************/
+
+void Plan::use( Resource* res, Task* task, float num, QDateTime start, QDateTime end )
+{
+  // register resource use on task for period start to end
+  m_employment->employ( res, task, num, start, end );
+}
+
+/********************************************** work *********************************************/
+
+TimeSpan Plan::work( const Task* taskp )
+{
+  // return work done on task, if summary work is sum of work on task and sub-tasks
+  if ( taskp->isSummary() )
+  {
+    float work = 0.0;
+    for( int t = index((Task*)taskp) ; t <= taskp->summaryEnd() ; t++ )
+      work += m_employment->work( task(t) ).number();
+
+    return TimeSpan( work, TimeSpan::UNIT_DAYS );
+  }
+
+  // return work done on non-summary task
+  return m_employment->work( taskp );
+}
+
+/********************************************* clearUse ******************************************/
+
+void Plan::clearUse( const Task* task )
+{
+  // clears resource usage contents related to specified task
+  m_employment->clear( task );
 }

@@ -75,21 +75,45 @@ void  Task::schedule()
 
 void  Task::schedule_ASAP_FDUR()
 {
+  qDebug("Task::schedule_ASAP_FDUR() STARTING !!! %i %s",plan->index(this),qPrintable(m_title));
+
   // schedule ASAP fixed duration - first get start from predecessors
   m_start = scheduleStart();
 
-  // determine end
+  // determine end of fixed duration task using plan calendar
   QDateTime end = plan->calendar()->addTimeSpan( m_start, m_duration );
   end = plan->calendar()->workDown( end );
   if ( end < m_start ) m_end = m_start;
   else                 m_end = end;
 
-  // check if resources assigned
-  if ( !m_resources.isEmpty() )
+  // iterate through any assigned resources via quick access container
+  plan->clearUse( this );
+  QHash<Resource*, float>::iterator i;
+  for( i = m_resources.alloc.begin() ; i != m_resources.alloc.end() ; ++i )
   {
-    qDebug("Task::schedule_ASAP_FDUR() resourced '%s'",qPrintable(m_resources.toString()));
+    Resource*  res   = i.key();
+    float      num   = i.value();
+    QDateTime  start = m_start;
+    QDateTime  end   = m_end;
+    QDateTime  change;
+
+    // repeat until reach end of fixed duration task
+    do
+    {
+      // get how much resource is free
+      float free = plan->free( res, start, change );
+      // if more free than number allocated, limit to number allocated
+      if ( free > num ) free = num;
+
+      // register resource use on this task for period start to end
+      if ( change < end ) end = change;
+      plan->use( res, this, free, start, end );
+      start = end;
+    }
+    while ( start != m_end );
   }
 
+  // set gantt task bar data
   if ( isSummary() ) m_gantt.setSummary( this->start(), this->end() );
   else               m_gantt.setTask( m_start, m_end );
 

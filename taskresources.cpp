@@ -131,10 +131,9 @@ void TaskResources::process()
   foreach( Assignment assign, m_res )
     foreach( Resource* res, plan->resources()->resourceSet( assign.tag ) )
     {
-      float num = 0.0;
-      if ( assign.max == 0.0 ) num = 1e9;
+      float num = assign.max;
+      if ( num == 0.0 ) num = 1e9;
       if ( alloc.contains(res) ) num += alloc.value(res);
       alloc.insert( res, num );
-      qDebug("process %p '%s' %f %f",res,qPrintable(assign.tag),assign.max, num);
     }
 }

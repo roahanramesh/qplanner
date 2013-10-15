@@ -26,11 +26,13 @@
 #include <QDateTime>
 #include <QColor>
 
+#include "timespan.h"
+
 class TasksModel;
 class ResourcesModel;
 class CalendarsModel;
 class DaysModel;
-class ResourcesUsage;
+class Employment;
 
 class Task;
 class Resource;
@@ -79,6 +81,11 @@ public:
   int              numCalendars();                                  // return number of calendars in plan
   int              numDays();                                       // return number of day types in plan
 
+  float            free( Resource*, QDateTime, QDateTime& );        // return resource free to be allocated
+  void             use( Resource*, Task*, float, QDateTime, QDateTime );  // register resource employment on task
+  TimeSpan         work( const Task* );                             // return work done on task
+  void             clearUse( const Task* );                         // clear resource use on task
+
   QString          title() { return m_title; }                      // return title of plan
   QDateTime        start() { return m_start; }                      // return nominal start of plan (T0)
   QDateTime        beginning();                                     // return start of earliest starting task
@@ -123,7 +130,7 @@ private:
   DaysModel*       m_days;              // model of plan day types
 
   QUndoStack*      m_undostack;         // undo stack of plan editing
-  ResourcesUsage*  m_resUsage;          // contains resource usage from scheduling
+  Employment*      m_employment;        // contains resource usage from scheduling
 
   QString          m_title;             // plan title as set in properties
   QDateTime        m_start;             // plan start as set in properties
