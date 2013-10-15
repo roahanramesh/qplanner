@@ -46,6 +46,7 @@ public:
   void              setDataDirect( int, const QVariant& );           // set value directly
   bool              isNull() const { return m_initials.isNull(); }   // is the task null (blank)
   QString           initials() const { return m_initials; }          // return initials
+  Calendar*         calendar() const { return m_calendar; }          // return resource calendar
   QList<QString>    assignable() const;                              // return assignable names
   bool              hasTag( QString ) const;                         // return true if tag matches
 
@@ -67,6 +68,8 @@ public:
     SECTION_COMMENT  = 12,
     SECTION_MAXIMUM  = 12
   };
+
+  friend class Employment;
 
 private:
   QString            m_initials;           // should be unique across all resources in model

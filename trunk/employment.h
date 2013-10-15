@@ -18,46 +18,50 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RESOURCESUSAGE_H
-#define RESOURCESUSAGE_H
+#ifndef EMPLOYMENT_H
+#define EMPLOYMENT_H
 
 #include <QMultiHash>
 #include <QDateTime>
+
+#include "timespan.h"
 
 class Task;
 class Resource;
 
 /*************************************************************************************************/
-/******************************* Contains resource usage on Tasks ********************************/
+/************************ Contains scheduled resource employment on tasks ************************/
 /*************************************************************************************************/
 
-class ResourcesUsage
+class Employment
 {
 public:
-  ResourcesUsage();                                       // constructor
+  Employment();                                           // constructor
 
   void       clear();                                     // clears all contents
-  void       clear( Task* );                              // clears contents related to specified task
-  void       insert( Resource*, Task*, QDateTime,
-                     QDateTime, float );                  // insert usage record
+  void       clear( const Task* );                        // clears contents related to specified task
+  TimeSpan   work( const Task* );                         // return work done on specified task
+  void       employ( Resource*, Task*, float,
+                     QDateTime, QDateTime );              // register resource employment
+  float      free( Resource*, QDateTime, QDateTime& );    // return resource free to be employed
   float      available( Resource*, QDateTime,
-                        QDateTime& );                     // returns quantity and date-time quantity changes
+                        QDateTime& );                     // return resource available to be employed
 
-  struct Usage
+  struct Employ
   {
     QDateTime     start;          // null not allowed
     QDateTime     end;            // null not allowed
-    float         quantity;       // must be greater than zero
+    float         num;            // must be greater than zero
   };
 
-  struct TaskUsage
+  struct TaskEmployment
   {
-    Task*         task;           // nullptr not allowed
-    QList<Usage>  list;
+    Task*          task;          // nullptr not allowed
+    QList<Employ>  list;
   };
 
 private:
-  QMultiHash<Resource*,TaskUsage>  m_usage;      // container of all usage records
+  QMultiHash<Resource*,TaskEmployment>  m_employment;      // container of all employment records
 };
 
-#endif // RESOURCESUSAGE_H
+#endif // EMPLOYMENT_H

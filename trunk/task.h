@@ -25,7 +25,7 @@
 #include <QDateTime>
 
 #include "predecessors.h"
-#include "TaskResources.h"
+#include "taskresources.h"
 #include "ganttdata.h"
 
 class QXmlStreamWriter;
