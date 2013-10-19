@@ -28,6 +28,7 @@
 #include "task.h"
 #include "tasksdelegate.h"
 #include "resourcesdelegate.h"
+#include "maintabwidget.h"
 
 #include "commandpropertieschange.h"
 
@@ -42,7 +43,7 @@
 
 /****************************************** constructor ******************************************/
 
-MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::MainWindow )
+MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::MainWindow )
 {
   // initialise private variables
   m_undoview = nullptr;
@@ -461,6 +462,17 @@ void MainWindow::slotStretchTasks( bool checked )
     plan->stretchTasks = checked;
     ui->ganttWidget->update();
   }
+}
+
+/***************************************** slotNewWindow *****************************************/
+
+void MainWindow::slotNewWindow()
+{
+  // open new window
+  MainTabWidget*  tabWidget = new MainTabWidget();
+  tabWidget->setAttribute( Qt::WA_QuitOnClose, false );
+  tabWidget->setAttribute( Qt::WA_DeleteOnClose, true );
+  tabWidget->show();
 }
 
 /*************************************** slotViewUndoStack ***************************************/

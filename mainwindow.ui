@@ -368,8 +368,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>203</width>
-              <height>391</height>
+              <width>100</width>
+              <height>30</height>
              </rect>
             </property>
            </widget>
@@ -535,6 +535,7 @@
      <string>&amp;View</string>
     </property>
     <addaction name="actionUndoStackView"/>
+    <addaction name="actionNewWindow"/>
     <addaction name="separator"/>
     <addaction name="actionStretchTasks"/>
    </widget>
@@ -854,6 +855,17 @@
     <string>Stretch gantt task bars to use full 24h day</string>
    </property>
   </action>
+  <action name="actionNewWindow">
+   <property name="text">
+    <string>New window...</string>
+   </property>
+   <property name="toolTip">
+    <string>Open new window</string>
+   </property>
+   <property name="statusTip">
+    <string>Open new window</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -1085,6 +1097,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionNewWindow</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slotNewWindow()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>366</x>
+     <y>240</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>slotUndoStackView(bool)</slot>
@@ -1100,5 +1128,6 @@
   <slot>slotFilePrintPreview()</slot>
   <slot>slotFileExit()</slot>
   <slot>slotAboutQPlanner()</slot>
+  <slot>slotNewWindow()</slot>
  </slots>
 </ui>

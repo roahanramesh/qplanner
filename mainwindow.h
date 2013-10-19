@@ -37,7 +37,7 @@ class MainWindow : public QMainWindow
 {
   Q_OBJECT
 public:
-  explicit MainWindow( QWidget *parent = nullptr );         // constructor
+  explicit MainWindow( QWidget* parent = nullptr );         // constructor
 
   void     setModels();                        // set models for views & undostack
   void     endEdits();                         // end any task/resource/calendar/day edits in progress
@@ -56,6 +56,7 @@ public slots:
   void slotIndent();                           // slot for indent task(s) action
   void slotOutdent();                          // slot for outdent task(s) action
   void slotStretchTasks( bool );               // slot for stretch tasks action
+  void slotNewWindow();                        // slot for new window action
 
   void slotFileNew();                          // slot for file new plan action
   bool slotFileOpen();                         // slot for file open plan action

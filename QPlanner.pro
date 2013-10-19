@@ -12,59 +12,63 @@ TARGET = QPlanner
 TEMPLATE = app
 CONFIG += c++11
 
-SOURCES += main.cpp\
-        mainwindow.cpp \
-    plan.cpp \
-    tasksmodel.cpp \
-    resourcesmodel.cpp \
-    calendarsmodel.cpp \
-    daysmodel.cpp \
-    task.cpp \
-    resource.cpp \
+SOURCES += main.cpp \
     calendar.cpp \
+    calendarsmodel.cpp \
     day.cpp \
-    predecessors.cpp \
-    tasksdelegate.cpp \
-    timespanspinbox.cpp \
-    ganttview.cpp \
-    ganttscale.cpp \
+    daysmodel.cpp \
+    employment.cpp \
     ganttchart.cpp \
-    xdatetime.cpp \
     ganttdata.cpp \
-    taskresources.cpp \
+    ganttscale.cpp \
+    ganttview.cpp \
+    maintabwidget.cpp \
+    mainwindow.cpp \
+    plan.cpp \
+    predecessors.cpp \
+    resource.cpp \
     resourcesdelegate.cpp \
-    xtableview.cpp \
-    employment.cpp
+    resourcesmodel.cpp \
+    task.cpp \
+    taskresources.cpp \
+    tasksdelegate.cpp \
+    tasksmodel.cpp \
+    timespanspinbox.cpp \
+    xdatetime.cpp \
+    xtableview.cpp
 
-HEADERS  += mainwindow.h \
-    plan.h \
-    tasksmodel.h \
-    resourcesmodel.h \
-    calendarsmodel.h \
-    daysmodel.h \
-    task.h \
-    resource.h \
+HEADERS  += \
     calendar.h \
-    day.h \
-    propertieswidget.h \
+    calendarsmodel.h \
     commandpropertieschange.h \
-    predecessors.h \
-    timespan.h \
-    commandtasksetdata.h \
-    tasksdelegate.h \
-    timespanspinbox.h \
-    ganttview.h \
-    ganttscale.h \
-    ganttchart.h \
-    xdatetime.h \
-    ganttdata.h \
     commandresourcesetdata.h \
     commandtaskindent.h \
     commandtaskoutdent.h \
-    taskresources.h \
+    commandtasksetdata.h \
+    day.h \
+    daysmodel.h \
+    employment.h \
+    ganttchart.h \
+    ganttdata.h \
+    ganttscale.h \
+    ganttview.h \
+    maintabwidget.h \
+    mainwindow.h \
+    plan.h \
+    predecessors.h \
+    propertieswidget.h \
+    resource.h \
     resourcesdelegate.h \
+    resourcesmodel.h \
+    task.h \
     task_schedule.h \
-    xtableview.h \
-    employment.h
+    taskresources.h \
+    tasksdelegate.h \
+    tasksmodel.h \
+    timespan.h \
+    timespanspinbox.h \
+    xdatetime.h \
+    xtableview.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    maintabwidget.ui
