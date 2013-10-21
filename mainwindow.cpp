@@ -472,6 +472,7 @@ void MainWindow::slotNewWindow()
   MainTabWidget*  tabWidget = new MainTabWidget();
   tabWidget->setAttribute( Qt::WA_QuitOnClose, false );
   tabWidget->setAttribute( Qt::WA_DeleteOnClose, true );
+  tabWidget->removePlanTab();
   tabWidget->show();
 }
 
