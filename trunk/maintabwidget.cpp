@@ -20,12 +20,17 @@
 
 #include "maintabwidget.h"
 #include "ui_maintabwidget.h"
+
 #include "plan.h"
-#include "tasksdelegate.h"
-#include "resourcesdelegate.h"
 #include "tasksmodel.h"
 #include "resourcesmodel.h"
+#include "calendarsmodel.h"
 #include "daysmodel.h"
+
+#include "tasksdelegate.h"
+#include "resourcesdelegate.h"
+
+#include "commandpropertieschange.h"
 
 /*************************************************************************************************/
 /***************************** Tabbed widget containing main screens *****************************/
@@ -33,7 +38,7 @@
 
 /****************************************** constructor ******************************************/
 
-MainTabWidget::MainTabWidget( QWidget *parent ) : QTabWidget( parent ), ui( new Ui::MainTabWidget )
+MainTabWidget::MainTabWidget( QWidget* parent ) : QTabWidget( parent ), ui( new Ui::MainTabWidget )
 {
   // setup palette & ui for main tab widget
   QPalette  pal = palette();
@@ -42,14 +47,11 @@ MainTabWidget::MainTabWidget( QWidget *parent ) : QTabWidget( parent ), ui( new 
   ui->setupUi( this );
 
   // set models & delegates for table views
-  ui->tasksView->setModel( (QAbstractItemModel*)plan->tasks() );
-  TasksDelegate*  td = new TasksDelegate();
-  ui->tasksView->setItemDelegate( td );
-  ui->resourcesView->setModel( (QAbstractItemModel*)plan->resources() );
+  setModels();
+  TasksDelegate*      td = new TasksDelegate();
   ResourcesDelegate*  rd = new ResourcesDelegate();
+  ui->tasksView->setItemDelegate( td );
   ui->resourcesView->setItemDelegate( rd );
-  ui->calendarsView->setModel( (QAbstractItemModel*)plan->calendars() );
-  ui->daysView->setModel( (QAbstractItemModel*)plan->days() );
 
   // connect task delegate edit task cell to slot, queued so any earlier edit is finished and closed
   connect( td, SIGNAL(editTaskCell(QModelIndex,QString)),
@@ -97,5 +99,107 @@ MainTabWidget::MainTabWidget( QWidget *parent ) : QTabWidget( parent ), ui( new 
 
 MainTabWidget::~MainTabWidget()
 {
+  // free up memory used by the ui
   delete ui;
+}
+
+/**************************************** removePlanTab ******************************************/
+
+void MainTabWidget::removePlanTab()
+{
+  // remove 'Plan' tab (for example of new windows)
+  removeTab( this->indexOf( ui->planTab ) );
+}
+
+/**************************************** updatePlanTab ******************************************/
+
+void MainTabWidget::updatePlanTab()
+{
+  // ensure 'Plan' tab widgets are up-to-date with what is in plan
+  ui->title->setText( plan->title() );
+  ui->title->setCursorPosition( 0 );
+
+  ui->planBeginning->setText( plan->beginning().toString("dd/MM/yyyy hh:mm:ss") );
+  ui->planBeginning->setCursorPosition( 0 );
+  ui->planBeginning->setToolTip( plan->beginning().toString( plan->datetimeFormat() ) );
+
+  ui->planStart->setDateTime( plan->start() );
+  ui->planStart->setToolTip( plan->start().toString( plan->datetimeFormat() ) );
+
+  ui->planEnd->setText( plan->end().toString("dd/MM/yyyy hh:mm:ss") );
+  ui->planEnd->setCursorPosition( 0 );
+  ui->planEnd->setToolTip( plan->end().toString( plan->datetimeFormat() ) );
+
+  ui->defaultCalendar->clear();
+  ui->defaultCalendar->addItems( plan->calendars()->namesList() );
+  ui->defaultCalendar->setCurrentIndex( plan->index( plan->calendar() ) );
+
+  ui->dateTimeFormat->setText( plan->datetimeFormat() );
+  ui->dateTimeFormat->setCursorPosition( 0 );
+  ui->dateTimeFormat->setToolTip( QDateTime::currentDateTime().toString( plan->datetimeFormat() ));
+
+  ui->fileName->setText( plan->filename() );
+  ui->fileName->setCursorPosition( 0 );
+  ui->fileLocation->setToolTip( plan->filename() );
+
+  ui->fileLocation->setText( plan->fileLocation() );
+  ui->fileLocation->setCursorPosition( 0 );
+  ui->fileLocation->setToolTip( plan->fileLocation() );
+
+  ui->savedBy->setText( plan->savedBy() );
+  ui->savedBy->setCursorPosition( 0 );
+  ui->savedBy->setToolTip( plan->savedBy() );
+
+  ui->savedWhen->setText( plan->savedWhen().toString("dd/MM/yyyy hh:mm:ss") );
+  ui->savedWhen->setCursorPosition( 0 );
+  ui->savedWhen->setToolTip( plan->savedWhen().toString( plan->datetimeFormat() ) );
+
+  ui->numTasks->setText( QString(": %1").arg( plan->numTasks() ) );
+  ui->numResources->setText( QString(": %1").arg( plan->numResources() ) );
+  ui->numCalendars->setText( QString(": %1").arg( plan->numCalendars() ) );
+  ui->numDays->setText( QString(": %1").arg( plan->numDays() ) );
+
+  ui->notesEdit->setPlainText( plan->notes() );
+}
+
+/***************************************** updatePlan ********************************************/
+
+void MainTabWidget::updatePlan()
+{
+  // check if we need to update plan from 'Plan' tab widgets
+  if ( ui->title->text()                   != plan->title()          ||
+       ui->planStart->dateTime()           != plan->start()          ||
+       ui->defaultCalendar->currentIndex() != plan->index( plan->calendar() ) ||
+       ui->dateTimeFormat->text()          != plan->datetimeFormat() ||
+       ui->notesEdit->toPlainText()        != plan->notes() )
+  {
+    plan->undostack()->push( new CommandPropertiesChange(
+                               ui->title->text(),                   plan->title(),
+                               ui->planStart->dateTime(),           plan->start(),
+                               ui->defaultCalendar->currentIndex(), plan->index( plan->calendar() ),
+                               ui->dateTimeFormat->text(),          plan->datetimeFormat(),
+                               ui->notesEdit->toPlainText(),        plan->notes()) );
+  }
+}
+
+/****************************************** setModels ********************************************/
+
+void MainTabWidget::setModels()
+{
+  // ensure table views are connected to correct models
+  ui->tasksView->setModel( (QAbstractItemModel*)plan->tasks() );
+  ui->resourcesView->setModel( (QAbstractItemModel*)plan->resources() );
+  ui->calendarsView->setModel( (QAbstractItemModel*)plan->calendars() );
+  ui->daysView->setModel( (QAbstractItemModel*)plan->days() );
+}
+
+/****************************************** endEdits *********************************************/
+
+void MainTabWidget::endEdits()
+{
+  // end any task/resource/calendar/day edits in progress
+  ui->tasksView->endEdit();
+  ui->resourcesView->endEdit();
+  ui->calendarsView->endEdit();
+  ui->daysView->endEdit();
 }

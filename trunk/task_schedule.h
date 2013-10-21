@@ -142,6 +142,9 @@ QDateTime  Task::scheduleStart() const
     if ( s > start ) start = s;
   }
 
+  // if not set by predecessors, task start is plan start
+  if ( start <= plan->calendar()->workUp( plan->MIN_DATETIME ) ) return plan->start();
+
   return start;
 }
 

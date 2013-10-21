@@ -280,8 +280,5 @@ QDateTime  Predecessors::start() const
     }
   }
 
-  // if not set by predecessors, task start is plan start
-  if ( start == plan->MIN_DATETIME ) return plan->start();
-
   return start;
 }

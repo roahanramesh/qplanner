@@ -36,6 +36,12 @@ public:
   explicit MainTabWidget( QWidget* parent = nullptr );          // constructor
   ~MainTabWidget();                                             // destructor
 
+  void  removePlanTab();             // remove 'Plan' tab
+  void  updatePlanTab();             // ensure 'Plan' tab widgets are up-to-date
+  void  updatePlan();                // update plan from 'Plan' tab widgets
+  void  setModels();                 // ensure views are connected to correct models
+  void  endEdits();                  // end any task/resource/calendar/day edits in progress
+
 private:
   Ui::MainTabWidget*   ui;           // user interface created using qt designer
 };
