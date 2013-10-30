@@ -32,6 +32,8 @@
 
 #include "commandpropertieschange.h"
 
+#include <QMessageBox>
+
 /*************************************************************************************************/
 /***************************** Tabbed widget containing main screens *****************************/
 /*************************************************************************************************/
@@ -86,13 +88,14 @@ MainTabWidget::MainTabWidget( QWidget* parent ) : QTabWidget( parent ), ui( new 
   QPalette*     palette = new QPalette( ui->propertiesWidget->palette() );
   palette->setColor( QPalette::Base, palette->window().color() );
 
-  // setup properties tab
+  // setup plan tab
   ui->planBeginning->setPalette( *palette );
   ui->planEnd->setPalette( *palette );
   ui->fileName->setPalette( *palette );
   ui->fileLocation->setPalette( *palette );
   ui->savedBy->setPalette( *palette );
   ui->savedWhen->setPalette( *palette );
+  slotUpdatePlanTab();
 }
 
 /****************************************** destructor *******************************************/
@@ -113,7 +116,7 @@ void MainTabWidget::removePlanTab()
 
 /**************************************** updatePlanTab ******************************************/
 
-void MainTabWidget::updatePlanTab()
+void MainTabWidget::slotUpdatePlanTab()
 {
   // ensure 'Plan' tab widgets are up-to-date with what is in plan
   ui->title->setText( plan->title() );
@@ -162,6 +165,20 @@ void MainTabWidget::updatePlanTab()
   ui->notesEdit->setPlainText( plan->notes() );
 }
 
+/*************************************** slotEditTaskCell ****************************************/
+
+void MainTabWidget::slotEditTaskCell( const QModelIndex& index, const QString& warning )
+{
+  // slot to enable task cell edit to be automatically re-started after validation failure
+  setCurrentWidget( ui->tasksGanttTab );
+  ui->tasksView->setCurrentIndex( index );
+  QMessageBox::warning( ui->tasksView, "QPlanner", warning, QMessageBox::Retry );
+  ui->tasksView->edit( index );
+
+  // clear override
+  plan->tasks()->setOverride( QModelIndex(), QString() );
+}
+
 /***************************************** updatePlan ********************************************/
 
 void MainTabWidget::updatePlan()
@@ -202,4 +219,36 @@ void MainTabWidget::endEdits()
   ui->resourcesView->endEdit();
   ui->calendarsView->endEdit();
   ui->daysView->endEdit();
+}
+
+/****************************************** updateGantt ******************************************/
+
+void MainTabWidget::updateGantt()
+{
+  // trigger gantt widget redraw
+  ui->ganttWidget->update();
+}
+
+/**************************************** indexOfTasksTab ****************************************/
+
+int MainTabWidget::indexOfTasksTab()
+{
+  // return index of tasks tab
+  return indexOf( ui->tasksGanttTab );
+}
+
+/************************************** tasksSelectionModel **************************************/
+
+QItemSelectionModel* MainTabWidget::tasksSelectionModel()
+{
+  // return selection model for tasks table view
+  return ui->tasksView->selectionModel();
+}
+
+/************************************* tasksSelectionIndexes *************************************/
+
+QModelIndexList  MainTabWidget::tasksSelectionIndexes()
+{
+  // return selected indexes on tasks table view
+  return ui->tasksView->selectionModel()->selection().indexes();
 }
