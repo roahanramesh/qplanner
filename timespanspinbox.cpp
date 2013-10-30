@@ -45,7 +45,7 @@ void  TimeSpanSpinBox::setUnits( char units )
   else                                   setDecimals( 2 );
 }
 
-/***************************************** textFromValue ******************************************/
+/***************************************** textFromValue *****************************************/
 
 QString  TimeSpanSpinBox::textFromValue( double value ) const
 {

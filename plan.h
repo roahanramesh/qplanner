@@ -107,8 +107,8 @@ public:
                      { m_calendar = calendar(c); }                  // set plan default calendar
   void             setNotes( QString n ) { m_notes = n; }           // set notes text
 
-  void             emitPropertiesUpdated()
-                     { emit signalPropertiesUpdated(); }            // emit signalPropertiesUpdated
+  void             emitPlanUpdated()
+                     { emit signalPlanUpdated(); }                  // emit signalPlanUpdated
 
   bool             stretchTasks;                                    // flag if gantt task bars stretched to use full 24h day
   QDateTime        stretch( QDateTime dt );                         // return date-time stretched if necessary
@@ -121,7 +121,7 @@ public:
   static const QDateTime    MAX_DATETIME;                           // const max date-time allowed in plan
 
 signals:
-  void  signalPropertiesUpdated();      // signal to say plan properties updated
+  void  signalPlanUpdated();            // signal to say plan properties updated
 
 private:
   TasksModel*      m_tasks;             // model of plan tasks

@@ -22,10 +22,12 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QPointer>
 
 class QUndoView;
 class QItemSelection;
 class QModelIndex;
+class MainTabWidget;
 
 /*************************************************************************************************/
 /********************* Main application window showing tabbed main screens ***********************/
@@ -40,18 +42,16 @@ public:
   explicit MainWindow( QWidget* parent = nullptr );         // constructor
 
   void     setModels();                        // set models for views & undostack
-  void     endEdits();                         // end any task/resource/calendar/day edits in progress
   void     message( QString = "" );            // show message on status bar and enure is top & active
   void     setTitle( QString = "" );           // update main window title to include text
   bool     savePlan( QString );                // save plan to xml file
   bool     loadPlan( QString );                // load plan from xml file
-  void     updatePlan();                       // update plan from 'Properties' tab widgets
+  void     updatePlan();                       // update plan from 'Plan' tab widgets
 
 public slots:
   void slotUndoStackView( bool );              // slot for actionUndoStackView triggered signal
   void slotUndoStackViewDestroyed();           // slot for undo stack view destroyed signal
   void slotTabChange( int );                   // slot for mainTabWidget current changed signal
-  void slotUpdatePropertiesWidgets();          // slot for ensuring 'Properties' tab widgets are up-to-date
   void slotSchedulePlan();                     // slot for schedule plan action
   void slotIndent();                           // slot for indent task(s) action
   void slotOutdent();                          // slot for outdent task(s) action
@@ -71,12 +71,12 @@ public slots:
                                  const QItemSelection& );   // slot for task selection change
   void slotTaskDataChanged( const QModelIndex&,
                             const QModelIndex& );           // slot for task data change
-  void slotEditTaskCell( const QModelIndex&,
-                         const QString& );                  // slot for editing task cell
 
 private:
-  Ui::MainWindow*  ui;                         // user interface created using qt designer
-  QUndoView*       m_undoview;                 // window to display contents of undostack
+  Ui::MainWindow*         ui;                  // user interface created using qt designer
+  QUndoView*              m_undoview;          // window to display contents of undostack
+  MainTabWidget*          m_tabs;              // tabs for mainwindow central widget
+  QList<QPointer<MainTabWidget>>  m_windows;   // list of other tabWidgets
 };
 
 #endif // MAINWINDOW_H

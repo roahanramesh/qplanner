@@ -22,18 +22,10 @@
 #include "ui_mainwindow.h"
 #include "plan.h"
 #include "tasksmodel.h"
-#include "resourcesmodel.h"
-#include "calendarsmodel.h"
-#include "daysmodel.h"
 #include "task.h"
-#include "tasksdelegate.h"
-#include "resourcesdelegate.h"
 #include "maintabwidget.h"
 
-#include "commandpropertieschange.h"
-
 #include <QUndoView>
-#include <QMessageBox>
 #include <QFileDialog>
 #include <QXmlStreamWriter>
 
@@ -47,90 +39,35 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
 {
   // initialise private variables
   m_undoview = nullptr;
+  m_tabs     = new MainTabWidget();
 
-  // setup palette & ui for main window
-  QPalette  pal = palette();
-  pal.setBrush( QPalette::Inactive, QPalette::Highlight, QColor("#E0E0E0") );
-  setPalette( pal );
+  // setup ui for main window including central widget of tabs
   ui->setupUi( this );
+  setCentralWidget( m_tabs );
   resize( 900, 450 );
 
-  // set models & delegates for table views
-  ui->tasksView->setModel( (QAbstractItemModel*)plan->tasks() );
-  TasksDelegate*  td = new TasksDelegate();
-  ui->tasksView->setItemDelegate( td );
-  ui->resourcesView->setModel( (QAbstractItemModel*)plan->resources() );
-  ResourcesDelegate*  rd = new ResourcesDelegate();
-  ui->resourcesView->setItemDelegate( rd );
-  ui->calendarsView->setModel( (QAbstractItemModel*)plan->calendars() );
-  ui->daysView->setModel( (QAbstractItemModel*)plan->days() );
+  // ensure plan tab and is kept up-to-date when plan signals changes
+  connect( plan, SIGNAL(signalPlanUpdated()), m_tabs, SLOT(slotUpdatePlanTab()),
+           Qt::UniqueConnection );
 
-  // connect task delegate edit task cell to slot, queued so any earlier edit is finished and closed
-  connect( td, SIGNAL(editTaskCell(QModelIndex,QString)),
-           this, SLOT(slotEditTaskCell(QModelIndex,QString)), Qt::QueuedConnection );
+  // ensure menus and plan tab are kept up-to-date when current tab changes
+  slotTabChange( m_tabs->currentIndex() );
+  connect( m_tabs, SIGNAL(currentChanged(int)), this, SLOT(slotTabChange(int)),
+           Qt::UniqueConnection );
 
-  // hide task 0 'plan summary' and resource 0 'unassigned'
-  ui->tasksView->verticalHeader()->hideSection( 0 );
-  ui->resourcesView->verticalHeader()->hideSection( 0 );
-
-  // set initial column widths for tables views
-  plan->tasks()->setColumnWidths( ui->tasksView );
-  plan->resources()->setColumnWidths( ui->resourcesView );
-  ui->calendarsView->horizontalHeader()->setDefaultSectionSize( 150 );
-  plan->days()->setColumnWidths( ui->daysView );
-
-  // set tasks view splitter behaviour & default position
-  ui->tasksGanttSplitter->setStretchFactor( 1, 1 );
-  QList<int> sizes = ui->tasksGanttSplitter->sizes();
-  sizes[0] = ui->tasksView->horizontalHeader()->sectionSize( 0 ) +
-             ui->tasksView->horizontalHeader()->sectionSize( 1 ) +
-             ui->tasksView->horizontalHeader()->sectionSize( 2 ) +
-             ui->tasksView->verticalHeader()->width();
-  sizes[1] = sizes[0];
-  ui->tasksGanttSplitter->setSizes( sizes );
-
-  // setup tasks gantt
-  ui->ganttView->createGantt( ui->ganttWidget );
-  ui->ganttView->setTable( ui->tasksView );
-  ui->tasksView->setHeaderHeight( ui->ganttView->scaleHeight() );
-
-  // create new palette for read-only edit widgets with different Base colour
-  QPalette*     palette = new QPalette( ui->propertiesWidget->palette() );
-  palette->setColor( QPalette::Base, palette->window().color() );
-
-  // setup properties tab
-  ui->planBeginning->setPalette( *palette );
-  ui->planEnd->setPalette( *palette );
-  ui->fileName->setPalette( *palette );
-  ui->fileLocation->setPalette( *palette );
-  ui->savedBy->setPalette( *palette );
-  ui->savedWhen->setPalette( *palette );
+  // ensure when select changes on tasks view, indent & outdent are enabled correctly
+  connect( m_tabs->tasksSelectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+           this, SLOT(slotTaskSelectionChanged(QItemSelection,QItemSelection)),
+           Qt::UniqueConnection );
 
   // update edit menu with undostack undo & redo actions
   setModels();
-  slotTabChange( ui->mainTabWidget->currentIndex() );
 }
 
 /******************************************* setModels *******************************************/
 
 void MainWindow::setModels()
 {
-  // ensure properties widget and plan variables are kept up-to-date
-  slotUpdatePropertiesWidgets();
-  connect( ui->mainTabWidget, SIGNAL(currentChanged(int)), this, SLOT(slotTabChange(int)),
-           Qt::UniqueConnection );
-  connect( plan, SIGNAL(signalPropertiesUpdated()), this, SLOT(slotUpdatePropertiesWidgets()),
-           Qt::UniqueConnection );
-
-  // set models for table views
-  ui->tasksView->setModel( (QAbstractItemModel*)plan->tasks() );
-  ui->resourcesView->setModel( (QAbstractItemModel*)plan->resources() );
-  ui->calendarsView->setModel( (QAbstractItemModel*)plan->calendars() );
-  ui->daysView->setModel( (QAbstractItemModel*)plan->days() );
-
-  // set models for gantt view
-  ui->ganttView->setTable( ui->tasksView );
-
   // set undostack for edit menu undo/redo
   QAction* undoAction = plan->undostack()->createUndoAction( this );
   undoAction->setShortcut( QKeySequence::Undo );
@@ -149,29 +86,28 @@ void MainWindow::setModels()
   if ( m_undoview != nullptr ) m_undoview->setStack( plan->undostack() );
 
   // connect signal for tasks selection & data change to slots
-  connect( ui->tasksView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-           this, SLOT(slotTaskSelectionChanged(QItemSelection,QItemSelection)),
-           Qt::UniqueConnection );
   connect( plan->tasks(), SIGNAL(dataChanged(QModelIndex,QModelIndex)),
            this, SLOT(slotTaskDataChanged(QModelIndex,QModelIndex)),
            Qt::UniqueConnection );
-}
 
-/******************************************* endEdits ********************************************/
-
-void MainWindow::endEdits()
-{
-  // end any task/resource/calendar/day edits in progress
-  ui->tasksView->endEdit();
-  ui->resourcesView->endEdit();
-  ui->calendarsView->endEdit();
-  ui->daysView->endEdit();
+  // set models for each main tab widget
+  m_tabs->setModels();
+  foreach( MainTabWidget* tabs, m_windows )
+    if (tabs)
+    {
+      tabs->setModels();
+      tabs->updateGantt();
+    }
 }
 
 /******************************************* message *********************************************/
 
 void MainWindow::message( QString msg )
 {
+  // raise other windows
+  foreach( MainTabWidget* tabs, m_windows )
+    if (tabs) tabs->raise();
+
   // show message on status bar and enure is top & active
   raise();
   activateWindow();
@@ -185,20 +121,10 @@ void MainWindow::setTitle( QString text )
   // update main window title to include given text
   if ( text.isEmpty() ) setWindowTitle( "QPlanner" );
   else                  setWindowTitle( text + " - QPlanner");
-}
 
-/*************************************** slotEditTaskCell ****************************************/
-
-void MainWindow::slotEditTaskCell( const QModelIndex& index, const QString& warning )
-{
-  // slot to enable task cell edit to be automatically re-started after validation failure
-  ui->mainTabWidget->setCurrentWidget( ui->tasksGanttTab );
-  ui->tasksView->setCurrentIndex( index );
-  QMessageBox::warning( ui->tasksView, "QPlanner", warning, QMessageBox::Retry );
-  ui->tasksView->edit( index );
-
-  // clear override
-  plan->tasks()->setOverride( QModelIndex(), QString() );
+  // update other windows titles to match
+  foreach( MainTabWidget* tabs, m_windows )
+    if (tabs) tabs->setWindowTitle( windowTitle() );
 }
 
 /************************************** slotTaskDataChanged **************************************/
@@ -216,7 +142,7 @@ void MainWindow::slotTaskSelectionChanged( const QItemSelection&, const QItemSel
 {
   // task selection has changed, determine unique rows selected
   QSet<int>  rows;
-  foreach( QModelIndex index, ui->tasksView->selectionModel()->selection().indexes() )
+  foreach( QModelIndex index, m_tabs->tasksSelectionIndexes() )
     rows.insert( index.row() );
 
   // ensure indent & outdent actions only enabled is action possible
@@ -238,9 +164,9 @@ void MainWindow::slotTaskSelectionChanged( const QItemSelection&, const QItemSel
 void MainWindow::slotIndent()
 {
   // indent task(s) - determine unique rows selected
-  endEdits();
+  m_tabs->endEdits();
   QSet<int>  rows;
-  foreach( QModelIndex index, ui->tasksView->selectionModel()->selection().indexes() )
+  foreach( QModelIndex index, m_tabs->tasksSelectionIndexes() )
     rows.insert( index.row() );
 
   plan->tasks()->indentRows( rows );
@@ -251,9 +177,9 @@ void MainWindow::slotIndent()
 void MainWindow::slotOutdent()
 {
   // outdent task(s) - determine unique rows selected
-  endEdits();
+  m_tabs->endEdits();
   QSet<int>  rows;
-  foreach( QModelIndex index, ui->tasksView->selectionModel()->selection().indexes() )
+  foreach( QModelIndex index, m_tabs->tasksSelectionIndexes() )
     rows.insert( index.row() );
 
   plan->tasks()->outdentRows( rows );
@@ -264,7 +190,7 @@ void MainWindow::slotOutdent()
 void MainWindow::slotFileNew()
 {
   // slot for file new plan action
-  endEdits();
+  m_tabs->endEdits();
   qDebug("MainWindow::slotFileNew() - TODO !!!!");
 }
 
@@ -273,7 +199,7 @@ void MainWindow::slotFileNew()
 bool MainWindow::slotFileOpen()
 {
   // slot for file open plan action - get user to select filename and location
-  endEdits();
+  m_tabs->endEdits();
   QString filename = QFileDialog::getOpenFileName();
   if ( filename.isEmpty() )
   {
@@ -338,6 +264,7 @@ bool MainWindow::loadPlan( QString filename )
   plan->schedule();
   message( QString("Loaded '%1'").arg(filename) );
   setTitle( plan->filename() );
+  m_tabs->slotUpdatePlanTab();
   return true;
 }
 
@@ -353,8 +280,8 @@ bool MainWindow::savePlan( QString filename )
     return false;
   }
 
-  // make sure plan is up to date from 'Properties' tab widgets before saving
-  updatePlan();
+  // make sure plan is up to date from 'Plan' tab widgets before saving
+  m_tabs->updatePlan();
 
   // open an xml stream writer and write simulation data
   QXmlStreamWriter  stream( &file );
@@ -376,7 +303,7 @@ bool MainWindow::savePlan( QString filename )
   // update plan properties
   plan->setFileInfo( filename, when, who );
   setTitle( plan->filename() );
-  slotUpdatePropertiesWidgets();
+  m_tabs->slotUpdatePlanTab();
   return true;
 }
 
@@ -385,7 +312,7 @@ bool MainWindow::savePlan( QString filename )
 bool MainWindow::slotFileSave()
 {
   // slot for file save plan action - if plan has filename, save to same file and location
-  endEdits();
+  m_tabs->endEdits();
   if ( !plan->filename().isEmpty() ) return savePlan( plan->fileLocation() + "/" + plan->filename() );
 
   // plan has no filename so use saveAs functionality
@@ -397,7 +324,7 @@ bool MainWindow::slotFileSave()
 bool MainWindow::slotFileSaveAs()
 {
   // slot for file saveAs plan action - get user to select filename and location
-  endEdits();
+  m_tabs->endEdits();
   QString filename = QFileDialog::getSaveFileName();
   if ( !filename.isEmpty() ) return savePlan( filename );
 
@@ -411,7 +338,7 @@ bool MainWindow::slotFileSaveAs()
 void MainWindow::slotFilePrint()
 {
   // slot for file saveAs plan action
-  endEdits();
+  m_tabs->endEdits();
   qDebug("MainWindow::slotFilePrint() - TODO !!!!");
 }
 
@@ -420,7 +347,7 @@ void MainWindow::slotFilePrint()
 void MainWindow::slotFilePrintPreview()
 {
   // slot for file saveAs plan action
-  endEdits();
+  m_tabs->endEdits();
   qDebug("MainWindow::slotFilePrintPreview() - TODO !!!!");
 }
 
@@ -429,7 +356,7 @@ void MainWindow::slotFilePrintPreview()
 void MainWindow::slotFileExit()
 {
   // slot for file saveAs plan action
-  endEdits();
+  m_tabs->endEdits();
   qDebug("MainWindow::slotFileExit() - TODO !!!!");
 }
 
@@ -438,7 +365,7 @@ void MainWindow::slotFileExit()
 void MainWindow::slotAboutQPlanner()
 {
   // slot for file saveAs plan action
-  endEdits();
+  m_tabs->endEdits();
   qDebug("MainWindow::slotAboutQPlanner() - TODO !!!!");
 }
 
@@ -447,7 +374,7 @@ void MainWindow::slotAboutQPlanner()
 void MainWindow::slotSchedulePlan()
 {
   // get plan to reschedule all the tasks
-  endEdits();
+  m_tabs->endEdits();
   plan->schedule();
 }
 
@@ -456,11 +383,14 @@ void MainWindow::slotSchedulePlan()
 void MainWindow::slotStretchTasks( bool checked )
 {
   // if stretch tasks flag is changed, trigger redraw of gantt
-  endEdits();
+  m_tabs->endEdits();
   if ( plan->stretchTasks != checked )
   {
     plan->stretchTasks = checked;
-    ui->ganttWidget->update();
+    m_tabs->updateGantt();
+
+    foreach( MainTabWidget* tabs, m_windows )
+      if (tabs) tabs->updateGantt();
   }
 }
 
@@ -473,7 +403,9 @@ void MainWindow::slotNewWindow()
   tabWidget->setAttribute( Qt::WA_QuitOnClose, false );
   tabWidget->setAttribute( Qt::WA_DeleteOnClose, true );
   tabWidget->removePlanTab();
+  tabWidget->setWindowTitle( windowTitle() );
   tabWidget->show();
+  m_windows.append( tabWidget );
 }
 
 /*************************************** slotViewUndoStack ***************************************/
@@ -481,7 +413,7 @@ void MainWindow::slotNewWindow()
 void MainWindow::slotUndoStackView( bool checked )
 {
   // show undo stack view window if checked, otherwise hide
-  endEdits();
+  m_tabs->endEdits();
   if ( checked )
   {
     if ( m_undoview == nullptr )
@@ -515,7 +447,7 @@ void MainWindow::slotUndoStackViewDestroyed()
 void MainWindow::slotTabChange( int index )
 {
   // check if switched to tasks/gantt tab, enable its menu & actions, otherwise hide them
-  if ( index == ui->mainTabWidget->indexOf(ui->tasksGanttTab) )
+  if ( index == m_tabs->indexOfTasksTab() )
   {
     ui->menuTask->menuAction()->setVisible( true );
     ui->actionIndent->setVisible( true );
@@ -528,78 +460,7 @@ void MainWindow::slotTabChange( int index )
     ui->actionOutdent->setVisible( false );
   }
 
-  // ensure plan reflects 'Properties' tab widgets and vice versa
-  updatePlan();
-  slotUpdatePropertiesWidgets();
-}
-
-/****************************************** updatePlan *******************************************/
-
-void MainWindow::updatePlan()
-{
-  // check if we need to update plan from 'Properties' tab widgets
-  if ( ui->title->text()                   != plan->title()          ||
-       ui->planStart->dateTime()           != plan->start()          ||
-       ui->defaultCalendar->currentIndex() != plan->index( plan->calendar() ) ||
-       ui->dateTimeFormat->text()          != plan->datetimeFormat() ||
-       ui->notesEdit->toPlainText()        != plan->notes() )
-  {
-    plan->undostack()->push( new CommandPropertiesChange(
-                               ui->title->text(),                   plan->title(),
-                               ui->planStart->dateTime(),           plan->start(),
-                               ui->defaultCalendar->currentIndex(), plan->index( plan->calendar() ),
-                               ui->dateTimeFormat->text(),          plan->datetimeFormat(),
-                               ui->notesEdit->toPlainText(),        plan->notes()) );
-  }
-}
-
-/********************************** slotUpdatePropertiesWidgets **********************************/
-
-void MainWindow::slotUpdatePropertiesWidgets()
-{
-  // ensure 'Properties' tab widgets are up-to-date with what is in plan
-  ui->title->setText( plan->title() );
-  ui->title->setCursorPosition( 0 );
-
-  ui->planBeginning->setText( plan->beginning().toString("dd/MM/yyyy hh:mm:ss") );
-  ui->planBeginning->setCursorPosition( 0 );
-  ui->planBeginning->setToolTip( plan->beginning().toString( plan->datetimeFormat() ) );
-
-  ui->planStart->setDateTime( plan->start() );
-  ui->planStart->setToolTip( plan->start().toString( plan->datetimeFormat() ) );
-
-  ui->planEnd->setText( plan->end().toString("dd/MM/yyyy hh:mm:ss") );
-  ui->planEnd->setCursorPosition( 0 );
-  ui->planEnd->setToolTip( plan->end().toString( plan->datetimeFormat() ) );
-
-  ui->defaultCalendar->clear();
-  ui->defaultCalendar->addItems( plan->calendars()->namesList() );
-  ui->defaultCalendar->setCurrentIndex( plan->index( plan->calendar() ) );
-
-  ui->dateTimeFormat->setText( plan->datetimeFormat() );
-  ui->dateTimeFormat->setCursorPosition( 0 );
-  ui->dateTimeFormat->setToolTip( QDateTime::currentDateTime().toString( plan->datetimeFormat() ));
-
-  ui->fileName->setText( plan->filename() );
-  ui->fileName->setCursorPosition( 0 );
-  ui->fileLocation->setToolTip( plan->filename() );
-
-  ui->fileLocation->setText( plan->fileLocation() );
-  ui->fileLocation->setCursorPosition( 0 );
-  ui->fileLocation->setToolTip( plan->fileLocation() );
-
-  ui->savedBy->setText( plan->savedBy() );
-  ui->savedBy->setCursorPosition( 0 );
-  ui->savedBy->setToolTip( plan->savedBy() );
-
-  ui->savedWhen->setText( plan->savedWhen().toString("dd/MM/yyyy hh:mm:ss") );
-  ui->savedWhen->setCursorPosition( 0 );
-  ui->savedWhen->setToolTip( plan->savedWhen().toString( plan->datetimeFormat() ) );
-
-  ui->numTasks->setText( QString(": %1").arg( plan->numTasks() ) );
-  ui->numResources->setText( QString(": %1").arg( plan->numResources() ) );
-  ui->numCalendars->setText( QString(": %1").arg( plan->numCalendars() ) );
-  ui->numDays->setText( QString(": %1").arg( plan->numDays() ) );
-
-  ui->notesEdit->setPlainText( plan->notes() );
+  // ensure plan reflects 'Plan' tab widgets and vice versa
+  m_tabs->updatePlan();
+  m_tabs->slotUpdatePlanTab();
 }
