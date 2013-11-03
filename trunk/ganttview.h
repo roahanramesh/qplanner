@@ -33,8 +33,6 @@ class QTableView;
 /**************************** GanttView shows tasks in a gantt format ****************************/
 /*************************************************************************************************/
 
-// TODO maybe 'setTablePlan' should be renamed 'setTable' ?
-
 class GanttView : public QScrollArea
 {
   Q_OBJECT
@@ -44,6 +42,15 @@ public:
   void    createGantt( QWidget* );      // sets the table associated with the gantt
   void    setTable( QTableView* );      // sets the table associated with the gantt
   int     scaleHeight();                // return scale (upper+lower) height
+
+  void    setStart( QDateTime );        // set gantt start date-time
+  void    setEnd( QDateTime );          // set gantt end date-time
+  void    setSecsPP( double );          // set gantt seconds per pixel
+  void    setWidth();                   // ensure view width is never less than chart width
+
+  QDateTime  start() { return m_start; }     // return gantt start date-time
+  QDateTime  end() { return m_end; }         // return gantt end date-time
+  double     secsPP() { return m_secsPP; }   // return gantt seconds per pixel
 
 public slots:
   void    contextMenu( QPoint );        // slot to receive context menu signals
