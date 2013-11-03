@@ -40,6 +40,7 @@ GanttView::GanttView( QWidget* parent ) : QScrollArea( parent )
   m_secsPP = 10000.0;
   m_start  = QDateTime( QDate::currentDate().addDays(-7) );
   m_end    = QDateTime( QDate::currentDate().addDays(70) );
+  m_chart  = nullptr;
 }
 
 /******************************************* createGantt *****************************************/
@@ -87,11 +88,8 @@ void GanttView::createGantt( QWidget* view )
 
 /******************************************* contextMenu *****************************************/
 
-void GanttView::contextMenu( QPoint pos )
+void GanttView::contextMenu( QPoint )
 {
-  // don't use pos as it gives position relative to widget not screen
-  Q_UNUSED( pos );
-
   // create menu and associated actions for context menu
   QMenu menu;
   menu.setTitle( "Gantt" );
@@ -117,14 +115,8 @@ void GanttView::contextMenu( QPoint pos )
 void  GanttView::slotZoomIn()
 {
   // decrease secs per pixel to zoom in on chart & scales
-  m_secsPP = m_secsPP / 1.414;
-  m_upperScale->setSecsPerPixel( m_secsPP );
-  m_lowerScale->setSecsPerPixel( m_secsPP );
-  m_chart->setSecsPerPixel( m_secsPP );
-
-  // ensure view width is never less than chart width
-  if ( m_chart->chartWidth() > width() ) m_view->setFixedWidth( m_chart->chartWidth() );
-  else                                   m_view->setFixedWidth( width() );
+  setSecsPP( m_secsPP / 1.414 );
+  setWidth();
 }
 
 /******************************************* slotZoomOut *****************************************/
@@ -132,23 +124,14 @@ void  GanttView::slotZoomIn()
 void  GanttView::slotZoomOut()
 {
   // increase secs per pixel to zoom out on chart & scales
-  m_secsPP = m_secsPP * 1.414;
-  m_upperScale->setSecsPerPixel( m_secsPP );
-  m_lowerScale->setSecsPerPixel( m_secsPP );
-  m_chart->setSecsPerPixel( m_secsPP );
+  setSecsPP( m_secsPP * 1.414 );
 
   // zoom around centre of chart if chart width less than view width
   if ( m_chart->chartWidth() < width() )
-  {
-    QDateTime  start = m_start.addSecs( -m_secsPP * ( width() - m_chart->chartWidth() ) / 2 );
-    m_upperScale->setStart( start );
-    m_lowerScale->setStart( start );
-    m_chart->setStart( start );
-  }
+    setStart( m_start.addSecs( -m_secsPP * ( width() - m_chart->chartWidth() ) / 2 ) );
 
   // ensure view width is never less than chart width
-  if ( m_chart->chartWidth() > width() ) m_view->setFixedWidth( m_chart->chartWidth() );
-  else                                   m_view->setFixedWidth( width() );
+  setWidth();
 }
 
 /******************************************* slotZoomFit *****************************************/
@@ -163,31 +146,17 @@ void  GanttView::slotZoomFit()
   // if start or end is invalid, eg before any tasks, keep existing start and secsPP
   if ( !start.isValid() || !end.isValid() )
   {
-    m_end   = m_start.addSecs( width() * m_secsPP );
-    m_chart->setEnd( m_end );
+    setEnd( m_start.addSecs( width() * m_secsPP ) );
     return;
   }
 
   // add margins to start and end
   qint64 margin = 1 + start.secsTo( end ) / 32;
-  m_start  = start.addSecs( -margin );
-  m_end    = end.addSecs( margin );
+  setStart( start.addSecs( -margin ) );
+  setEnd( end.addSecs( margin ) );
 
   // set secs per pixel to show entire chart duration in displayed width
-  m_secsPP = double( m_start.secsTo( m_end ) ) / width();
-
-  // set chart
-  m_chart->setStart( m_start );
-  m_chart->setEnd( m_end );
-  m_chart->setSecsPerPixel( m_secsPP );
-
-  // set upper scale
-  m_upperScale->setSecsPerPixel( m_secsPP );
-  m_upperScale->setStart( m_start );
-
-  // set lower scale
-  m_lowerScale->setSecsPerPixel( m_secsPP );
-  m_lowerScale->setStart( m_start );
+  setSecsPP( double( m_start.secsTo( m_end ) ) / width() );
 }
 
 /******************************************* resizeEvent *****************************************/
@@ -196,10 +165,7 @@ void GanttView::resizeEvent( QResizeEvent* event )
 {
   // ensure view height just fits the scroll area height
   m_view->setFixedHeight( event->size().height() );
-
-  // ensure view width is never less than chart width
-  if ( m_chart->chartWidth() > width() ) m_view->setFixedWidth( m_chart->chartWidth() );
-  else                                   m_view->setFixedWidth( width() );
+  setWidth();
 
   // call QScrollArea::resizeEvent to handle horizontal scroll bar etc
   QScrollArea::resizeEvent( event );
@@ -213,10 +179,50 @@ int GanttView::scaleHeight()
   return m_upperScale->height() + m_lowerScale->height();
 }
 
+/******************************************* setStart ********************************************/
+
+void GanttView::setStart( QDateTime start )
+{
+  // set gantt start date-time
+  m_start = start;
+  m_upperScale->setStart( m_start );
+  m_lowerScale->setStart( m_start );
+  m_chart->setStart( m_start );
+}
+
+/******************************************** setEnd *********************************************/
+
+void GanttView::setEnd( QDateTime end )
+{
+  // set gantt end date-time
+  m_end = end;
+  m_chart->setEnd( m_end );
+}
+
+/****************************************** setSecsPP ********************************************/
+
+void GanttView::setSecsPP( double spp )
+{
+  // set gantt seconds per pixel
+  m_secsPP = spp;
+  m_upperScale->setSecsPerPixel( m_secsPP );
+  m_lowerScale->setSecsPerPixel( m_secsPP );
+  m_chart->setSecsPerPixel( m_secsPP );
+}
+
+/******************************************* setWidth ********************************************/
+
+void GanttView::setWidth()
+{
+  // ensure view width is never less than chart width
+  if ( m_chart->chartWidth() > width() ) m_view->setFixedWidth( m_chart->chartWidth() );
+  else                                   m_view->setFixedWidth( width() );
+}
+
 /******************************************* setTable ********************************************/
 
 void GanttView::setTable( QTableView* table )
 {
   // sets the table associated with the gantt
-  m_chart->setTable( table );
+  if ( m_chart ) m_chart->setTable( table );
 }

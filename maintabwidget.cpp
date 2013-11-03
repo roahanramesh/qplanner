@@ -20,6 +20,7 @@
 
 #include "maintabwidget.h"
 #include "ui_maintabwidget.h"
+#include "xdatetime.h"
 
 #include "plan.h"
 #include "tasksmodel.h"
@@ -33,6 +34,7 @@
 #include "commandpropertieschange.h"
 
 #include <QMessageBox>
+#include <QXmlStreamWriter>
 
 /*************************************************************************************************/
 /***************************** Tabbed widget containing main screens *****************************/
@@ -208,6 +210,7 @@ void MainTabWidget::setModels()
   ui->resourcesView->setModel( (QAbstractItemModel*)plan->resources() );
   ui->calendarsView->setModel( (QAbstractItemModel*)plan->calendars() );
   ui->daysView->setModel( (QAbstractItemModel*)plan->days() );
+  ui->ganttView->setTable( ui->tasksView );
 }
 
 /****************************************** endEdits *********************************************/
@@ -235,6 +238,45 @@ int MainTabWidget::indexOfTasksTab()
 {
   // return index of tasks tab
   return indexOf( ui->tasksGanttTab );
+}
+
+/***************************************** saveToStream ******************************************/
+
+void MainTabWidget::saveToStream( QXmlStreamWriter* stream )
+{
+  // write display data to xml stream
+  stream->writeStartElement( "display-data" );
+
+  stream->writeStartElement( "gantt" );
+  stream->writeAttribute( "start", XDateTime( ui->ganttView->start() ).toText() );
+  stream->writeAttribute( "end", XDateTime( ui->ganttView->end() ).toText() );
+  stream->writeAttribute( "secspp", QString("%1").arg( ui->ganttView->secsPP() ) );
+  stream->writeAttribute( "upper-scale", "TODO" );
+  stream->writeAttribute( "lower-scale", "TODO" );
+  stream->writeEndElement();  // gantt
+
+  stream->writeEndElement();  // display-data
+}
+
+/************************************** getGanttAttributes ***************************************/
+
+void MainTabWidget::getGanttAttributes( QDateTime& start, QDateTime& end, double& secspp )
+{
+  // get gantt attributes start/end/secsPP
+  start  = ui->ganttView->start();
+  end    = ui->ganttView->end();
+  secspp = ui->ganttView->secsPP();
+}
+
+/************************************** setGanttAttributes ***************************************/
+
+void MainTabWidget::setGanttAttributes( QDateTime start, QDateTime end, double secspp )
+{
+  // set gantt attributes start/end/secsPP
+  ui->ganttView->setStart( start );
+  ui->ganttView->setEnd( end );
+  ui->ganttView->setSecsPP( secspp );
+  ui->ganttView->setWidth();
 }
 
 /************************************** tasksSelectionModel **************************************/

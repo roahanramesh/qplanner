@@ -24,6 +24,7 @@
 #include "tasksmodel.h"
 #include "task.h"
 #include "maintabwidget.h"
+#include "xdatetime.h"
 
 #include <QUndoView>
 #include <QFileDialog>
@@ -239,10 +240,10 @@ bool MainWindow::loadPlan( QString filename )
       stream.raiseError( QString("Unrecognised element '%1'").arg(stream.name().toString()) );
   }
 
-  // close file, check if error occured while loading
-  file.close();
+  // check if error occured while loading
   if ( stream.hasError() )
   {
+    file.close();
     message( QString("Failed to load '%1' (%2)").arg(filename).arg(stream.errorString()) );
     delete newPlan;
     plan = oldPlan;
@@ -252,11 +253,16 @@ bool MainWindow::loadPlan( QString filename )
   // check if plan is ok
   if ( !newPlan->isOK() )
   {
+    file.close();
     message( QString("Invalid plan in '%1'").arg(filename) );
     delete newPlan;
     plan = oldPlan;
     return false;
   }
+
+  // no errors when loading plan, and plan is ok, so load display data
+  loadDisplayData( &stream );
+  file.close();
 
   // delete old plan, set models, and schedule
   delete oldPlan;
@@ -266,6 +272,40 @@ bool MainWindow::loadPlan( QString filename )
   setTitle( plan->filename() );
   m_tabs->slotUpdatePlanTab();
   return true;
+}
+
+/**************************************** loadDisplayData ****************************************/
+
+void MainWindow::loadDisplayData( QXmlStreamReader* stream )
+{
+  // load display data from xml stream
+  while ( !stream->atEnd() )
+  {
+    stream->readNext();
+    if ( stream->isStartElement() )
+    {
+      if ( stream->name() == "gantt" )
+      {
+        QDateTime start, end;
+        double    spp;
+        m_tabs->getGanttAttributes( start, end, spp );
+        foreach( QXmlStreamAttribute attribute, stream->attributes() )
+        {
+          if ( attribute.name() == "start" )
+            start = XDateTime::fromText( attribute.value().toString() );
+
+          if ( attribute.name() == "end" )
+            end = XDateTime::fromText( attribute.value().toString() );;
+
+          if ( attribute.name() == "secspp" )
+            spp = attribute.value().toString().toDouble();
+        }
+        m_tabs->setGanttAttributes( start, end, spp );
+        foreach( MainTabWidget* tabs, m_windows )
+          if (tabs) tabs->setGanttAttributes( start, end, spp );
+      }
+    }
+  }
 }
 
 /******************************************** savePlan *******************************************/
@@ -294,6 +334,7 @@ bool MainWindow::savePlan( QString filename )
   stream.writeAttribute( "user", who );
   stream.writeAttribute( "when", when.toString(Qt::ISODate) );
   plan->saveToStream( &stream );
+  m_tabs->saveToStream( &stream );
   stream.writeEndDocument();
 
   // close the file and display useful message

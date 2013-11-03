@@ -145,6 +145,7 @@ void  Plan::saveToStream( QXmlStreamWriter* stream )
   stream->writeAttribute( "calendar", QString("%1").arg(plan->index(m_calendar)) );
   stream->writeAttribute( "datetime-format", m_datetime_format );
   stream->writeAttribute( "notes", m_notes );
+  stream->writeEndElement();
 }
 
 /**************************************** loadFromStream *****************************************/
@@ -191,6 +192,9 @@ void  Plan::loadFromStream( QXmlStreamReader* stream, QString file )
           if ( attribute.name() == "notes" )
             m_notes = attribute.value().toString();
         }
+
+      // if stream name is display-data then have finished loading plan
+      if ( stream->name() == "display-data" ) return;
     }
   }
 }
