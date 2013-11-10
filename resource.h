@@ -24,6 +24,8 @@
 #include <QString>
 #include <QDate>
 
+#include "employment.h"
+
 class Calendar;
 class QXmlStreamWriter;
 class QXmlStreamReader;
@@ -49,6 +51,10 @@ public:
   Calendar*         calendar() const { return m_calendar; }          // return resource calendar
   QList<QString>    assignable() const;                              // return assignable names
   bool              hasTag( QString ) const;                         // return true if tag matches
+  void              clearEmployment( Task* );                        // remove employment on given task
+  float             assignable( QDateTime, QDateTime& );             // return quantity and change date-time
+  void              employ( Task*, float, QDateTime, QDateTime );    // register employment on given task
+  float             work( const Task* );                             // return work done on task in days
 
   enum sections                            // sections to be displayed by view
   {
@@ -85,6 +91,7 @@ private:
   float              m_cost;               // cost TODO
   Calendar*          m_calendar;           // calendar for resource
   QString            m_comment;            // free text
+  Employment         m_employment;         // contains resource employment from scheduling
 };
 
 #endif // RESOURCE_H

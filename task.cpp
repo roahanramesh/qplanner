@@ -339,7 +339,7 @@ QVariant  Task::dataDisplayRole( int col ) const
 
   if ( col == SECTION_DURATION ) return duration().toString();
 
-  if ( col == SECTION_WORK ) return plan->work( this ).toString();
+  if ( col == SECTION_WORK ) return TimeSpan( work(), TimeSpan::UNIT_DAYS ).toString();
 
   if ( col == SECTION_TYPE )
   {
@@ -433,6 +433,31 @@ TimeSpan Task::duration() const
   if ( isSummary() ) return plan->calendar()->workBetween( m_gantt.start(), m_gantt.end() );
 
   return m_duration;
+}
+
+/********************************************* work **********************************************/
+
+float Task::work() const
+{
+  // return task (or summary) work
+  float work = 0.0;
+
+  // loop through all resources allocated to task
+  foreach( Resource* res, m_resources.alloc.keys() )
+    work += res->work( this );
+
+  // also if summary include work from sub-tasks
+  if ( isSummary() )
+  {
+    int here = plan->index( (Task*)this );
+    for( int t = here+1 ; t <= m_summaryEnd ; t++ )
+    {
+      Task*  task = plan->task( t );
+      if ( !task->isSummary() && !task->isNull() ) work += task->work();
+    }
+  }
+
+  return work;
 }
 
 /********************************************* start *********************************************/

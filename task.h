@@ -59,6 +59,7 @@ public:
   QDateTime         start() const;                                // return task (or summary) start date-time
   QDateTime         end() const;                                  // return task (or summary) end date-time
   TimeSpan          duration() const;                             // return task (or summary) duration
+  float             work() const;                                 // return task (or summary) work (in days)
   bool              isExpanded() const { return m_expanded; }     // if summary is it expanded to show subtasks
   bool              isSummary() const { return m_summaryEnd >= 0; }    // is this task a summary
   int               summaryEnd() const { return m_summaryEnd; }   // return summary last sub-task id, or -1 if not summary

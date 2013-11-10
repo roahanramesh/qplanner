@@ -24,6 +24,7 @@
 #include "task.h"
 #include "plan.h"
 #include "calendar.h"
+#include "resource.h"
 
 /*************************************************************************************************/
 /**************************** Scheduling methods for single plan task ****************************/
@@ -87,7 +88,6 @@ void  Task::schedule_ASAP_FDUR()
   else                 m_end = end;
 
   // iterate through any assigned resources via quick access container
-  plan->clearUse( this );
   QHash<Resource*, float>::iterator i;
   for( i = m_resources.alloc.begin() ; i != m_resources.alloc.end() ; ++i )
   {
@@ -97,20 +97,31 @@ void  Task::schedule_ASAP_FDUR()
     QDateTime  end   = m_end;
     QDateTime  change;
 
+    if ( isSummary() )
+    {
+      start = this->start();
+      end   = this->end();
+    }
+
+    // remove any employment for this task as it is about to be re-calculated
+    res->clearEmployment( this );
+
     // repeat until reach end of fixed duration task
+    QDateTime finish = end;
     do
     {
-      // get how much resource is free
-      float free = plan->free( res, start, change );
-      // if more free than number allocated, limit to number allocated
-      if ( free > num ) free = num;
+      // get how much resource is assignable
+      float assign = res->assignable( start, change );
 
-      // register resource use on this task for period start to end
+      // if more assignable than number allocated, limit to number allocated
+      if ( assign > num ) assign = num;
+
+      // register resource employment on this task for period start to end
       if ( change < end ) end = change;
-      plan->use( res, this, free, start, end );
+      res->employ( this, assign, start, end );
       start = end;
     }
-    while ( start != m_end );
+    while ( start != finish );
   }
 
   // set gantt task bar data

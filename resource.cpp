@@ -18,11 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <QVariant>
-
 #include "plan.h"
 #include "resource.h"
 #include "calendar.h"
+#include "employment.h"
 #include "commandresourcesetdata.h"
 
 #include <QXmlStreamWriter>
@@ -40,6 +39,7 @@ Resource::Resource()
   m_cost         = 0.0;
   m_calendar     = nullptr;
   m_ability      = 1.0;
+  m_employment.setResource( this );
 }
 
 /****************************************** constructor ******************************************/
@@ -54,6 +54,7 @@ Resource::Resource( bool unassigned )
   m_calendar     = nullptr;
   m_ability      = 1.0;
   m_comment      = "Unassigned";
+  m_employment.setResource( this );
 }
 
 /****************************************** constructor ******************************************/
@@ -282,4 +283,36 @@ bool Resource::hasTag( QString tag ) const
   if ( tag == m_alias )    return true;
 
   return false;
+}
+
+/**************************************** clearEmployment ****************************************/
+
+void Resource::clearEmployment( Task* task )
+{
+  // remove employment on given task
+  m_employment.clear( task );
+}
+
+/******************************************** hasTag *********************************************/
+
+float Resource::assignable( QDateTime dt, QDateTime& change )
+{
+  // return quantity of resource that can be assigned at given date-time and this changes
+  return m_employment.assignable( dt, change );
+}
+
+/******************************************** employ *********************************************/
+
+void Resource::employ( Task* task, float num, QDateTime start, QDateTime end )
+{
+  // register employment on given task
+  m_employment.employ( task, num, start, end );
+}
+
+/********************************************* work **********************************************/
+
+float Resource::work( const Task* task )
+{
+  // return work done on task in days
+  return m_employment.work( task );
 }
