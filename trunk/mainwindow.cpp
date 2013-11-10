@@ -29,6 +29,7 @@
 #include <QUndoView>
 #include <QFileDialog>
 #include <QXmlStreamWriter>
+#include <QUndoStack>
 
 /*************************************************************************************************/
 /********************* Main application window showing tabbed main screens ***********************/
@@ -56,11 +57,6 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
   connect( m_tabs, SIGNAL(currentChanged(int)), this, SLOT(slotTabChange(int)),
            Qt::UniqueConnection );
 
-  // ensure when select changes on tasks view, indent & outdent are enabled correctly
-  connect( m_tabs->tasksSelectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-           this, SLOT(slotTaskSelectionChanged(QItemSelection,QItemSelection)),
-           Qt::UniqueConnection );
-
   // update edit menu with undostack undo & redo actions
   setModels();
 }
@@ -86,11 +82,6 @@ void MainWindow::setModels()
   // set undostack for undoview
   if ( m_undoview != nullptr ) m_undoview->setStack( plan->undostack() );
 
-  // connect signal for tasks selection & data change to slots
-  connect( plan->tasks(), SIGNAL(dataChanged(QModelIndex,QModelIndex)),
-           this, SLOT(slotTaskDataChanged(QModelIndex,QModelIndex)),
-           Qt::UniqueConnection );
-
   // set models for each main tab widget
   m_tabs->setModels();
   foreach( MainTabWidget* tabs, m_windows )
@@ -99,6 +90,16 @@ void MainWindow::setModels()
       tabs->setModels();
       tabs->updateGantt();
     }
+
+  // ensure is task data changed, indent & outdent are enabled correctly
+  connect( plan->tasks(), SIGNAL(dataChanged(QModelIndex,QModelIndex)),
+           this, SLOT(slotTaskDataChanged(QModelIndex,QModelIndex)),
+           Qt::UniqueConnection );
+
+  // ensure when select changes on tasks view, indent & outdent are enabled correctly
+  connect( m_tabs->tasksSelectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+           this, SLOT(slotTaskSelectionChanged(QItemSelection,QItemSelection)),
+           Qt::UniqueConnection );
 }
 
 /******************************************* message *********************************************/
@@ -132,7 +133,7 @@ void MainWindow::setTitle( QString text )
 
 void MainWindow::slotTaskDataChanged( const QModelIndex& index, const QModelIndex& )
 {
-  // check if data change affects indent/outdent
+  // ensure if task becomes not-null (because title added) check if indent/outdent affected
   if ( index.column() == Task::SECTION_TITLE )
     slotTaskSelectionChanged( QItemSelection(), QItemSelection() );
 }

@@ -24,13 +24,15 @@
 #include "calendar.h"
 
 /*************************************************************************************************/
-/************************ Contains scheduled resource employment on tasks ************************/
+/*********************** Contains scheduled task employment for a resource ***********************/
 /*************************************************************************************************/
 
 /****************************************** constructor ******************************************/
 
 Employment::Employment()
 {
+  // initialise private variables
+  m_res = nullptr;
 }
 
 /********************************************* clear *********************************************/
@@ -46,81 +48,46 @@ void Employment::clear()
 void Employment::clear( const Task* task )
 {
   // remove employment records related to specified task
-  QMutableHashIterator<Resource*, TaskEmployment> i( m_employment );
-  while( i.hasNext() )
-  {
-    i.next();
-    if ( task == i.value().task ) i.remove();
-  }
+  m_employment.remove( (Task*)task );
 }
 
 /********************************************* work **********************************************/
 
-TimeSpan Employment::work( const Task* task )
+float Employment::work( const Task* task )
 {
 
-  // loop through all employment records to sum work done on specified task
-  float work = 0.0;
-  QHashIterator<Resource*, TaskEmployment> i( m_employment );
-  while( i.hasNext() )
-  {
-    i.next();
-    if ( task != i.value().task ) continue;
+  // loop through all employment records on specified task and sum work done
+  float      work = 0.0;
+  Calendar*  cal  = m_res->m_calendar;
+  foreach( Employ emp, m_employment.value( (Task*)task ) )
+    work += cal->workBetween( emp.start, emp.end ).number() * emp.num;
 
-    foreach( Employ use, i.value().list )
-    {
-      Calendar*  cal = i.key()->calendar();
-      work += cal->workBetween( use.start, use.end ).number() * use.num;
-    }
-  }
-
-  return TimeSpan( work, TimeSpan::UNIT_DAYS );
+  return work;
 }
 
 /******************************************** insert *********************************************/
 
-void Employment::employ( Resource* res, Task* task, float quantity, QDateTime start, QDateTime end )
+void Employment::employ( Task* task, float quantity, QDateTime start, QDateTime end )
 {
   // create employment record
-  Employ usage;
-  usage.start  = start;
-  usage.end    = end;
-  usage.num    = quantity;
+  Q_ASSERT( !start.isNull() );
+  Q_ASSERT( !end.isNull() );
+  Employ emp;
+  emp.start  = start;
+  emp.end    = end;
+  emp.num    = quantity;
 
-  // loop through resource records to see if resource already employed on specified task
-  bool  notFound = true;
-  QMultiHash<Resource*, TaskEmployment>::iterator i = m_employment.find( res );
-  while( i != m_employment.end() && i.key() == res )
-  {
-    // if employment record is for specified task, add usage
-    if ( i.value().task == task )
-    {
-      notFound = false;
-      i.value().list.append( usage );
-      break;
-    }
-
-    ++i;
-  }
-
-  // if no employment record found for specified task, insert new TaskEmployment
-  if ( notFound )
-  {
-    TaskEmployment emp;
-    emp.task = task;
-    emp.list.append( usage );
-
-    m_employment.insert( res, emp );
-  }
+  m_employment[ task ].append( emp );
 }
 
-/********************************************* free **********************************************/
+/****************************************** assignable *******************************************/
 
-float Employment::free( Resource* res, QDateTime dt, QDateTime& change )
+float Employment::assignable( QDateTime dt, QDateTime& change )
 {
   // return resource quantity free to be allocated and when this quantity changes
-  float avail = available( res, dt, change );
+  float avail = available( dt, change );
 
+/*
   // free is difference between available and already allocated
   QMultiHash<Resource*, TaskEmployment>::iterator i = m_employment.find( res );
   while( i != m_employment.end() && i.key() == res )
@@ -131,23 +98,24 @@ float Employment::free( Resource* res, QDateTime dt, QDateTime& change )
 
     ++i;
   }
+*/
 
   return avail;
 }
 
 /******************************************* available *******************************************/
 
-float Employment::available( Resource* res, QDateTime dt, QDateTime& change )
+float Employment::available( QDateTime dt, QDateTime& change )
 {
   // return resource quantity available to be allocated and when this quantity changes
-  QDate  start = res->m_start;
+  QDate  start = m_res->m_start;
   if ( start.isValid() && dt.date() < start )  // is dt before resource availability start?
   {
     change = QDateTime( start );
     return 0.0;
   }
 
-  change = QDateTime( res->m_end ).addDays(1);
+  change = QDateTime( m_res->m_end ).addDays(1);
   if ( !change.isValid() ) change = plan->MAX_DATETIME;
   if ( dt >= change )                          // is dt after resource availability end?
   {
@@ -155,5 +123,5 @@ float Employment::available( Resource* res, QDateTime dt, QDateTime& change )
     return 0.0;
   }
 
-  return res->m_availability;
+  return m_res->m_availability;
 }

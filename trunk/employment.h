@@ -21,31 +21,28 @@
 #ifndef EMPLOYMENT_H
 #define EMPLOYMENT_H
 
-#include <QMultiHash>
+#include <QHash>
 #include <QDateTime>
-
-#include "timespan.h"
 
 class Task;
 class Resource;
 
 /*************************************************************************************************/
-/************************ Contains scheduled resource employment on tasks ************************/
+/*********************** Contains scheduled task employment for a resource ***********************/
 /*************************************************************************************************/
 
 class Employment
 {
 public:
-  Employment();                                           // constructor
+  Employment();                                             // constructor
 
-  void       clear();                                     // clears all contents
-  void       clear( const Task* );                        // clears contents related to specified task
-  TimeSpan   work( const Task* );                         // return work done on specified task
-  void       employ( Resource*, Task*, float,
-                     QDateTime, QDateTime );              // register resource employment
-  float      free( Resource*, QDateTime, QDateTime& );    // return resource free to be employed
-  float      available( Resource*, QDateTime,
-                        QDateTime& );                     // return resource available to be employed
+  void       setResource( Resource* r ) { m_res = r; }      // set resource internal variable
+  void       clear();                                       // clears all contents
+  void       clear( const Task* );                          // clears contents related to specified task
+  float      work( const Task* );                           // return work done on specified task in days
+  void       employ( Task*, float, QDateTime, QDateTime );  // register resource employment
+  float      assignable( QDateTime, QDateTime& );           // return resource free to be employed
+  float      available( QDateTime, QDateTime& );            // return resource available to be employed
 
   struct Employ
   {
@@ -54,14 +51,9 @@ public:
     float         num;            // must be greater than zero
   };
 
-  struct TaskEmployment
-  {
-    Task*          task;          // nullptr not allowed
-    QList<Employ>  list;
-  };
-
 private:
-  QMultiHash<Resource*,TaskEmployment>  m_employment;      // container of all employment records
+  QHash<Task*,QList<Employ> >  m_employment;                // container of all employment records
+  Resource*                    m_res;                       // pointer to resource
 };
 
 #endif // EMPLOYMENT_H
