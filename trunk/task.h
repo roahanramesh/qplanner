@@ -73,6 +73,7 @@ public:
   Predecessors&     predecessors() { return m_predecessors; }     // return task predecessors by reference
   void              setPredecessors( QString p ) { m_predecessors = p; }    // set task predecessors
   bool              predecessorsOK() const;                       // return true if no forbidden predecessors
+  int               priority() const { return m_priority; }       // return task priority
 
   GanttData*        ganttData() { return &m_gantt; }              // return pointer to gantt data
   static QString    typeToString( int );                          // return type string equivalent
@@ -82,6 +83,7 @@ public:
   void              schedule();                                   // schedule task
   void              schedule_ASAP_FDUR();                         // schedule ASAP fixed duration
   QDateTime         scheduleStart() const;                        // determine start based on predecessors
+  QDateTime         scheduleEnd_ASAP_FDUR() const;                // determine end based on duration
 
   enum sections                 // sections to be displayed by view
   {

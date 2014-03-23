@@ -295,10 +295,10 @@ void Resource::clearEmployment( Task* task )
 
 /******************************************** hasTag *********************************************/
 
-float Resource::assignable( QDateTime dt, QDateTime& change )
+float Resource::assignable( QDateTime now, QDateTime& change, int priority )
 {
   // return quantity of resource that can be assigned at given date-time and this changes
-  return m_employment.assignable( dt, change );
+  return m_employment.assignable( now, change, priority );
 }
 
 /******************************************** employ *********************************************/

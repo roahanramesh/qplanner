@@ -19,8 +19,9 @@
  ***************************************************************************/
 
 #include "employment.h"
-#include "resource.h"
 #include "plan.h"
+#include "task.h"
+#include "resource.h"
 #include "calendar.h"
 
 /*************************************************************************************************/
@@ -72,20 +73,69 @@ void Employment::employ( Task* task, float quantity, QDateTime start, QDateTime 
   // create employment record
   Q_ASSERT( !start.isNull() );
   Q_ASSERT( !end.isNull() );
+  Q_ASSERT( start < end );
+  Q_ASSERT( quantity > 0.0 );
   Employ emp;
   emp.start  = start;
   emp.end    = end;
   emp.num    = quantity;
 
   m_employment[ task ].append( emp );
+
+  // TODO check if this cases over-employment, and if it does reduce other employment(s)!
 }
 
 /****************************************** assignable *******************************************/
 
-float Employment::assignable( QDateTime dt, QDateTime& change )
+float Employment::assignable( QDateTime now, QDateTime& change, int priority )
 {
-  // return resource quantity free to be allocated and when this quantity changes
-  float avail = available( dt, change );
+  // return resource quantity available to be allocated and when this quantity changes
+  float avail = available( now, change );
+
+  QHash<Task*,QList<Employ> >::const_iterator i = m_employment.constBegin();
+  while( i != m_employment.constEnd() )
+  {
+    qDebug("Employment::assignable()  Task*=%p  list size=%i", i.key(), i.value().size() );
+
+    Task* task = i.key();
+    // if other task has lower priority then its employment assigments are ignored
+    if ( task->priority() >= priority )
+      foreach( Employ emp, i.value() )
+      {
+        qDebug(" --- s(%s)  e(%s)  %f", qPrintable(emp.start.toString()), qPrintable(emp.end.toString()), emp.num );
+
+        // if employment ends before now, move on as not of interest
+        if ( emp.end <= now ) continue;
+
+        // if employement start after now but before change, make this new change and move on
+        if ( emp.start > now )
+        {
+          if ( emp.start < change ) change = emp.start;
+          continue;
+        }
+
+        // employment overlaps with now, if end before change, make this new change
+        if ( emp.end < change ) change = emp.end;
+
+        if ( task->priority() == priority )
+        {
+          // other task has equal priroty so equal access to resources
+          qDebug(" --- equal priority %i",priority );
+
+
+
+        }
+        else
+        {
+          // other task has higher priority so can't touch it's resourcing
+          avail -= emp.num;
+        }
+      }
+
+    ++i;
+  }
+
+
 
 /*
   // free is difference between available and already allocated
@@ -115,8 +165,10 @@ float Employment::available( QDateTime dt, QDateTime& change )
     return 0.0;
   }
 
-  change = QDateTime( m_res->m_end ).addDays(1);
-  if ( !change.isValid() ) change = plan->MAX_DATETIME;
+  QDate  end = m_res->m_end;
+  if ( end.isValid() ) change = QDateTime( end.addDays(1) );
+  else                 change = plan->MAX_DATETIME;
+
   if ( dt >= change )                          // is dt after resource availability end?
   {
     change = plan->MAX_DATETIME;

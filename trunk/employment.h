@@ -41,13 +41,13 @@ public:
   void       clear( const Task* );                          // clears contents related to specified task
   float      work( const Task* );                           // return work done on specified task in days
   void       employ( Task*, float, QDateTime, QDateTime );  // register resource employment
-  float      assignable( QDateTime, QDateTime& );           // return resource free to be employed
+  float      assignable( QDateTime, QDateTime&, int );      // return resource free to be employed
   float      available( QDateTime, QDateTime& );            // return resource available to be employed
 
   struct Employ
   {
-    QDateTime     start;          // null not allowed
-    QDateTime     end;            // null not allowed
+    QDateTime     start;          // null not allowed, and must be less than end
+    QDateTime     end;            // null not allowed, and must be greater than start
     float         num;            // must be greater than zero
   };
 
