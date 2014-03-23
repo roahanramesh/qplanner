@@ -52,7 +52,7 @@ public:
   QList<QString>    assignable() const;                              // return assignable names
   bool              hasTag( QString ) const;                         // return true if tag matches
   void              clearEmployment( Task* );                        // remove employment on given task
-  float             assignable( QDateTime, QDateTime& );             // return quantity and change date-time
+  float             assignable( QDateTime, QDateTime&, int );        // return quantity and change date-time
   void              employ( Task*, float, QDateTime, QDateTime );    // register employment on given task
   float             work( const Task* );                             // return work done on task in days
 

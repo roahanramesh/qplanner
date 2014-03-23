@@ -78,16 +78,11 @@ void  Task::schedule_ASAP_FDUR()
 {
   qDebug("Task::schedule_ASAP_FDUR() STARTING !!! %i %s",plan->index(this),qPrintable(m_title));
 
-  // schedule ASAP fixed duration - first get start from predecessors
+  // schedule ASAP Fixed DURation task
   m_start = scheduleStart();
+  m_end   = scheduleEnd_ASAP_FDUR();
 
-  // determine end of fixed duration task using plan calendar
-  QDateTime end = plan->calendar()->addTimeSpan( m_start, m_duration );
-  end = plan->calendar()->workDown( end );
-  if ( end < m_start ) m_end = m_start;
-  else                 m_end = end;
-
-  // iterate through any assigned resources via quick access container
+  // register resource employment for each assigned resources
   QHash<Resource*, float>::iterator i;
   for( i = m_resources.alloc.begin() ; i != m_resources.alloc.end() ; ++i )
   {
@@ -106,22 +101,26 @@ void  Task::schedule_ASAP_FDUR()
     // remove any employment for this task as it is about to be re-calculated
     res->clearEmployment( this );
 
-    // repeat until reach end of fixed duration task
-    QDateTime finish = end;
+    // register employment - repeat until reach end of fixed duration task
     do
     {
       // get how much resource is assignable
-      float assign = res->assignable( start, change );
+      float assignable = res->assignable( start, change, m_priority );
 
-      // if more assignable than number allocated, limit to number allocated
-      if ( assign > num ) assign = num;
+      // if change is later than end, limit to end
+      if ( change > end ) change = end;
 
-      // register resource employment on this task for period start to end
-      if ( change < end ) end = change;
-      res->employ( this, assign, start, end );
-      start = end;
+      if ( assignable > 0.0 )
+      {
+        // if more assignable than number allocated, limit to number allocated
+        if ( assignable > num ) assignable = num;
+
+        res->employ( this, assignable, start, change );
+      }
+
+      start = change;
     }
-    while ( start != finish );
+    while ( start < end );
   }
 
   // set gantt task bar data
@@ -140,23 +139,35 @@ QDateTime  Task::scheduleStart() const
   // get start based on this task's predecessors
   QDateTime  start = plan->calendar()->workUp( m_predecessors.start() );
 
-  // if indented also check start against summary predecessors
-  int summary = plan->index( (Task*)this );
+  // if indented also check start against summary(s) predecessors
+  int index = plan->index( (Task*)this );
   for( int indent = m_indent ; indent > 0 ; indent-- )
   {
     // find task summary
-    while ( plan->task(summary)->isNull() ||
-            plan->task(summary)->indent() >= indent ) summary--;
+    while ( plan->task(index)->isNull() ||
+            plan->task(index)->indent() >= indent ) index--;
 
-    // check if start from summary predecessors is later, use it instead
-    QDateTime s = plan->calendar()->workUp( plan->task(summary)->predecessors().start() );
-    if ( s > start ) start = s;
+    // if start from summary predecessors is later, use it instead
+    QDateTime summaryStart = plan->calendar()->workUp( plan->task(index)->predecessors().start() );
+    if ( summaryStart > start ) start = summaryStart;
   }
 
   // if not set by predecessors, task start is plan start
   if ( start <= plan->calendar()->workUp( plan->MIN_DATETIME ) ) return plan->start();
 
   return start;
+}
+
+/************************************* scheduleEnd_ASAP_FDUR *************************************/
+
+QDateTime  Task::scheduleEnd_ASAP_FDUR() const
+{
+  // determine end of fixed duration task using plan calendar
+  QDateTime end = plan->calendar()->addTimeSpan( m_start, m_duration );
+  end = plan->calendar()->workDown( end );
+  if ( end < m_start ) return m_start;
+
+  return end;
 }
 
 #endif // TASK_SCHEDULE_H

@@ -35,6 +35,7 @@
 // Progress 2012-12-16 default days and calendars, user can enter tasks and resources with undo
 // Progress 2013-05-16 updated to use Qt 5, QtCreator 2.7 and C++11
 // Progress 2013-08-07 user can save plan to, and load from, xml files
+// Progress 2013-12-28 user can open new windows, now uses Qt 5.2 + QtCreator 3
 /*************************************************************************************************/
 
 Plan*        plan;    // global variable
