@@ -18,60 +18,38 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef COMMANDRESOURCESETDATA_H
-#define COMMANDRESOURCESETDATA_H
+#ifndef RESOURCEWORKITERATOR_H
+#define RESOURCEWORKITERATOR_H
 
-#include <QUndoCommand>
-
-#include "plan.h"
 #include "resource.h"
-#include "resourcesmodel.h"
+#include "xdatetime.h"
 
 /*************************************************************************************************/
-/*********************** Command for setting Resource data via QUndoStack ************************/
+/****************************** Iterator for resource work periods *******************************/
 /*************************************************************************************************/
 
-class CommandResourceSetData : public QUndoCommand
+class ResourceWorkIterator
 {
 public:
-  CommandResourceSetData( int row, int col, const QVariant& new_value, const QVariant& old_value )
-  {
-    // set private variables for new and old values
-    m_row       = row;
-    m_column    = col;
-    m_new_value = new_value;
-    m_old_value = old_value;
+  ResourceWorkIterator();                                              // constructor
 
-    // construct command description
-    setText( QString("Resource %1 %2 = %3")
-             .arg( row )
-             .arg( Resource::headerData( col ).toString() )
-             .arg( new_value.toString() ) );
-  }
+  DateTime      start() { return m_start; }
+  DateTime      end() { return m_end; }
+  float         efficacy() { return m_efficacy; }
+  float         available() { return m_available; }
 
-  void  redo()
-  {
-    // update resource with new value
-    plan->resource( m_row )->setDataDirect( m_column, m_new_value );
-    plan->resources()->emitDataChangedRow( m_row );
-
-    if ( m_row != Resource::SECTION_COMMENT ) plan->schedule();
-  }
-
-  void  undo()
-  {
-    // revert resource back to old value
-    plan->resource( m_row )->setDataDirect( m_column, m_old_value );
-    plan->resources()->emitDataChangedRow( m_row );
-
-    if ( m_row != Resource::SECTION_COMMENT ) plan->schedule();
-  }
+  Resource*     resource() { return m_res;}
+  void          nextWorkPeriod();
+  void          previousWorkPeriod();
+  void          allocate();
 
 private:
-  int       m_row;
-  int       m_column;
-  QVariant  m_new_value;
-  QVariant  m_old_value;
+  DateTime      m_start;            // work period start
+  DateTime      m_end;              // work period end
+  float         m_efficacy;         // units of work per minute
+  float         m_available;        // maximum availability of resource
+
+  Resource*     m_res;              // pointer to resource
 };
 
-#endif // COMMANDRESOURCESETDATA_H
+#endif // RESOURCEWORKITERATOR_H
