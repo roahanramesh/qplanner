@@ -29,6 +29,7 @@ SOURCES += main.cpp \
     resource.cpp \
     resourcesdelegate.cpp \
     resourcesmodel.cpp \
+    resourceworkiterator.cpp \
     task.cpp \
     taskresources.cpp \
     tasksdelegate.cpp \
@@ -60,6 +61,7 @@ HEADERS  += \
     resource.h \
     resourcesdelegate.h \
     resourcesmodel.h \
+    resourceworkiterator.h \
     task.h \
     task_schedule.h \
     taskresources.h \

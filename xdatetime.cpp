@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013 by Richard Crook                                   *
+ *   Copyright (C) 2014 by Richard Crook                                   *
  *   http://code.google.com/p/qplanner                                     *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -24,10 +24,19 @@
 /**************************** XDateTime provides an enhanced QDateTime ***************************/
 /*************************************************************************************************/
 
+const QDateTime  XDateTime::DT_ANCHOR = QDateTime( QDate(1,1,1) );   // const QDateTime anchor for typedef DataTime
+
 /****************************************** constuctor *******************************************/
 
 XDateTime::XDateTime() : QDateTime()
 {
+}
+
+/****************************************** constuctor *******************************************/
+
+XDateTime::XDateTime( DateTime dt ) : QDateTime( DT_ANCHOR.addSecs( dt * Q_INT64_C(60) ) )
+{
+  // converts DateTime quint32 in minutes offset from DT_ANCHOR to QDateTime
 }
 
 /****************************************** constuctor *******************************************/

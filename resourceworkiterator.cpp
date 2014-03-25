@@ -18,60 +18,36 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef COMMANDRESOURCESETDATA_H
-#define COMMANDRESOURCESETDATA_H
-
-#include <QUndoCommand>
-
-#include "plan.h"
-#include "resource.h"
-#include "resourcesmodel.h"
+#include "resourceworkiterator.h"
 
 /*************************************************************************************************/
-/*********************** Command for setting Resource data via QUndoStack ************************/
+/****************************** Iterator for resource work periods *******************************/
 /*************************************************************************************************/
 
-class CommandResourceSetData : public QUndoCommand
+/****************************************** constructor ******************************************/
+
+ResourceWorkIterator::ResourceWorkIterator()
 {
-public:
-  CommandResourceSetData( int row, int col, const QVariant& new_value, const QVariant& old_value )
-  {
-    // set private variables for new and old values
-    m_row       = row;
-    m_column    = col;
-    m_new_value = new_value;
-    m_old_value = old_value;
+  qDebug("ResourceWorkIterator::ResourceWorkIterator() - NOT YET IMPLEMENTED");
+}
 
-    // construct command description
-    setText( QString("Resource %1 %2 = %3")
-             .arg( row )
-             .arg( Resource::headerData( col ).toString() )
-             .arg( new_value.toString() ) );
-  }
+/**************************************** nextWorkPeriod *****************************************/
 
-  void  redo()
-  {
-    // update resource with new value
-    plan->resource( m_row )->setDataDirect( m_column, m_new_value );
-    plan->resources()->emitDataChangedRow( m_row );
+void ResourceWorkIterator::nextWorkPeriod()
+{
+  qDebug("ResourceWorkIterator::nextWorkPeriod() - NOT YET IMPLEMENTED");
+}
 
-    if ( m_row != Resource::SECTION_COMMENT ) plan->schedule();
-  }
+/************************************** previousWorkPeriod ***************************************/
 
-  void  undo()
-  {
-    // revert resource back to old value
-    plan->resource( m_row )->setDataDirect( m_column, m_old_value );
-    plan->resources()->emitDataChangedRow( m_row );
+void ResourceWorkIterator::previousWorkPeriod()
+{
+  qDebug("ResourceWorkIterator::previousWorkPeriod() - NOT YET IMPLEMENTED");
+}
 
-    if ( m_row != Resource::SECTION_COMMENT ) plan->schedule();
-  }
+/******************************************* allocate ********************************************/
 
-private:
-  int       m_row;
-  int       m_column;
-  QVariant  m_new_value;
-  QVariant  m_old_value;
-};
-
-#endif // COMMANDRESOURCESETDATA_H
+void ResourceWorkIterator::allocate()
+{
+  qDebug("ResourceWorkIterator::allocate() - NOT YET IMPLEMENTED");
+}

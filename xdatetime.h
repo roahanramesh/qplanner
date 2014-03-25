@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013 by Richard Crook                                   *
+ *   Copyright (C) 2014 by Richard Crook                                   *
  *   http://code.google.com/p/qplanner                                     *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -24,31 +24,36 @@
 #include <QDateTime>
 #include <QString>
 
+typedef  quint32 DateTime;   // simple date-time between 0AD and 8000AD with one minute resolution
+
 /*************************************************************************************************/
 /**************************** XDateTime provides an enhanced QDateTime ***************************/
 /*************************************************************************************************/
 
 class XDateTime : public QDateTime
 {
-  public:
-    XDateTime();                         // constructor
-    XDateTime( QDateTime );              // constructor
+public:
+  XDateTime();                         // constructor
+  XDateTime( DateTime );               // constructor
+  XDateTime( QDateTime );              // constructor
 
-    enum Interval
-    {
-      INTERVAL_YEAR,                     // Interval is one year
-      INTERVAL_HALFYEAR,                 // Interval is half a year
-      INTERVAL_QUARTERYEAR,              // Interval is quarter year
-      INTERVAL_MONTH,                    // Interval is one month
-      INTERVAL_WEEK,                     // Interval is one week
-      INTERVAL_DAY                       // Interval is one day
-    };
+  enum Interval
+  {
+    INTERVAL_YEAR,                     // Interval is one year
+    INTERVAL_HALFYEAR,                 // Interval is half a year
+    INTERVAL_QUARTERYEAR,              // Interval is quarter year
+    INTERVAL_MONTH,                    // Interval is one month
+    INTERVAL_WEEK,                     // Interval is one week
+    INTERVAL_DAY                       // Interval is one day
+  };
 
-    QDateTime         truncInterval( int );         // return truncated date-time for interval
-    QDateTime         nextInterval( int );          // return next date-time for interval
-    QString           toLabel( QString );           // return label based on supplied format
-    QString           toText();                     // return date-time as text
-    static QDateTime  fromText( QString );          // return text as date-time
+  QDateTime         truncInterval( int );         // return truncated date-time for interval
+  QDateTime         nextInterval( int );          // return next date-time for interval
+  QString           toLabel( QString );           // return label based on supplied format
+  QString           toText();                     // return date-time as text
+  static QDateTime  fromText( QString );          // return text as date-time
+
+  static const QDateTime  DT_ANCHOR;              // 1-Jan-1AD anchor for typedef DataTime
 };
 
 #endif // XDATETIME_H
