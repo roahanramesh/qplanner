@@ -24,6 +24,7 @@
 #include <QString>
 #include <QDate>
 
+#include "xdatetime.h"
 #include "employment.h"
 
 class Calendar;
@@ -55,6 +56,11 @@ public:
   float             assignable( QDateTime, QDateTime&, int );        // return quantity and change date-time
   void              employ( Task*, float, QDateTime, QDateTime );    // register employment on given task
   float             work( const Task* );                             // return work done on task in days
+
+  bool              isInWorkPeriod( DateTime );
+  DateTime          previousWorkPeriodStart( DateTime );
+  DateTime          nextWorkPeriodStart( DateTime );
+  DateTime          nextWorkPeriodEnd( DateTime );
 
   enum sections                            // sections to be displayed by view
   {

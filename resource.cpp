@@ -316,3 +316,39 @@ float Resource::work( const Task* task )
   // return work done on task in days
   return m_employment.work( task );
 }
+
+/**************************************** isInWorkPeriod *****************************************/
+
+bool Resource::isInWorkPeriod( DateTime now )
+{
+  // is now in a work period for resource
+
+  return true;
+}
+
+/************************************ previousWorkPeriodStart ************************************/
+
+DateTime Resource::previousWorkPeriodStart( DateTime now )
+{
+  // when is pervious work period start
+
+  return XDateTime::NULL_DATETIME;
+}
+
+/************************************** nextWorkPeriodStart **************************************/
+
+DateTime Resource::nextWorkPeriodStart( DateTime now )
+{
+  // when iss next work period start
+
+  return XDateTime::NULL_DATETIME;
+}
+
+/*************************************** nextWorkPeriodEnd ***************************************/
+
+DateTime Resource::nextWorkPeriodEnd( DateTime now)
+{
+  // when is next work period end
+
+  return XDateTime::NULL_DATETIME;
+}

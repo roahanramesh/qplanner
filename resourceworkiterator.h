@@ -21,8 +21,9 @@
 #ifndef RESOURCEWORKITERATOR_H
 #define RESOURCEWORKITERATOR_H
 
-#include "resource.h"
 #include "xdatetime.h"
+
+class Resource;
 
 /*************************************************************************************************/
 /****************************** Iterator for resource work periods *******************************/
@@ -31,17 +32,18 @@
 class ResourceWorkIterator
 {
 public:
-  ResourceWorkIterator();                                              // constructor
+  ResourceWorkIterator();                                    // constructor
+  ResourceWorkIterator( Resource*, DateTime, bool );         // constructor
 
-  DateTime      start() { return m_start; }
-  DateTime      end() { return m_end; }
-  float         efficacy() { return m_efficacy; }
-  float         available() { return m_available; }
+  DateTime      start() { return m_start; }                  // start of work period
+  DateTime      end() { return m_end; }                      // end of work period
+  float         efficacy() { return m_efficacy; }            // units of work per minute
+  float         available() { return m_available; }          // max available of resource
 
-  Resource*     resource() { return m_res;}
-  void          nextWorkPeriod();
-  void          previousWorkPeriod();
-  void          allocate();
+  Resource*     resource() { return m_res;}                  // associated resource
+  void          nextWorkPeriod();                            // move forward to next work period
+  void          previousWorkPeriod();                        // move back to previous work period
+  void          allocate();                                  // employ resource for this work period
 
 private:
   DateTime      m_start;            // work period start

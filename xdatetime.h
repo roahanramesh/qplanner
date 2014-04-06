@@ -24,7 +24,7 @@
 #include <QDateTime>
 #include <QString>
 
-typedef  quint32 DateTime;   // simple date-time between 0AD and 8000AD with one minute resolution
+typedef  quint32 DateTime;   // simple date-time between 1AD and ~8000AD with one minute resolution
 
 /*************************************************************************************************/
 /**************************** XDateTime provides an enhanced QDateTime ***************************/
@@ -53,7 +53,8 @@ public:
   QString           toText();                     // return date-time as text
   static QDateTime  fromText( QString );          // return text as date-time
 
-  static const QDateTime  DT_ANCHOR;              // 1-Jan-1AD anchor for typedef DataTime
+  static const QDateTime  DT_ANCHOR;              // 1-Jan-0001 AD anchor for typedef DataTime
+  static const DateTime   NULL_DATETIME;          // null / invalid DateTime (-1 or 0xFFFFFFFF)
 };
 
 #endif // XDATETIME_H
