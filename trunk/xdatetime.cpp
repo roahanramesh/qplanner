@@ -25,24 +25,27 @@
 /*************************************************************************************************/
 
 const QDateTime  XDateTime::DT_ANCHOR = QDateTime( QDate(1,1,1) );   // const QDateTime anchor for typedef DataTime
+const DateTime   XDateTime::NULL_DATETIME = -1;                      // const DateTime for null / invalid
 
 /****************************************** constuctor *******************************************/
 
 XDateTime::XDateTime() : QDateTime()
 {
+  // constructs null XDateTime
 }
 
 /****************************************** constuctor *******************************************/
 
 XDateTime::XDateTime( DateTime dt ) : QDateTime( DT_ANCHOR.addSecs( dt * Q_INT64_C(60) ) )
 {
-  // converts DateTime quint32 in minutes offset from DT_ANCHOR to QDateTime
+  // constructs XDateTime from DateTime (quint32 minutes offset from DT_ANCHOR)
 }
 
 /****************************************** constuctor *******************************************/
 
 XDateTime::XDateTime( QDateTime dt ) : QDateTime( dt )
 {
+  // constructs XDateTime from QDateTime
 }
 
 /****************************************** truncInterval ****************************************/

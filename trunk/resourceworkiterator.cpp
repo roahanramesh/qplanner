@@ -19,6 +19,8 @@
  ***************************************************************************/
 
 #include "resourceworkiterator.h"
+#include "resource.h"
+#include "calendar.h"
 
 /*************************************************************************************************/
 /****************************** Iterator for resource work periods *******************************/
@@ -28,7 +30,44 @@
 
 ResourceWorkIterator::ResourceWorkIterator()
 {
+  // construct null ResourceWorkIterator
+  m_res       = nullptr;
+  m_start     = XDateTime::NULL_DATETIME;
+  m_end       = XDateTime::NULL_DATETIME;
+  m_efficacy  = 0.0f;
+  m_available = 0.0f;
+}
+
+/****************************************** constructor ******************************************/
+
+ResourceWorkIterator::ResourceWorkIterator( Resource* res, DateTime now, bool forward )
+{
   qDebug("ResourceWorkIterator::ResourceWorkIterator() - NOT YET IMPLEMENTED");
+
+  // construct initial resource work iterator
+  m_res = res;
+
+  if ( res->isInWorkPeriod( now ) )  // in work period
+  {
+    m_start = res->previousWorkPeriodStart( now );
+    m_end   = res->nextWorkPeriodEnd( now );
+  }
+  else  // not in work period
+  {
+    if ( forward ) // forward
+    {
+      m_start = res->nextWorkPeriodStart( now );
+      m_end   = res->nextWorkPeriodEnd( m_start );
+    }
+    else  // backwards
+    {
+      m_start = res->previousWorkPeriodStart( now );
+      m_end   = res->nextWorkPeriodEnd( m_start );
+    }
+  }
+
+  m_efficacy  = 0.0f;  // TODO
+  m_available = 0.0f;  // TODO
 }
 
 /**************************************** nextWorkPeriod *****************************************/
